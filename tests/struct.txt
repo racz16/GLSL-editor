@@ -1,0 +1,12 @@
+struct light{
+	vec3 diffuse;
+	vec3 specular;
+	vec3 ambient;
+};
+
+struct material{
+	sampler2D diffuse;
+	sampler2D specular;
+	sampler2D normal;
+	float shininess;
+} mat;

@@ -1,0 +1,5 @@
+mat4 computeViewMatrix(vec3 forward, vec3 right, vec3 up);
+
+void main(){}
+
+mat4 computeViewMatrix(vec3 forward, vec3 right, vec3 up){}
