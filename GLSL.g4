@@ -1,17 +1,14 @@
 grammar GLSL;
 
-start : (macro | struct | function_prototype | function_definition |
-         MULTI_LINE_COMMENT | SINGLE_LINE_COMMENT )+ ;
-                                                          //több is lehet
-struct : STRUCT IDENTIFIER LCB declaration_statement+ RCB IDENTIFIER? SEMICOLON;
+start : (macro | function_prototype | function_definition | declaration_statement|
+         SEMICOLON)* ;
 
 /////
 //macros------------------------------------------------------------------------
 ////
-
 //sorvége jellel kell valamit kezdeni
 //de mit? itt tokenként kéne kezelni, mindenhol máshol meg nem kéne vele foglalkozni
-macro : (m_version | m_line | m_pragma | m_extension | m_error) (('\r' | '\n')+ );
+macro : (m_version | m_line | m_pragma | m_extension | m_error) (NEW_LINE | EOF);
 m_version : PD_VERSION INT_LITERAL PDA_VERSION_PROFILE?;
 m_line : PD_LINE INT_LITERAL INT_LITERAL?;
 m_pragma : PD_PRAGMA (((PDA_PRAGMA_DEBUG | PDA_PRAGMA_OPTIMIZE) LRB PDA_PRAGMA_TOGGLE RRB)
@@ -23,15 +20,15 @@ m_error : PD_ERROR;
 /////
 //functions---------------------------------------------------------------------
 /////
-function_signature : return_type IDENTIFIER LRB function_argument_list RRB;
-function_argument_list : (function_argument (COMMA function_argument)*)? ;
-function_argument : argument_type IDENTIFIER;
+function_signature : return_type IDENTIFIER LRB function_argument_list? RRB;
+function_argument_list : function_argument (COMMA function_argument)* | KW_VOID;
+function_argument : fully_specified_type (IDENTIFIER array_declaration?)?;
 
 function_prototype : function_signature SEMICOLON;
 function_definition : function_signature compound_statement;
 
-function_call : IDENTIFIER LRB function_call_argument_list RRB;
-function_call_argument_list: (expression (COMMA expression)*)? | VOID ;
+function_call : (IDENTIFIER | TYPE) LRB function_call_argument_list? RRB;
+function_call_argument_list: expression | KW_VOID ;
 
 /////
 //statements--------------------------------------------------------------------
@@ -43,103 +40,76 @@ statement : compound_statement | simple_statement;
 compound_statement : LCB statement_list? RCB;
 
 simple_statement : declaration_statement | expression_statement | 
-                    selection_statement | iteration_statement | jump_statement;
+                   selection_statement | iteration_statement | jump_statement |
+                 switch_statement | case_label;
 
-selection_statement : IF LRB expression RRB statement (ELSE statement)?; //switch
+selection_statement : KW_IF LRB expression RRB statement (KW_ELSE statement)?;
 
-iteration_statement : WHILE LRB expression RRB statement; //do-while, for
+switch_statement : KW_SWITCH LRB expression RRB LCB statement_list? RCB;
+case_label : (KW_DEFAULT | KW_CASE expression) COLON ;
 
-jump_statement : (CONTINUE | BREAK | DISCARD | RETURN expression?) SEMICOLON;
+iteration_statement : for_iteration | while_iteration | do_while_iteration;
+for_iteration : KW_FOR LRB init_declaration_list SEMICOLON expression SEMICOLON expression RRB statement;
+while_iteration : KW_WHILE LRB expression RRB statement;
+do_while_iteration : KW_DO statement KW_WHILE LRB expression RRB SEMICOLON;
 
+jump_statement : (KW_CONTINUE | KW_BREAK | KW_DISCARD | KW_RETURN expression?) SEMICOLON;
 
-
-//ez még nem okés
-declaration_statement : type IDENTIFIER (LSB (INT_LITERAL | IDENTIFIER)? RSB)* (EQUAL expression)? SEMICOLON;
 expression_statement : expression? SEMICOLON;
+
+/////
+//declarations------------------------------------------------------------------
+/////
+declaration_statement : KW_PRECISION Q_PRECISION type SEMICOLON | init_declaration_list SEMICOLON |
+                      //type_qualifier* IDENTIFIER LCB struct_declaration_list RCB 
+                      //(IDENTIFIER array_declaration?)? SEMICOLON |
+                        struct_declaration |
+                      type_qualifier* (IDENTIFIER (COMMA IDENTIFIER)*)? SEMICOLON;
+
+init_declaration_list : single_declaration (COMMA IDENTIFIER array_declaration? (OP_ASSIGN expression))*;
+single_declaration : fully_specified_type IDENTIFIER? array_declaration? (OP_ASSIGN expression)?;
+
+//struct_declaration_list : struct_declaration+;
+struct_declaration : type_qualifier? struct_specifier struct_declarator_list? SEMICOLON;
+struct_declarator_list : struct_declarator (COMMA struct_declarator)*;
+struct_declarator : IDENTIFIER array_declaration?;
+struct_specifier : KW_STRUCT IDENTIFIER? LCB (init_declaration_list SEMICOLON)+ RCB;
 
 /////
 //expressions-------------------------------------------------------------------
 /////
-expression : IDENTIFIER | function_call |  literal |
-                        LRB expression RRB |
-                        (logical_not | add | subtract | bit_not | increment | decrement)  expression (increment | decrement) |
-                        
-                        expression (multiply | divide | mod) expression | 
-                        expression (add | subtract) expression |
-                        expression (left_shift | right_shift) expression |
-                        expression (bit_and | bit_or | bit_xor) expression |
-                        
-                        expression (less | greater | less_equals | greater_equals) expression |
-                        expression (equals | not_equals) expression |
-                        expression (logical_and | logical_or | logical_xor) expression |
-                        
-                        expression QUESTION expression COLON expression |
-                        expression assignment expression |
-                        
-                        expression DOT (IDENTIFIER | VECTOR_FIELD+) |
-                        expression (LSB INT_LITERAL RSB)+;
-
-//külön szabályként nem mûködnek, mert mutual left recursion
-//parenthetical_expression : LRB expression RRB;
-//unary_expression : (logical_not | add | subtract | bit_not | increment | decrement) 
-//                          expression (increment | decrement);
-
-//number expressions
-//multiplicative_expression : expression (multiply | divide | mod) expression;
-//additive_expression : expression (add | subtract) expression;
-//shift_expression : expression (left_shift | right_shift) expression;
-//bit_expression : expression (bit_and | bit_or | bit_xor) expression;
-
-//logical expressions
-//relational_expression : expression (less | greater | less_equals | greater_equals) expression;
-//equality_expression :  expression (equals | not_equals) expression;
-//logical_expression : expression (logical_and | logical_or | logical_xor) expression;
-
-//assignment expressions
-//conditional_expression : expression QUESTION expression COLON expression;
-//assignment_expression : expression assignment expression;
-
-//field_selection : expression DOT (IDENTIFIER | VECTOR_FIELD+);
-
-/////
-//operators---------------------------------------------------------------------
-/////
-multiply : STAR;
-add : PLUS;
-subtract : DASH;
-divide : SLASH;
-mod : PERCENT;
-increment : PLUS PLUS;
-decrement : DASH DASH;
-left_shift : RIGHT_ANGLE RIGHT_ANGLE;
-right_shift : LEFT_ANGLE LEFT_ANGLE;
-less_equals : RIGHT_ANGLE EQUAL;
-less : RIGHT_ANGLE;
-greater : LEFT_ANGLE;
-greater_equals : LEFT_ANGLE EQUAL;
-equals : EQUAL EQUAL;
-not_equals : BANG EQUAL;
-bit_and : AMPERSAND;
-bit_or : VERTICAL_BAR;
-bit_xor : CARET;
-bit_not : TILDE;
-logical_and : AMPERSAND AMPERSAND;
-logical_or : VERTICAL_BAR VERTICAL_BAR;
-logical_xor : CARET CARET;
-logical_not : BANG;
-assignment : (add | subtract | mod | multiply | divide | left_shift | right_shift | 
-              bit_and | bit_or | bit_xor)? EQUAL;
+expression : IDENTIFIER | function_call |  literal | LRB expression RRB |                       //id, function, literal, ()
+                        (OP_LOGICAL_UNARY | OP_ADD | OP_SUB | OP_BIT_UNARY | OP_INC | OP_DEC)   //unary
+                                expression (OP_INC | OP_DEC) |
+                        expression (OP_MUL | OP_DIV | OP_MOD | OP_ADD | OP_SUB |                //binary
+                                OP_SHIFT | OP_BIT | OP_RELATIONAL | OP_LOGICAL |
+                                OP_MODIFY | OP_ASSIGN) expression |
+                        expression QUESTION expression COLON expression |                       //if
+                        expression DOT (IDENTIFIER | VECTOR_FIELD+) |                           //.field
+                        expression array_usage |                                                //array
+                        expression COMMA expression;                                            //list
 
 /////
 //types and literals------------------------------------------------------------
 /////
-return_type : type (LSB RSB)* | VOID;
-argument_type : type (LSB RSB)*;
-type : IDENTIFIER | TRANSPARENT_TYPE | FLOAT_OPAQUE_TYPE |SIGNED_INT_OPAQUE_TYPE | 
-       UNSIGNED_INT_OPAQUE_TYPE;
+return_type : fully_specified_type array_declaration? | KW_VOID;
+fully_specified_type : type_qualifier* type;
+type : IDENTIFIER | TYPE;
+//qualifiers
+type_qualifier : storage_qualifier | layout_qualifier | Q_PRECISION | 
+               Q_INTERPOLATION | Q_INVARIANT | Q_PRECISE;
 
-literal : BOOL_LITERAL | number_literal;
-number_literal : INT_LITERAL | FLOAT_LITERAL;
+storage_qualifier : Q_SHARED | Q_STORAGE | Q_SUBROUTINE (LRB type_name_list RRB)?;
+type_name_list : IDENTIFIER (COMMA IDENTIFIER)*;
+
+layout_qualifier : KW_LAYOUT LRB layout_qualifier_id_list RRB;
+layout_qualifier_id_list : layout_qualifier_id (COMMA layout_qualifier_id)*;
+layout_qualifier_id : IDENTIFIER (OP_ASSIGN literal)? | Q_SHARED;
+//literals
+literal : BOOL_LITERAL | INT_LITERAL | FLOAT_LITERAL;
+//arrays
+array_usage : (LSB expression RSB)+;
+array_declaration : (LSB expression? RSB)+;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -195,41 +165,40 @@ PD_ELIF : '#elif';
 fragment
 PD_ENDIF : '#endif';
 fragment
-PD_DEFINED: 'defined';
+PD_DEFINED: 'defined'; //nem kéne elé # ?
 
 /////
 //keywords----------------------------------------------------------------------
 /////
-LAYOUT : 'layout';
-BREAK : 'break';
-CONTINUE: 'continue';
-DO : 'do';
-FOR : 'for';
-WHILE : 'while';
-SWITCH : 'switch';
-CASE : 'case';
-DEFAULT: 'default';
-IF : 'if';
-ELSE : 'else';
-SUBROUTINE : 'subroutine';
-INOUT : 'inout';
-INVARIANT : 'invariant';
-DISCARD : 'discard';
-RETURN : 'return';
-STRUCT : 'struct';
-VOID : 'void';
-PRECISION : 'precision';
+KW_LAYOUT : 'layout';
+KW_BREAK : 'break';
+KW_CONTINUE: 'continue';
+KW_DO : 'do';
+KW_FOR : 'for';
+KW_WHILE : 'while';
+KW_SWITCH : 'switch';
+KW_CASE : 'case';
+KW_DEFAULT: 'default';
+KW_IF : 'if';
+KW_ELSE : 'else';
+KW_DISCARD : 'discard';
+KW_RETURN : 'return';
+KW_STRUCT : 'struct';
+KW_VOID : 'void';
+KW_PRECISION : 'precision';
 
+//itt van még mit finomítani
+//esetleg mindegyiknek külön token?
 //qualifiers
 Q_PRECISE : 'precise';
+Q_INVARIANT : 'invariant';
+Q_SUBROUTINE : 'subroutine';
 Q_INTERPOLATION : 'smooth' | 'flat' | 'noperspective';
-Q_STORAGE : 'const' | 'in' | 'out' | 'attribute' | 'uniform' | 'varying' |
-                    'buffer' | 'shared';
-Q_AUXILIARY_STORAGE : 'centroid' | 'sample' | 'patch';
+Q_STORAGE : 'const' | 'inout' |'in' | 'out' | 'centroid' | 'patch' | 'sample' | 
+            'uniform' |'buffer' | 'coherent' | 'volatile' | 'restrict' | 
+            'readonly' | 'writeonly';
+Q_SHARED : 'shared';
 Q_PRECISION : 'highp' | 'mediump' | 'lowp';
-Q_MEMORY : 'coherent' | 'volatile' | 'restrict' | 'readonly' | 'writeonly';
-
-//Q_PARAMETER : '' | 'const' | 'in' | 'out' | 'inout';
 
 //reserved
 RESERVED_KEYWORD : 'common' | 'partition' | 'active' | 'asm' | 'class' | 'union' |
@@ -243,37 +212,43 @@ RESERVED_KEYWORD : 'common' | 'partition' | 'active' | 'asm' | 'class' | 'union'
 /////
 //types-------------------------------------------------------------------------
 /////
-TRANSPARENT_TYPE : 'int' | 'uint' | 'float' | 'double' | 'vec2' | 'vec3' | 'vec4' |
-            'dvec2' | 'dvec3' | 'dvec4' | 'bvec2' | 'bvec3' | 'bvec4' | 'ivec2' |
-            'ivec3' | 'ivec4' | 'uvec2' | 'uvec3' | 'uvec4' | 'mat2' | 'mat3' |
-            'mat4' | 'mat2x2' | 'mat2x3' | 'mat2x4' | 'mat3x2' | 'mat3x3' | 'mat3x4' |
-            'mat4x2' | 'mat4x3' | 'mat4x4' | 'dmat2' | 'dmat3' | 'dmat4' | 'dmat2x2' |
-            'dmat2x3' | 'dmat2x4' | 'dmat3x2' | 'dmat3x3' | 'dmat3x4' | 'dmat4x2' |
-            'dmat4x3' | 'dmat4x4' | 'bool';
-FLOAT_OPAQUE_TYPE: 'sampler1D' | 'image1D' | 'sampler2D' | 'image2D' | 'sampler3D' |
-            'image3D' | 'samplerCube' | 'imageCube' | 'sampler2DRect' | 'image2DRect' |
-            'sampler1DArray' | 'image1DArray' | 'sampler2DArray' | 'image2DArray' |
-            'samplerBuffer' | 'imageBuffer' | 'sampler2DMS' | 'image2DMS' |
-            'sampler2DMSArray' | 'image2DMSArray' | 'samplerCubeArray' |
-            'imageCubeArray' | 'sampler1DShadow' | 'sampler2DShadow ' |
-            'sampler2DRectShadow' | 'sampler1DArrayShadow' | 'sampler2DArrayShadow' |
-            'samplerCubeShadow' | 'samplerCubeArrayShadow';
-SIGNED_INT_OPAQUE_TYPE : 'isampler1D' | 'iimage1D' | 'isampler2D' | 'iimage2D' |
-            'isampler3D' | 'iimage3D' | 'isamplerCube' | 'iimageCube' | 
-            'isampler2DRect' | 'iimage2DRect' | 'isampler1DArray' | 'iimage1DArray' |
-            'isampler2DArray' | 'iimage2DArray' | 'isamplerBuffer' | 'iimageBuffer' |
-            'isampler2DMS' | 'iimage2DMS' | 'isampler2DMSArray' | 'iimage2DMSArray' |
-            'isamplerCubeArray' | 'iimageCubeArray';
-UNSIGNED_INT_OPAQUE_TYPE : 'usampler1D' | 'uimage1D' | 'usampler2D' | 'uimage2D' |
-            'usampler3D' | 'uimage3D' | 'usamplerCube' | 'uimageCube' | 
-            'usampler2DRect' | 'uimage2DRect' | 'usampler1DArray' | 'uimage1DArray' |
-            'usampler2DArray' | 'uimage2DArray' | 'usamplerBuffer' | 'uimageBuffer' |
-            'usampler2DMS' | 'uimage2DMS' | 'usampler2DMSArray' | 'uimage2DMSArray' |
-            'usamplerCubeArray' | 'uimageCubeArray' | 'atomic_uint';
+TYPE : TRANSPARENT_TYPE | FLOAT_OPAQUE_TYPE |SIGNED_INT_OPAQUE_TYPE | 
+       UNSIGNED_INT_OPAQUE_TYPE;
+//transparent type
+fragment
+TRANSPARENT_TYPE : 'int' | 'uint' | 'float' | 'double' | 'bool' | 
+                   VECTOR_TYPE | MATRIX_TYPE;
+fragment
+VECTOR_TYPE : ('d' | 'b' | 'i' | 'u')? 'vec' ('2' | '3' | '4');
+fragment
+MATRIX_TYPE : 'd'? 'mat' ('2' | '3' | '4') ('x' ('2' | '3' | '4'))?;
+//float opaque type
+fragment
+FLOAT_OPAQUE_TYPE: IMAGE_TYPE OPAQUE_TYPE_ENDING |
+                   SAMPLER_TYPE (OPAQUE_TYPE_ENDING | FLOAT_OPAQUE_TYPE_SAMPLER_ONLY_ENDING);
+fragment
+FLOAT_OPAQUE_TYPE_SAMPLER_ONLY_ENDING : '1DShadow' | '2DShadow' | '2DRectShadow' |
+                                      '1DArrayShadow' | '2DArrayShadow' | 'CubeShadow' |
+                                      'CubeArrayShadow';
+//signed int opaque type
+fragment
+SIGNED_INT_OPAQUE_TYPE : 'i' (SAMPLER_TYPE | IMAGE_TYPE) OPAQUE_TYPE_ENDING;
+//unsigned int opaque type
+fragment
+UNSIGNED_INT_OPAQUE_TYPE : 'u' (SAMPLER_TYPE | IMAGE_TYPE) OPAQUE_TYPE_ENDING | 'atomic_uint';
+//type fragments
+fragment
+OPAQUE_TYPE_ENDING : '1D' | '2D' | '3D' | 'Cube' | '2DRect' | '1DArray' |
+                         '2DArray' | 'Buffer' | '2DMS' | '2DMSArray' | 'CubeArray';
+fragment
+SAMPLER_TYPE : 'sampler';
+fragment
+IMAGE_TYPE : 'image';
 
 /////
 //built-in things---------------------------------------------------------------
 /////
+//ide még nagyon sok minden fog jönni, de nem bonyolult csak sok
 //functions
 BI_FUNCTION : ANGLE_TRIGONOMETRIC_FUNCTION | EXPONENTIAL_FUNCTION | 
                     COMMON_FUNCTION | GEOMETRIC_FUNCTION;
@@ -321,36 +296,39 @@ fragment
 FLOATING_SUFFIX : 'f' | 'F' | 'lf' | 'LF';
 
 /////
+//operators---------------------------------------------------------------------
+/////
+OP_MUL : '*';
+OP_ADD : '+';
+OP_SUB : '-';
+OP_DIV : '/';
+OP_MOD : '%';
+OP_INC : '++';
+OP_DEC : '--';
+OP_SHIFT : '<<' | '>>';
+OP_RELATIONAL : '<=' | '<' | '>' | '>=' | '==' | '!=';
+OP_BIT : '&' | '|' | '^';
+OP_BIT_UNARY : '~';
+OP_LOGICAL : '&&' | '||' | '^^';
+OP_LOGICAL_UNARY : '!';
+OP_MODIFY : ('+' | '-' | '%' | '*' | '/' | '<<' | '>>' | '&' | '|' | '^') '=';
+OP_ASSIGN : '=';
+
+/////
 //characters--------------------------------------------------------------------
 /////
 DOT : '.';
 COMMA : ',';
 COLON : ':';
 SEMICOLON : ';';
-PLUS : '+';
-DASH : '-';
-BANG : '!';
-TILDE : '~';
-STAR : '*';
-SLASH : '/';
-PERCENT : '%';
-LEFT_ANGLE : '>';
-RIGHT_ANGLE : '<';
-EQUAL : '=';
-CARET : '^';
-VERTICAL_BAR : '|';
-AMPERSAND : '&';
 QUESTION : '?';
 VECTOR_FIELD : 'x' | 'y' | 'z' | 'w' | 'r' | 'g' | 'b' | 'a';
-
 //round brackets
 LRB : '(';
 RRB : ')';
-
 //curly brackets
 LCB : '{';
 RCB : '}';
-
 //square brackets
 LSB : '[';
 RSB : ']';
@@ -358,8 +336,9 @@ RSB : ']';
 /////
 //comments----------------------------------------------------------------------
 /////
-MULTI_LINE_COMMENT : '/*' .*? '*/';
-SINGLE_LINE_COMMENT : '//' .*? (NEW_LINE | EOF);
+//multi line nem lehet parser szabály, mert bármely két token közé be szabad rakni
+MULTI_LINE_COMMENT : '/*' .*? '*/'  -> channel(HIDDEN);
+SINGLE_LINE_COMMENT : '//' .*? (NEW_LINE | EOF) -> channel(HIDDEN);
 
 /////
 //hidden------------------------------------------------------------------------
@@ -375,12 +354,11 @@ TAB : '\t' -> channel(HIDDEN);
 //others------------------------------------------------------------------------
 /////
 IDENTIFIER : ('_' | LETTER) ('_' | LETTER | DIGIT)*;
-fragment    //egyenlõre nem használom
+fragment    //egyenlõre nem használom,
 CHARACTER : [_%<>(){}^&~=!;,?] | LETTER | DIGIT | '.' | '+' | '-' | '*' | 
-            '|' | ':' | '[' | ']' | '/';
+            '|' | ':' | '[' | ']' | '/'; //sõt, kell ez egyáltalán?
 fragment
 LETTER : [a-zA-Z];
-
 //numbers
 fragment
 DIGIT : '0' | NONZERO_DIGIT;
