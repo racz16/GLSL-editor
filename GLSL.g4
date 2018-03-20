@@ -43,15 +43,15 @@ simple_statement : declaration_statement | expression_statement |
                    selection_statement | iteration_statement | jump_statement |
                  switch_statement | case_label;
 
-selection_statement : KW_IF LRB expression RRB statement (KW_ELSE statement)?;
+selection_statement : KW_IF LRB bool_expression RRB statement (KW_ELSE statement)?;
 
-switch_statement : KW_SWITCH LRB expression RRB LCB statement_list? RCB;
-case_label : (KW_DEFAULT | KW_CASE expression) COLON ;
+switch_statement : KW_SWITCH LRB number_expression RRB LCB statement_list? RCB;
+case_label : (KW_DEFAULT | KW_CASE number_literal) COLON ;
 
 iteration_statement : for_iteration | while_iteration | do_while_iteration;
-for_iteration : KW_FOR LRB init_declaration_list SEMICOLON expression SEMICOLON expression RRB statement;
-while_iteration : KW_WHILE LRB expression RRB statement;
-do_while_iteration : KW_DO statement KW_WHILE LRB expression RRB SEMICOLON;
+for_iteration : KW_FOR LRB init_declaration_list SEMICOLON bool_expression SEMICOLON expression RRB statement;
+while_iteration : KW_WHILE LRB bool_expression RRB statement;
+do_while_iteration : KW_DO statement KW_WHILE LRB bool_expression RRB SEMICOLON;
 
 jump_statement : (KW_CONTINUE | KW_BREAK | KW_DISCARD | KW_RETURN expression?) SEMICOLON;
 
@@ -60,26 +60,27 @@ expression_statement : expression? SEMICOLON;
 /////
 //declarations------------------------------------------------------------------
 /////
-declaration_statement : KW_PRECISION Q_PRECISION type SEMICOLON | init_declaration_list SEMICOLON |
-                      //type_qualifier* IDENTIFIER LCB struct_declaration_list RCB 
-                      //(IDENTIFIER array_declaration?)? SEMICOLON |
-                        struct_declaration |
+declaration_statement : KW_PRECISION Q_PRECISION type SEMICOLON | 
+                        init_declaration_list SEMICOLON |
+                      type_qualifier* IDENTIFIER LCB struct_declaration_list RCB 
+                      (IDENTIFIER array_declaration?)? SEMICOLON |
+                        //struct_declaration |
                       type_qualifier* (IDENTIFIER (COMMA IDENTIFIER)*)? SEMICOLON;
 
 init_declaration_list : single_declaration (COMMA IDENTIFIER array_declaration? (OP_ASSIGN expression))*;
-single_declaration : fully_specified_type IDENTIFIER? array_declaration? (OP_ASSIGN expression)?;
+single_declaration : (fully_specified_type | fully_specified_struct) IDENTIFIER? array_declaration? (OP_ASSIGN expression)?;
 
-//struct_declaration_list : struct_declaration+;
-struct_declaration : type_qualifier? struct_specifier struct_declarator_list? SEMICOLON;
+struct_declaration_list : struct_declaration+;
+struct_declaration : type_qualifier* type struct_declarator_list? SEMICOLON;
 struct_declarator_list : struct_declarator (COMMA struct_declarator)*;
 struct_declarator : IDENTIFIER array_declaration?;
-struct_specifier : KW_STRUCT IDENTIFIER? LCB (init_declaration_list SEMICOLON)+ RCB;
+struct_specifier : KW_STRUCT IDENTIFIER? LCB struct_declaration_list RCB;
 
 /////
 //expressions-------------------------------------------------------------------
 /////
-expression : IDENTIFIER | function_call |  literal | LRB expression RRB |                       //id, function, literal, ()
-                        (OP_LOGICAL_UNARY | OP_ADD | OP_SUB | OP_BIT_UNARY | OP_INC | OP_DEC)   //unary
+/*expression : IDENTIFIER | function_call |  literal | LRB expression RRB |                       //id, function, literal, ()
+                        op_unary |  //unary
                                 expression (OP_INC | OP_DEC) |
                         expression (OP_MUL | OP_DIV | OP_MOD | OP_ADD | OP_SUB |                //binary
                                 OP_SHIFT | OP_BIT | OP_RELATIONAL | OP_LOGICAL |
@@ -89,11 +90,39 @@ expression : IDENTIFIER | function_call |  literal | LRB expression RRB |       
                         expression array_usage |                                                //array
                         expression COMMA expression;                                            //list
 
+op_unary : (OP_LOGICAL_UNARY | OP_ADD | OP_SUB | OP_BIT_UNARY | OP_INC | OP_DEC) expression;*/
+
+
+expression : any_type_expression | number_expression | bool_expression;
+expression_list : expression (COMMA expression)*;
+//number
+number_expression : any_type_expression | number_literal |LRB number_expression RRB |
+                    bit_expression | unary_expression | binary_expression;
+bit_expression : number_expression (OP_SHIFT | OP_BIT) number_expression |
+                 OP_BIT_UNARY number_expression;
+unary_expression : (OP_ADD | OP_SUB | OP_INC | OP_DEC) number_expression |
+                    number_expression (OP_INC | OP_DEC);
+binary_expression : number_expression (OP_MUL | OP_DIV | OP_MOD | OP_ADD | OP_SUB | OP_MODIFY | OP_ASSIGN) number_expression ;
+//bool
+bool_expression : any_type_expression | bool_literal | LRB bool_expression RRB |
+                  logical_expression | relational_expression;
+logical_expression : bool_expression OP_LOGICAL bool_expression |
+                     OP_LOGICAL_UNARY bool_expression;
+relational_expression : number_expression OP_RELATIONAL number_expression;
+//any type
+any_type_expression : IDENTIFIER | function_call | expression array_usage |
+                      bool_expression QUESTION expression COLON expression |
+                      expression DOT (IDENTIFIER | VECTOR_FIELD+);
+
+
+
+
 /////
 //types and literals------------------------------------------------------------
 /////
 return_type : fully_specified_type array_declaration? | KW_VOID;
 fully_specified_type : type_qualifier* type;
+fully_specified_struct : type_qualifier* struct_specifier;
 type : IDENTIFIER | TYPE;
 //qualifiers
 type_qualifier : storage_qualifier | layout_qualifier | Q_PRECISION | 
@@ -107,9 +136,11 @@ layout_qualifier_id_list : layout_qualifier_id (COMMA layout_qualifier_id)*;
 layout_qualifier_id : IDENTIFIER (OP_ASSIGN literal)? | Q_SHARED;
 //literals
 literal : BOOL_LITERAL | INT_LITERAL | FLOAT_LITERAL;
+bool_literal : BOOL_LITERAL;
+number_literal : INT_LITERAL | FLOAT_LITERAL;
 //arrays
-array_usage : (LSB expression RSB)+;
-array_declaration : (LSB expression? RSB)+;
+array_usage : (LSB number_expression RSB)+;
+array_declaration : (LSB number_expression? RSB)+;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,20 +279,88 @@ IMAGE_TYPE : 'image';
 /////
 //built-in things---------------------------------------------------------------
 /////
-//ide még nagyon sok minden fog jönni, de nem bonyolult csak sok
 //functions
-BI_FUNCTION : ANGLE_TRIGONOMETRIC_FUNCTION | EXPONENTIAL_FUNCTION | 
-                    COMMON_FUNCTION | GEOMETRIC_FUNCTION;
+BI_FUNCTION : ANGLE_TRIGONOMETRIC_FUNCTION | EXPONENTIAL_FUNCTION | COMMON_FUNCTION | 
+              FLOATING_POINT_PACK_UNPACK_FUNCTION |GEOMETRIC_FUNCTION | MATRIX_FUNCTION |
+              VECTOR_RELATIONAL_FUNCTION | INTEGER_FUNCTION | TEXTURE_QUERY_FUNCTION |
+              TEXTURE_GATHER_FUNCTION | COMPATIBILITY_PROFILE_TEXTURE_FUNCTION |
+              ATOMIC_COUNTER_FUNCTION | ATOMIC_MEMORY_FUNCTION | IMAGE_FUNCTION |
+              FRAGMENT_PROCESSING_FUNCTION | INTERPOLATION_FUNCTION | NOISE_FUNCTION |
+              GEOMETRY_SHADER_FUNCTION | SHADER_INVOCATION_CONTROL_FUNCTION |
+              SHADER_MEMORY_CONTROL_FUNCTION | SHADER_INVOCATION_GROUP_FUNCTION;
 
 fragment
-ANGLE_TRIGONOMETRIC_FUNCTION : 'radians' | 'degrees' | 'sin' | 'cos' | 'asin' | 'acos';
+ANGLE_TRIGONOMETRIC_FUNCTION : 'radians' | 'degrees' | 'sin' | 'cos' | 'tan' | 
+                               'asin' | 'acos' | 'atan' | 'sinh' | 'cosh' | 'tanh' |
+                               'asinh' | 'acosh' | 'atanh';
 fragment
 EXPONENTIAL_FUNCTION : 'pow' | 'exp' | 'log' | 'exp2' | 'log2' | 'sqrt' | 'inversesqrt';
 fragment
-COMMON_FUNCTION : 'abs' | 'sign' | 'floor' | 'trunc' | 'round' | 'ceil' | 'mod' | 
-                  'min' | 'max' | 'clamp';
+COMMON_FUNCTION : 'abs' | 'sign' | 'floor' | 'trunc' | 'round' | 'roundEven' | 'ceil' | 
+                  'fract' | 'mod' | 'modf' | 'min' | 'max' | 'clamp' | 'mix' | 'step' |
+                  'smoothstep' | 'isnan' | 'isinf' | 'floatBitsToInt' | 'floatBitsToUint' |
+                  'intBitsToFloat' | 'uintBitsToFloat' | 'fma' | 'frexp' | 'ldexp';
 fragment
-GEOMETRIC_FUNCTION : 'length' | 'dot' | 'normalize';
+FLOATING_POINT_PACK_UNPACK_FUNCTION : 'packUnorm2x16' | 'packSnorm2x16' | 'packUnorm4x8' |
+                                      'packSnorm4x8' | 'unpackUnorm2x16' | 'unpackSnorm2x16' |
+                                      'unpackUnorm4x8' | 'unpackSnorm4x8' | 'packDouble2x32' |
+                                      'unpackDouble2x32' | 'packHalf2x16' | 'unpackHalf2x16';
+fragment
+GEOMETRIC_FUNCTION : 'length' | 'distance' | 'dot' | 'cross' | 'normalize' | 'transform' |
+                     'faceforward' | 'reflect' | 'refract';
+fragment
+MATRIX_FUNCTION : 'matrixCompMult' | 'outerProduct' | 'transpose' | 'determinant' |
+                  'inverse';
+fragment
+VECTOR_RELATIONAL_FUNCTION : 'lessThan' | 'lessThanEqual' | 'greaterThan' | 'greaterThanEqual' |
+                             'equal' | 'notEqual' | 'any' | 'all' | 'not';
+fragment
+INTEGER_FUNCTION : 'uaddCarry' | 'usubBorrow' | 'umulExtended' | 'imulExtended' |
+                   'bitfieldExtract' | 'bitfieldInsert' | 'bitfieldReverse' | 
+                   'bitCount' | 'findLSB' | 'findMSB';
+fragment
+TEXTURE_QUERY_FUNCTION : 'textureSize' | 'textureQueryLod' | 'textureQueryLevels' | 
+                         'textureSamples' | 'texture' | 'textureProj' | 'textureLod' |
+                         'textureOffset' | 'texelFetch' | 'texelFetchOffset' |
+                         'textureProjOffset' | 'textureLodOffset' | 'textureProjLod' |
+                         'textureProjLodOffset' | 'textureGrad' | 'textureGradOffset' |
+                         'textureProjGrad' | 'textureProjGradOffset';
+fragment
+TEXTURE_GATHER_FUNCTION : 'textureGather' | 'textureGatherOffset' | 'textureGatherOffsets';
+fragment
+COMPATIBILITY_PROFILE_TEXTURE_FUNCTION : 'texture' 
+                                         ('1D' | '2D' | '3D') 'Proj'? 'Lod'? |
+                                         'textureCube' 'Lod'? | 
+                                         'shadow' ('1D' | '2D') 'Proj'? 'Lod'?;
+fragment
+ATOMIC_COUNTER_FUNCTION : 'atomicCounter' ('Increment' | 'Decrement' | 'Add' | 
+                                           'Subtract' | 'Min' | 'Max' | 'And' |
+                                           'Or' | 'Xor' | 'Exchange' | 'CompSwap')?;
+fragment
+ATOMIC_MEMORY_FUNCTION : 'atomic' ('Add' | 'Min' | 'Max' | 'And' | 'Or' | 'Xor' |
+                                   'Exchange' | 'CompSwap');
+fragment
+IMAGE_FUNCTION : 'image' ('Size' | 'Samples' | 'Load' | 'Store' | 'AtomicAdd' |
+                          'AtomicMin' | 'AtomicMax' | 'AtomicAnd' | 'AtomicOr' |
+                          'AtomicXor' | 'AtomicExchange' | 'AtomicCompSwap');
+fragment
+FRAGMENT_PROCESSING_FUNCTION : 'dFdx' | 'dFdy' | 'dFdxFine' | 'dFdyFine' | 'dFdxCoarse' |
+                               'dFdyCoarse' | 'fwidth' | 'fwidthFine' | 'fwidthCoarse';
+fragment
+INTERPOLATION_FUNCTION : 'interpolateAt' ('Centroid' | 'Sample' | 'Offset');
+fragment
+NOISE_FUNCTION : 'noise' [1-4];
+fragment
+GEOMETRY_SHADER_FUNCTION : 'Emit' ('StreamVertex' | 'StreamPrimitive' | 'Vertex') |
+                            'EndPrimitive';
+fragment
+SHADER_INVOCATION_CONTROL_FUNCTION : 'barrier';
+fragment
+SHADER_MEMORY_CONTROL_FUNCTION : 'memoryBarrier' ('AtomicCounter' | 'Buffer' | 
+                                                  'Shared' | 'Image')? | 'groupMemoryBarrier';
+fragment
+SHADER_INVOCATION_GROUP_FUNCTION : 'anyInvocation' | 'allInvocations' | 'anyInvocationsEqual';
+
 
 //macros
 BI_MACRO : '__LINE__' | '__FILE__' | '__VERSION__';
