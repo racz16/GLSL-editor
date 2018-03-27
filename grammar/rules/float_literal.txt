@@ -1,0 +1,17 @@
+floating-constant :
+	fractional-constant exponent-partopt floating-suffixopt
+	digit-sequence exponent-part floating-suffixopt
+fractional-constant :
+	digit-sequence '.' digit-sequence
+	digit-sequence '.'
+	'.' digit-sequence
+exponent-part :
+	'e' signopt digit-sequence
+	'E' signopt digit-sequence
+sign : one of
+	+ –
+digit-sequence :
+	digit
+	digit-sequence digit
+floating-suffix: one of
+	f F lf LF

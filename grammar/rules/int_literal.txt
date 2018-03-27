@@ -1,0 +1,27 @@
+integer-constant :
+	decimal-constant integer-suffixopt
+	octal-constant integer-suffixopt
+	hexadecimal-constant integer-suffixopt
+integer-suffix: one of
+	'u' 'U'
+decimal-constant :
+	nonzero-digit
+	decimal-constant digit
+octal-constant :
+	'0'
+	octal-constant octal-digit
+hexadecimal-constant :
+	'0x' hexadecimal-digit
+	'0X' hexadecimal-digit
+	hexadecimal-constant hexadecimal-digit
+digit :
+	'0'
+	nonzero-digit
+nonzero-digit : one of
+	1 2 3 4 5 6 7 8 9
+octal-digit : one of
+	0 1 2 3 4 5 6 7
+hexadecimal-digit : one of
+	0 1 2 3 4 5 6 7 8 9
+	a b c d e f
+	A B C D E F

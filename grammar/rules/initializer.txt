@@ -1,0 +1,7 @@
+initializer :
+	assignment-expression
+	'{' initializer-list '}'
+	'{' initializer-list , '}'
+initializer-list :
+	initializer
+	initializer-list , initializer

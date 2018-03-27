@@ -1,0 +1,1 @@
+precision precision-qualifier type;

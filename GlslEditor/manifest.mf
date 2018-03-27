@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: true
-OpenIDE-Module: hu.racz.zalan.glsleditor
-OpenIDE-Module-Layer: hu/racz/zalan/glsleditor/layer.xml
-OpenIDE-Module-Localizing-Bundle: hu/racz/zalan/glsleditor/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

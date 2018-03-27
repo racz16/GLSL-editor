@@ -1,0 +1,40 @@
+function-prototype :
+	precision-qualifier type function-name'('parameter-qualifiers precision-qualifier type name
+array-specifier, ... ')'
+type :
+	any basic type, array type, structure name, or structure definition
+parameter-qualifiers :
+	empty
+	list of parameter-qualifier
+parameter-qualifier :
+	'const'
+	'in'
+	'out'
+	'inout'
+	'precise'
+	memory qualifier
+	precision qualifier
+name :
+	empty
+	identifier
+array-specifier :
+	empty
+	'[' integral-constant-expression ']'
+
+
+function-definition:
+	function-prototype '{' statement-list '}'
+statement-list:
+	statement
+	statement-list statement
+statement:
+	compound-statement
+	simple-statement
+compound-statement:
+	'{' statement-list '}'
+simple-statement:
+	declaration-statement
+	expression-statement
+	selection-statement
+	iteration-statement
+	jump-statement

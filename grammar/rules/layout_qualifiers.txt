@@ -1,0 +1,49 @@
+layout-qualifier :
+	'layout' '(' layout-qualifier-id-list ')'
+layout-qualifier-id-list :
+	layout-qualifier-id
+	layout-qualifier-id ',' layout-qualifier-id-list
+layout-qualifier-id
+	layout-qualifier-name
+	layout-qualifier-name '=' layout-qualifier-value
+	'shared'
+
+for input and output:
+layout-qualifier-id :
+	'location' '=' integer-constant-expression
+	'component' '=' integer-constant-expression
+
+for tessellation evaluation shader:
+layout-qualifier-id :
+	'triangles'
+	'quads'
+	'isolines'
+	'equal_spacing'
+	'fractional_even_spacing'
+	'fractional_odd_spacing'
+	'cw'
+	'ccw'
+	'point_mode'
+
+for geometry shader:
+layout-qualifier-id :
+	'points'
+	'lines'
+	'lines_adjacency'
+	'triangles'
+	'triangles_adjacency'
+	'invocations' '=' integer-constant-expression
+
+for fragment shader:
+layout-qualifier-id :
+	'origin_upper_left'
+	'pixel_center_integer'
+	'early_fragment_tests'
+
+for compute shader:
+layout-qualifier-id :
+	'local_size_x' = integer-constant-expression
+	'local_size_y' = integer-constant-expression
+	'local_size_z' = integer-constant-expression
+
+...

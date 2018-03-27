@@ -1,0 +1,20 @@
+interface-block :
+	layout-qualifieropt interface-qualifier block-name '{' member-list '}' instance-nameopt ;
+	// Note: Order of qualifiers is not actually fixed; qualifiers can be in any order.
+interface-qualifier :
+	'in'
+	'out'
+	'patch in' // Note: Qualifiers can be in any order.
+	'patch out'
+	'uniform'
+	'buffer'
+	// Note: Not shown for simplicity, but memory qualifiers may also be used
+member-list :
+	member-declaration
+	member-declaration member-list
+member-declaration :
+	layout-qualifieropt qualifiersopt type declarators ; // Note: Qualifiers can be in any order.
+instance-name :
+	identifier
+	identifier '[' ']'
+	identifier '[' integral-constant-expression ']' // Note: Arrays of arrays are also allowed

@@ -1,0 +1,6 @@
+jump_statement:
+	'continue'';'
+	'break'';'
+	'return'';'
+	'return' expression';'
+	'discard'';' // in the fragment shader language only

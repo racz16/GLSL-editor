@@ -20,5 +20,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/GlslEditor/nbproject/private/
-/GlslEditor/build/
+/Editor/nbproject/private/
+/Editor/build/
+/AntlrLibraryWrapper4.7.1/nbproject/private/
+/AntlrLibraryWrapper4.7.1/build/
+/nbproject/private/
+/build/
+/grammar/generated_code/
+/grammar/generated_source/

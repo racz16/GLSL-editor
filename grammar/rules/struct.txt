@@ -1,0 +1,7 @@
+struct-definition :
+	qualifieropt struct nameopt'{' member-list '}' declaratorsopt ;
+member-list :
+	member-declaration;
+	member-declaration member-list;
+member-declaration :
+	basic-type declarators;
