@@ -1,0 +1,16 @@
+- lexer szabályok sorrendje
+	- pl. qualifier elfedi az identifier-t
+	      built-on functon elfedi az identifier-t
+- nyelvtanban nem szereplõ karakterekkel nem foglalkozik a parser
+	- pl. áûúõ nem hiba
+- code sample
+	- a példakód használja ki a nyelvi elemeket
+- code folding - mûködjön
+- indentation tab
+- grammar
+	- makró végén eof/new line miatt szintaktikai hiba
+		- lexer mode/úgy mint a kommenteknél
+		- még le nem fedett makrók pl. define
+	- line continuation character
+- hibajelzés 
+	- nem lehet valahogy a pozíciót elérni csak a sor helyett?

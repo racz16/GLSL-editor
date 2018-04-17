@@ -28,3 +28,4 @@ hs_err_pid*
 /build/
 /grammar/generated_code/
 /grammar/generated_source/
+/grammar/generated_source_for_project/

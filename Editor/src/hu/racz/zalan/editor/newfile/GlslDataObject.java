@@ -4,7 +4,6 @@ import java.io.*;
 import org.openide.awt.*;
 import org.openide.filesystems.*;
 import org.openide.loaders.*;
-import org.openide.util.NbBundle.*;
 import org.openide.util.NbBundle.Messages;
 
 @Messages({
@@ -17,7 +16,7 @@ import org.openide.util.NbBundle.Messages;
 )
 @DataObject.Registration(
         mimeType = "text/x-glsl",
-        iconBase = "hu/racz/zalan/editor/newfile/logo.gif",
+        iconBase = "hu/racz/zalan/editor/newfile/logo.png",
         displayName = "#LBL_Glsl_LOADER",
         position = 300
 )

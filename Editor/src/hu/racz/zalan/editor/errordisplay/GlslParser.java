@@ -15,15 +15,17 @@ public class GlslParser extends Parser {
     @Override
     public void parse(Snapshot snpsht, Task task, SourceModificationEvent sme) throws ParseException {
         this.snapshot = snpsht;
-        //ANTLRStringStream input = new ANTLRStringStream(snapshot.getText().toString());
         ANTLRInputStream ais = new ANTLRInputStream(snapshot.getText().toString());
         Lexer lexer = new GLSLLexer(ais);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         glslParser = new GLSLParser(tokens);
+        startParser();
+    }
+
+    private void startParser() {
         try {
             glslParser.removeErrorListeners();
             glslParser.addErrorListener(new SyntaxErrorListener());
-
             glslParser.start();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -55,7 +57,7 @@ public class GlslParser extends Parser {
             this.glslParser = oracleParser;
         }
 
-        public GLSLParser getAbcParser() throws ParseException {
+        public GLSLParser getGlslParser() throws ParseException {
             if (!valid) {
                 throw new ParseException();
             }

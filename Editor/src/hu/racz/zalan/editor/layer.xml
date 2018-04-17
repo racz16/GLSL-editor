@@ -32,7 +32,7 @@
     <folder name="OptionsDialog">
         <folder name="PreviewExamples">
             <folder name="text">
-                <file name="x-glsl" url="GlslTemplate.glsl"/>
+                <file name="x-glsl" url="GlslFontAndColorsTemplate.glsl"/>
             </folder>
         </folder>
     </folder>

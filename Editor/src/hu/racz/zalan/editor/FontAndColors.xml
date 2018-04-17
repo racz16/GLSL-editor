@@ -4,12 +4,18 @@
     <fontcolor name="keyword" default="keyword"/>
     <fontcolor name="whitespace" default="whitespace"/>
     <fontcolor name="character" default="character"/>
-    <fontcolor name="default" default="default"/>
+    <fontcolor name="default" default="default">
+        <font size="16"/>
+    </fontcolor>
     <fontcolor name="error" default="error"/>
     <fontcolor name="operator" default="operator"/>
     <fontcolor name="identifier" default="identifier"/>
     <fontcolor name="number" default="number"/>
     <fontcolor name="type" default="default" foreColor="00bab6"/>
-    <fontcolor name="builtin" default="default" foreColor="ffa500"/>
-    <fontcolor name="macro" default="default" foreColor="570094"/>
+    <fontcolor name="builtin_function" default="default" foreColor="ffa500"/>
+    <fontcolor name="builtin_macro" default="default" foreColor="ffa500"/>
+    <fontcolor name="builtin_variable" default="default" foreColor="ffa500"/>
+    <fontcolor name="macro" default="default" foreColor="800080"/>
+    <fontcolor name="qualifier" default="default" foreColor="ff0000"/>
+    <fontcolor name="qualifier_parameter" default="default" foreColor="ff00ff"/>
 </fontscolors>

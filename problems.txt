@@ -1,0 +1,16 @@
+antlrworks
+	- csak régi antlr verziót támogat
+		- bal rekuzióra hibát jelez
+		- nem fordít új antlr verzióra
+	- nem minden hibát jelez ki
+	- néha kamu hibákat jelez
+- netbeans plugin project
+	- eddig nem ismertem
+	- tutorialok csak régi antlr/javacc és netbeans verzióhoz
+	- csak antlr 4.5-öt támogat: library wrapper module
+	- netbeans profilt nem lehet csinálni
+- grammar
+	- idegesítõ a parancssoros fordítás, futtatás: .bat szkriptek
+	- mutual left recursion, left recursion
+	- makrók
+	- kommentek

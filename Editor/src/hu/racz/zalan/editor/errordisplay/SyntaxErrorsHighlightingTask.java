@@ -7,33 +7,41 @@ import org.netbeans.spi.editor.hints.*;
 
 public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.GlslEditorParserResult> {
 
+    private Document document;
+    private List<SyntaxError> antlrGeneratedErrors;
+
     public SyntaxErrorsHighlightingTask() {
     }
 
     @Override
     public void run(GlslParser.GlslEditorParserResult result, SchedulerEvent event) {
+        initialize(result);
+        addErrorsToNetbeansEditor();
+    }
+
+    private void initialize(GlslParser.GlslEditorParserResult result) {
         try {
-            SyntaxErrorListener sel = (SyntaxErrorListener) result.getAbcParser().getErrorListeners().get(0);
-            List<SyntaxError> syntaxErrors = sel.getSyntaxErrors();
-            Document document = result.getSnapshot().getSource().getDocument(false);
-            List<ErrorDescription> errors = new ArrayList<>();
-            for (SyntaxError syntaxError : syntaxErrors) {
-                String message = syntaxError.getMessage();
-                int line = syntaxError.getLine();
-                if (line <= 0) {
-                    continue;
-                }
-                ErrorDescription errorDescription = ErrorDescriptionFactory.createErrorDescription(
-                        Severity.ERROR,
-                        message,
-                        document,
-                        line);
-                errors.add(errorDescription);
-            }
-            HintsController.setErrors(document, "abc", errors);
+            document = result.getSnapshot().getSource().getDocument(false);
+            SyntaxErrorListener sel = (SyntaxErrorListener) result.getGlslParser().getErrorListeners().get(0);
+            antlrGeneratedErrors = sel.getSyntaxErrors();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void addErrorsToNetbeansEditor() {
+        List<ErrorDescription> errors = new ArrayList<>();
+        for (SyntaxError error : antlrGeneratedErrors) {
+            ErrorDescription errorDescription = transformAntlrErrorToNetbeansError(error);
+            errors.add(errorDescription);
+        }
+        HintsController.setErrors(document, "GLSL", errors);
+    }
+
+    private ErrorDescription transformAntlrErrorToNetbeansError(SyntaxError antlrError) {
+        String message = antlrError.getMessage();
+        int line = antlrError.getLine();
+        return ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, message, document, line);
     }
 
     @Override

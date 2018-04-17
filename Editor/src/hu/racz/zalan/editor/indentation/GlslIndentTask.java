@@ -7,48 +7,87 @@ public class GlslIndentTask implements IndentTask {
 
     private final Context context;
 
+    private String text;
+    private int cursorPosition;
+
+    private int depth;
+    private boolean nonSpaceTabAfterCursor;
+    private boolean rightBraceAfterCursor;
+    private int spaceTabCountAfterCursor;
+
     public GlslIndentTask(Context context) {
         this.context = context;
     }
 
     @Override
     public void reindent() throws BadLocationException {
-        String textBeforeCursor = context.document().getText(0, context.startOffset());
-        int depth = computeDepth(textBeforeCursor);
-        String indentation = computeIndentation(depth);
+        cursorPosition = context.startOffset();
+        text = context.document().getText(0, context.document().getLength());
+        computeDepth();
+        String indentation = computeIndentation();
         context.document().insertString(context.startOffset(), indentation, null);
     }
 
-    private int computeDepth(String text) {
-        int startedBlockCount = 0;
-        for (int i = 0; i < text.length(); i++) {
-            startedBlockCount += computeCharacterImpact(text.charAt(i));
+    private void computeDepth() {
+        for (int i = 0; i < text.length() && !nonSpaceTabAfterCursor; i++) {
+            computeCharacterImpact(text.charAt(i), i);
         }
-        return startedBlockCount;
+        if (rightBraceAfterCursor) {
+            depth -= spaceTabCountAfterCursor;
+        }
     }
 
-    private int computeCharacterImpact(char character) {
-        if (character == '{') {
-            return 1;
-        } else if (character == '}') {
-            return -1;
+    private void computeCharacterImpact(char character, int index) {
+        if (index < cursorPosition) {
+            computeCharacterImpactBeforeCursor(character);
         } else {
-            return 0;
+            computeCharacterImpactAfterCursor(character);
         }
     }
 
-    private String computeIndentation(int depth) {
+    private void computeCharacterImpactAfterCursor(char character) {
+        computeSpaceTabImpactAfterCursor(character);
+        if (character != ' ' && character != '\t') {
+            nonSpaceTabAfterCursor = true;
+            if (character == '}') {
+                computeRightBraceImpactAfterCursor();
+            }
+        }
+    }
+
+    private void computeCharacterImpactBeforeCursor(char character) {
+        if (character == '{') {
+            depth += 4;
+        } else if (character == '}') {
+            depth -= 4;
+        }
+    }
+
+    private void computeSpaceTabImpactAfterCursor(char character) {
+        if (character == ' ') {
+            spaceTabCountAfterCursor += 1;
+        } else if (character == '\t') {
+            spaceTabCountAfterCursor += 4;
+        }
+    }
+
+    private void computeRightBraceImpactAfterCursor() {
+        rightBraceAfterCursor = true;
+        depth -= 4;
+    }
+
+    private String computeIndentation() {
         if (depth < 0) {
             return "";
         } else {
-            return computeIndentationWithoutInspection(depth);
+            return computeIndentationWithoutInspection();
         }
     }
 
-    private String computeIndentationWithoutInspection(int depth) {
+    private String computeIndentationWithoutInspection() {
         String indentation = "";
         for (int i = 0; i < depth; i++) {
-            indentation += "    ";
+            indentation += " ";
         }
         return indentation;
     }

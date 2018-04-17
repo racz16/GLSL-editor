@@ -8,9 +8,8 @@ import org.netbeans.spi.lexer.*;
 
 public class GlslLexer implements Lexer<GlslTokenId> {
 
-    private LexerRestartInfo<GlslTokenId> info;
-
-    private GLSLLexer glslLexer;
+    private final LexerRestartInfo<GlslTokenId> info;
+    private final GLSLLexer glslLexer;
 
     public GlslLexer(LexerRestartInfo<GlslTokenId> info) {
         this.info = info;
@@ -21,16 +20,15 @@ public class GlslLexer implements Lexer<GlslTokenId> {
     @Override
     public org.netbeans.api.lexer.Token<GlslTokenId> nextToken() {
         Token token = glslLexer.nextToken();
-        org.netbeans.api.lexer.Token<GlslTokenId> createdToken = null;
         if (token.getType() != -1) {
             GlslTokenId tokenId = GlslLanguageHierarchy.getToken(token.getType());
-            createdToken = info.tokenFactory().createToken(tokenId);
+            return info.tokenFactory().createToken(tokenId);
         } else if (info.input().readLength() > 0) {
             GlslTokenId tokenId = GlslLanguageHierarchy.getToken(GLSLLexer.SPACE);
-            createdToken = info.tokenFactory().createToken(tokenId);
+            return info.tokenFactory().createToken(tokenId);
+        } else {
+            return null;
         }
-
-        return createdToken;
     }
 
     @Override

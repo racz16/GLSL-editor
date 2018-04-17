@@ -1,0 +1,32 @@
+érvényes karaketerk: a-z A-Z 0-9 _ . + - / * % < > [ ] ( ) { } ^  | & ~ = ! : ; , ?
+nincs escape-elés
+minden case sensitive
+új sor: CR, LF vagy ezek bármilyen kombinációja
+nincs string és "
+line contuniation character: \
+
+preprocesszor direktívák: # #define #undef #if #ifdef #ifndef #else #elif #endif #error #pragma #extension #version #line      defined ##
+elõre definiált makrók: __LINE__ __FILE__ __VERSION__
+makró nem kezdõdhet így: GL_
+minden makró külön sorba
+defined használata: defined identifier  defined ( identifier )
+#pragma optimize(on/off)
+#pragma debug(on/off)
+#version 460 opcionálisan: core compatibility es
+	profile option (core, comp., es) cask 150 vagy fölötti verzió
+	300 és 310 esetén kötelezõ es
+	minden más token elõtt (kivéve space és kommentek)
+#define GL_core_profile 1   #define GL_compatibility_profile 1   #define GL_es_profile 1
+#extension extension_name : behavior   #extension all : behavior
+	behaviour: require, enable, warn, disable (elsõ 2 all mellett hibát dob)
+#line line   #line line source-string-number
+#define GL_SPIRV 100
+makrók: mint c++
+
+operátorok: ( ) defined + - ~ ! * / % << >> < > <= >= == != & ^ | && || + - (utolsó 2 unary)
+
+kommentek: // ... új sor, /* ... */, nem lehet egymásba ágyazni
+token típusok: kulcsszó, azonosító, int, float, operator, ; { }
+kulcsszavak:
+reserved:
+azonosítók: A-Z a-z 0-9 _ (elsõ karakter nem lehet szám), nem kezdõdhet így gl_
