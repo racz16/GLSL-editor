@@ -1,4 +1,4 @@
-// Generated from GLSL.g4 by ANTLR 4.7.1
+// Generated from GLSLParser.g4 by ANTLR 4.7.1
 package hu.racz.zalan.editor.antlr.generated;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -6,11 +6,11 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link GLSLListener},
+ * This class provides an empty implementation of {@link GLSLParserListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class GLSLBaseListener implements GLSLListener {
+public class GLSLParserBaseListener implements GLSLParserListener {
 	/**
 	 * {@inheritDoc}
 	 *
@@ -88,13 +88,73 @@ public class GLSLBaseListener implements GLSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterM_error(GLSLParser.M_errorContext ctx) { }
+	@Override public void enterM_define(GLSLParser.M_defineContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitM_error(GLSLParser.M_errorContext ctx) { }
+	@Override public void exitM_define(GLSLParser.M_defineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterM_define_content(GLSLParser.M_define_contentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitM_define_content(GLSLParser.M_define_contentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterM_parameter_expression(GLSLParser.M_parameter_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitM_parameter_expression(GLSLParser.M_parameter_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterM_parameter_identifier(GLSLParser.M_parameter_identifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitM_parameter_identifier(GLSLParser.M_parameter_identifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterM_parameterless(GLSLParser.M_parameterlessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitM_parameterless(GLSLParser.M_parameterlessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMacro_termination(GLSLParser.Macro_terminationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMacro_termination(GLSLParser.Macro_terminationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -647,6 +707,18 @@ public class GLSLBaseListener implements GLSLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLayout_qualifier_id(GLSLParser.Layout_qualifier_idContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterL_literal(GLSLParser.L_literalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitL_literal(GLSLParser.L_literalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

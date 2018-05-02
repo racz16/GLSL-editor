@@ -1,6 +1,8 @@
-grammar GLSL;
+parser grammar GLSLParser;
 
-import GLSLLexerRules;
+options{
+    tokenVocab = GLSLLexer;
+}
 
 start : (macro | function_prototype | function_definition | declaration_statement|
          SEMICOLON)* ;
@@ -8,15 +10,22 @@ start : (macro | function_prototype | function_definition | declaration_statemen
 /////
 //macros------------------------------------------------------------------------
 ////
-//TODO: lexer mode
-macro : (m_version | m_line | m_pragma | m_extension | m_error) (NEW_LINE | EOF);
-m_version : PD_VERSION INT_LITERAL PDA_VERSION_PROFILE?;
-m_line : PD_LINE INT_LITERAL INT_LITERAL?;
-m_pragma : PD_PRAGMA (((PDA_PRAGMA_DEBUG | PDA_PRAGMA_OPTIMIZE) LRB PDA_PRAGMA_TOGGLE RRB)
+macro : (m_version | m_line | m_pragma | m_extension | m_parameter_expression |
+         m_parameter_identifier | m_parameterless) macro_termination;
+m_version : PD_VERSION M_INT_LITERAL PDA_VERSION_PROFILE?;
+m_line : PD_LINE M_INT_LITERAL M_INT_LITERAL?;
+m_pragma : PD_PRAGMA (((PDA_PRAGMA_DEBUG | PDA_PRAGMA_OPTIMIZE) M_LRB PDA_PRAGMA_TOGGLE M_RRB)
                      | PDA_PRAGMA_STDGL);
-m_extension : PD_EXTENSION (IDENTIFIER COLON PDA_EXTENSION_BEHAVIOUR |
-                            PDA_EXTENSION_ALL COLON PDA_EXTENSION_ALL_BEHAVIOUR);
-m_error : PD_ERROR;
+m_extension : PD_EXTENSION (M_IDENTIFIER M_COLON PDA_EXTENSION_BEHAVIOUR |
+                            PDA_EXTENSION_ALL M_COLON PDA_EXTENSION_ALL_BEHAVIOUR);
+m_define : PD_DEFINE M_IDENTIFIER (M_LRB M_IDENTIFIER (M_COMMA M_IDENTIFIER)* M_RRB)?
+           m_define_content*;
+m_define_content : M_IDENTIFIER | M_INT_LITERAL | M_FLOAT_LITERAL | M_OPERATOR |
+                   M_CHARACTERS | M_COLON | M_COMMA | M_LRB | M_RRB;
+m_parameter_expression : (PD_IF | PD_ELIF) (M_IDENTIFIER | M_OPERATOR | M_INT_LITERAL)*;
+m_parameter_identifier : (PD_IFDEF | PD_IFNDEF | PD_UNDEF) M_IDENTIFIER;
+m_parameterless : PD_ERROR | PD_ELSE | PD_ENDIF;
+macro_termination : EOF | M_NEW_LINE | M_SINGLE_LINE_COMMENT | M_MULTI_LINE_COMMENT;
 
 /////
 //functions---------------------------------------------------------------------
@@ -115,9 +124,10 @@ storage_qualifier : memory_storage_qualifier | auxiliary_storage_qualifier |
 auxiliary_storage_qualifier : Q_CENTROID | Q_SAMPLE | Q_PATCH;
 memory_storage_qualifier : Q_COHERENT | Q_VOLATILE | Q_RESTRICT | Q_READONLY | Q_WRIREONLY;
 
-layout_qualifier : Q_LAYOUT LRB layout_qualifier_id_list RRB;
-layout_qualifier_id_list : layout_qualifier_id (COMMA layout_qualifier_id)*;
-layout_qualifier_id : QP_LAYOUT (OP_ASSIGN (QPV_LAYOUT | literal))? | Q_SHARED;
+layout_qualifier : Q_LAYOUT L_LRB layout_qualifier_id_list L_RRB;
+layout_qualifier_id_list : layout_qualifier_id (L_COMMA layout_qualifier_id)*;
+layout_qualifier_id : QP_LAYOUT (L_ASSIGN (QPV_LAYOUT | l_literal))? | L_SHARED;
+l_literal : L_BOOL_LITERAL | L_INT_LITERAL | L_FLOAT_LITERAL;
 
 precision_qualifier : Q_LOWP | Q_MEDIUMP | Q_HIGHP;
 interpolation_qualifier : Q_SMOOTH | Q_FLAT | Q_NONPERSPECTIVE;

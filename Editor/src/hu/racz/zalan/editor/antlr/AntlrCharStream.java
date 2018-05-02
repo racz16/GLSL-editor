@@ -61,9 +61,13 @@ public class AntlrCharStream implements CharStream {
     @Override
     public int LA(int lookaheadAmount) {
         if (lookaheadAmount < 0) {
-            return lookBack(-lookaheadAmount);
+            int c = lookBack(-lookaheadAmount);
+            //System.out.println(c);
+            return c;
         } else if (lookaheadAmount > 0) {
-            return lookAhead(lookaheadAmount);
+            int c = lookAhead(lookaheadAmount);
+            //System.out.println((char)c);
+            return c;
         } else {
             return 0; //Behaviour is undefined when lookaheadAmount == 0
         }

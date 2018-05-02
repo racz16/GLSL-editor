@@ -1,0 +1,1 @@
+antlr4 -o generated_source_for_project -package hu.racz.zalan.editor.antlr.generated GLSLParser.g4

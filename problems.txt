@@ -9,8 +9,9 @@ antlrworks
 	- tutorialok csak régi antlr/javacc és netbeans verzióhoz
 	- csak antlr 4.5-öt támogat: library wrapper module
 	- netbeans profilt nem lehet csinálni
+	- lexer mode nem nagyon tetszik neki
 - grammar
 	- idegesítõ a parancssoros fordítás, futtatás: .bat szkriptek
 	- mutual left recursion, left recursion
-	- makrók
+	- makrók, lexer mode
 	- kommentek

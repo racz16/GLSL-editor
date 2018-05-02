@@ -1,54 +1,21 @@
-lexer grammar GLSLLexerRules;
+lexer grammar GLSLLexer;
 
 /////
 //preprocessor------------------------------------------------------------------
 /////
-PD_ERROR : '#error';
-PD_PRAGMA : '#pragma';
-PDA_PRAGMA_DEBUG : 'debug';
-PDA_PRAGMA_OPTIMIZE : 'optimize';
-PDA_PRAGMA_STDGL : 'STDGL';
-PDA_PRAGMA_TOGGLE : 'on' | 'off';
-PD_VERSION : '#version' ;
-PDA_VERSION_PROFILE : 'core' | 'compatibility' | 'es';
-PD_LINE : '#line' ;
-PD_EXTENSION : '#extension';
-PDA_EXTENSION_ALL_BEHAVIOUR : PDA_EXTENSION_WARN | PDA_EXTENSION_DISABLE;
-PDA_EXTENSION_BEHAVIOUR : PDA_EXTENSION_REQUIRE | PDA_EXTENSION_ENABLE |
-                        PDA_EXTENSION_WARN | PDA_EXTENSION_DISABLE;
-PDA_EXTENSION_ALL : 'all';
-fragment
-PDA_EXTENSION_REQUIRE :'require';
-fragment
-PDA_EXTENSION_ENABLE : 'enable';
-fragment
-PDA_EXTENSION_WARN : 'warn';
-fragment
-PDA_EXTENSION_DISABLE : 'disable';
-
-//ezek még nem mûködnek:
-fragment
-PD_HASHMARK : '#';
-fragment
-PD_DOUBLE_HASHMARK : '##';
-fragment
-PD_DEFINE : '#define';
-fragment
-PD_UNDEF : '#undef';
-fragment
-PD_IF : '#if';
-fragment
-PD_IFDEF : '#ifdef';
-fragment
-PD_IFNDEF : '#ifndef';
-fragment
-PD_ELSE : '#else';
-fragment
-PD_ELIF : '#elif';
-fragment
-PD_ENDIF : '#endif';
-fragment
-PD_DEFINED: 'defined'; //nem kéne elé # ?
+PD_ERROR : '#error' -> pushMode(MACRO);
+PD_PRAGMA : '#pragma' -> pushMode(MACRO);
+PD_VERSION : '#version' -> pushMode(MACRO);
+PD_LINE : '#line' -> pushMode(MACRO);
+PD_EXTENSION : '#extension' -> pushMode(MACRO);
+PD_ELSE : '#else' -> pushMode(MACRO);
+PD_ENDIF : '#endif' -> pushMode(MACRO);
+PD_UNDEF : '#undef' -> pushMode(MACRO);
+PD_IFDEF : '#ifdef' -> pushMode(MACRO);
+PD_IFNDEF : '#ifndef' -> pushMode(MACRO);
+PD_IF : '#if' -> pushMode(MACRO);
+PD_ELIF : '#elif' -> pushMode(MACRO);
+PD_DEFINE : '#define' -> pushMode(MACRO);
 
 /////
 //keywords----------------------------------------------------------------------
@@ -81,7 +48,7 @@ RESERVED_KEYWORD : 'common' | 'partition' | 'active' | 'asm' | 'class' | 'union'
 //qualifiers--------------------------------------------------------------------
 /////
 Q_PRECISION : 'precision';
-Q_LAYOUT : 'layout';
+Q_LAYOUT : 'layout' -> pushMode(LAYOUT);
 Q_PRECISE : 'precise';
 Q_INVARIANT : 'invariant';
 Q_SUBROUTINE : 'subroutine';
@@ -108,32 +75,6 @@ Q_SHARED : 'shared';
 Q_HIGHP : 'highp';
 Q_MEDIUMP : 'mediump';
 Q_LOWP : 'lowp';
-
-QP_LAYOUT : 'packed' | 'std140' | 'std430' | 'row_major' | 'column_major' | 
-            'binding' | 'offset' | 'align' | 'location' | 'component' | 'index' |
-            'triangles' | 'quads' | 'isolines' | 'equal_spacing' | 
-            'fractional_even_spacing' | 'fractional_odd_spacing' | 'cw' | 'ccw' |
-            'point_mode' | 'points' | 'lines' | 'lines_adjacency' | 
-            'triangles_adjacency' | 'invocations' | 'origin_upper_left' | 
-            'pixel_center_integer' | 'early_fragment_tests' | 
-            'local_size_' [xyz] '_id'? | 'xfb_' ('buffer' | 'stride' | 'offset') |
-            'vertices' | 'line_strip' | 'triangle_strip' | 'max_vertices' | 
-            'stream' | 'depth_' ('any' | 'greater' | 'less' | 'unchanged') | 
-            'constant_id';
-
-QPV_LAYOUT : QPV_FLOAT_IMAGE_FORMAT | QPV_INT_IMAGE_FORMAT | 
-             QPV_UINT_IMAGE_FORMAT_QUALIFIER;
-fragment
-QPV_FLOAT_IMAGE_FORMAT : 'rgba32f' | 'rgba16f' | 'rg32f' | 'rg16f' | 
-                       'r11f_g11f_b10f' |  'r32f' | 'r16f' | 'rgba16' | 
-                       'rgb10_a2' | 'rgba8' | 'rg16' |  'rg8' | 'r16' | 'r8' | 
-                       ('rgba16' | 'rgba8' | 'rg16' | 'rg8' | 'r16' | 'r8')
-                       '_snorm';
-fragment
-QPV_INT_IMAGE_FORMAT : 'r' ('g' 'ba'?)? ('8i' | '16i' | '32i');
-fragment
-QPV_UINT_IMAGE_FORMAT_QUALIFIER : ('r' ('g' 'ba'?)? ('8ui' | '16ui' | '32ui')) |
-                                'rgb10_a2ui';
 
 /////
 //types-------------------------------------------------------------------------
@@ -387,9 +328,12 @@ OP_ASSIGN : '=';
 /////
 //multi line nem lehet parser szabály, mert bármely két token közé be szabad rakni
 //COMMENT : MULTI_LINE_COMMENT | ONE_LINE_MULTI_LINE_COMMENT | SINGLE_LINE_COMMENT;
-MULTI_LINE_COMMENT : '/*' .*? NEW_LINE .*? '*/'  -> channel(HIDDEN);
-ONE_LINE_MULTI_LINE_COMMENT : '/*' .*? '*/'  -> channel(HIDDEN);
+MULTI_LINE_COMMENT : '/*' COMMENT_CONTENT NEW_LINE COMMENT_CONTENT '*/'  -> channel(HIDDEN);
+ONE_LINE_MULTI_LINE_COMMENT : '/*' COMMENT_CONTENT '*/'  -> channel(HIDDEN);
 SINGLE_LINE_COMMENT : '//' .*? (NEW_LINE | EOF) -> channel(HIDDEN);
+
+fragment
+COMMENT_CONTENT : (~'*' | '*' ~'/')* '*'?;
 
 /////
 //hidden------------------------------------------------------------------------
@@ -433,11 +377,141 @@ LSB : '[';
 RSB : ']';
 
 
-//mode MACRO;
+mode MACRO;
 
-//MLC : '/*' .*? NL .*? '*/' -> popMode;
-//OLMLC : '/*' .*? '*/';
-//SLC : '//' .*? (NL | EOF) -> popMode;
-//NL : [\r\n]+ -> popMode;
-//S : ' ' -> channel(HIDDEN);
-//T : '\t' -> channel(HIDDEN);
+PDA_PRAGMA_DEBUG : 'debug';
+PDA_PRAGMA_OPTIMIZE : 'optimize';
+PDA_PRAGMA_STDGL : 'STDGL';
+PDA_PRAGMA_TOGGLE : 'on' | 'off';
+PDA_VERSION_PROFILE : 'core' | 'compatibility' | 'es';
+PDA_EXTENSION_ALL_BEHAVIOUR : PDA_EXTENSION_WARN | PDA_EXTENSION_DISABLE;
+PDA_EXTENSION_BEHAVIOUR : PDA_EXTENSION_REQUIRE | PDA_EXTENSION_ENABLE |
+                        PDA_EXTENSION_WARN | PDA_EXTENSION_DISABLE;
+PDA_EXTENSION_ALL : 'all';
+fragment
+PDA_EXTENSION_REQUIRE :'require';
+fragment
+PDA_EXTENSION_ENABLE : 'enable';
+fragment
+PDA_EXTENSION_WARN : 'warn';
+fragment
+PDA_EXTENSION_DISABLE : 'disable';
+
+M_SINGLE_LINE_COMMENT : '//' .*? (M_NEW_LINE | EOF) -> popMode;
+M_MULTI_LINE_COMMENT : '/*' M_COMMENT_CONTENT M_NEW_LINE M_COMMENT_CONTENT '*/' -> popMode;
+M_ONE_LINE_MULTI_LINE_COMMENT : '/*' M_COMMENT_CONTENT '*/' -> channel(HIDDEN);
+
+fragment
+M_COMMENT_CONTENT : (~'*' | '*' ~'/')* '*'?;
+
+M_OPERATOR : 'defined' | '+' | '-' | '~' | '!' | '*' | '/' | '%' | '<<' | '>>' | 
+             '<' | '>' | '<=' | '>=' | '==' | '!=' | '&' | '^' | '|' | '&&' | '||';
+
+M_NEW_LINE : ('\r' | '\n')+ -> popMode;
+
+
+//int literals
+M_INT_LITERAL : (M_DECIMAL_INT_LITERAL | M_OCTAL_INT_LITERAL | M_HEXADECIMAL_INT_LITERAL) [Uu]?;
+fragment
+M_DECIMAL_INT_LITERAL : M_NONZERO_DIGIT M_DIGIT*;
+fragment
+M_OCTAL_INT_LITERAL : '0' M_OCTAL_DIGIT*;
+fragment
+M_HEXADECIMAL_INT_LITERAL : '0' [Xx] M_HEXADECIMAL_DIGIT*;
+
+//float literals
+M_FLOAT_LITERAL : M_FRACTIONAL_PART M_EXPONENT_PART? M_FLOATING_SUFFIX? |
+              M_DIGIT+ M_EXPONENT_PART M_FLOATING_SUFFIX?;
+fragment
+M_FRACTIONAL_PART : M_DIGIT+ '.' M_DIGIT+ | '.' M_DIGIT+ | M_DIGIT+ '.';
+fragment
+M_EXPONENT_PART : [eE] [+-]? M_DIGIT+;
+fragment
+M_FLOATING_SUFFIX : 'f' | 'F' | 'lf' | 'LF';
+//numbers
+fragment
+M_DIGIT : '0' | M_NONZERO_DIGIT;
+fragment
+M_NONZERO_DIGIT : [1-9];
+fragment
+M_OCTAL_DIGIT : [0-7];
+fragment
+M_HEXADECIMAL_DIGIT : M_DIGIT | [A-Fa-f];
+
+M_CHARACTERS : '.' | ';' | '?' | '{' | '}' | '[' | ']' | '#';
+
+M_COMMA : ',';
+M_LRB : '(';
+M_RRB : ')';
+M_COLON : ':';
+M_IDENTIFIER : ('_' | M_LETTER) ('_' | M_LETTER | M_DIGIT)*;
+fragment
+M_LETTER : [a-zA-Z];
+
+M_SPACE : ' ' -> channel(HIDDEN);
+M_TAB : '\t' -> channel(HIDDEN);
+
+mode LAYOUT;
+
+QP_LAYOUT : 'packed' | 'std140' | 'std430' | 'row_major' | 'column_major' | 
+            'binding' | 'offset' | 'align' | 'location' | 'component' | 'index' |
+            'triangles' | 'quads' | 'isolines' | 'equal_spacing' | 
+            'fractional_even_spacing' | 'fractional_odd_spacing' | 'cw' | 'ccw' |
+            'point_mode' | 'points' | 'lines' | 'lines_adjacency' | 
+            'triangles_adjacency' | 'invocations' | 'origin_upper_left' | 
+            'pixel_center_integer' | 'early_fragment_tests' | 
+            'local_size_' [xyz] '_id'? | 'xfb_' ('buffer' | 'stride' | 'offset') |
+            'vertices' | 'line_strip' | 'triangle_strip' | 'max_vertices' | 
+            'stream' | 'depth_' ('any' | 'greater' | 'less' | 'unchanged') | 
+            'constant_id';
+
+QPV_LAYOUT : QPV_FLOAT_IMAGE_FORMAT | QPV_INT_IMAGE_FORMAT | 
+             QPV_UINT_IMAGE_FORMAT_QUALIFIER;
+fragment
+QPV_FLOAT_IMAGE_FORMAT : 'rgba32f' | 'rgba16f' | 'rg32f' | 'rg16f' | 
+                       'r11f_g11f_b10f' |  'r32f' | 'r16f' | 'rgba16' | 
+                       'rgb10_a2' | 'rgba8' | 'rg16' |  'rg8' | 'r16' | 'r8' | 
+                       ('rgba16' | 'rgba8' | 'rg16' | 'rg8' | 'r16' | 'r8')
+                       '_snorm';
+fragment
+QPV_INT_IMAGE_FORMAT : 'r' ('g' 'ba'?)? ('8i' | '16i' | '32i');
+fragment
+QPV_UINT_IMAGE_FORMAT_QUALIFIER : ('r' ('g' 'ba'?)? ('8ui' | '16ui' | '32ui')) |
+                                'rgb10_a2ui';
+
+L_LRB : '(';
+L_RRB : ')' -> popMode;
+L_COMMA : ',';
+L_SHARED : 'shared';
+L_ASSIGN : '=';
+
+//bool literals
+L_BOOL_LITERAL : 'true' | 'false';
+
+//int literals
+L_INT_LITERAL : (L_DECIMAL_INT_LITERAL | L_OCTAL_INT_LITERAL | L_HEXADECIMAL_INT_LITERAL) [Uu]?;
+fragment
+L_DECIMAL_INT_LITERAL : L_NONZERO_DIGIT L_DIGIT*;
+fragment
+L_OCTAL_INT_LITERAL : '0' L_OCTAL_DIGIT*;
+fragment
+L_HEXADECIMAL_INT_LITERAL : '0' [Xx] L_HEXADECIMAL_DIGIT*;
+
+//float literals
+L_FLOAT_LITERAL : L_FRACTIONAL_PART L_EXPONENT_PART? L_FLOATING_SUFFIX? |
+              L_DIGIT+ L_EXPONENT_PART L_FLOATING_SUFFIX?;
+fragment
+L_FRACTIONAL_PART : L_DIGIT+ '.' L_DIGIT+ | '.' L_DIGIT+ | L_DIGIT+ '.';
+fragment
+L_EXPONENT_PART : [eE] [+-]? L_DIGIT+;
+fragment
+L_FLOATING_SUFFIX : 'f' | 'F' | 'lf' | 'LF';
+
+fragment
+L_DIGIT : '0' | L_NONZERO_DIGIT;
+fragment
+L_NONZERO_DIGIT : [1-9];
+fragment
+L_OCTAL_DIGIT : [0-7];
+fragment
+L_HEXADECIMAL_DIGIT : L_DIGIT | [A-Fa-f];

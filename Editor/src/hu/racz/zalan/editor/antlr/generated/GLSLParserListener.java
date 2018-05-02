@@ -1,4 +1,4 @@
-// Generated from GLSL.g4 by ANTLR 4.7.1
+// Generated from GLSLParser.g4 by ANTLR 4.7.1
 package hu.racz.zalan.editor.antlr.generated;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link GLSLParser}.
  */
-public interface GLSLListener extends ParseTreeListener {
+public interface GLSLParserListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#start}.
 	 * @param ctx the parse tree
@@ -68,15 +68,65 @@ public interface GLSLListener extends ParseTreeListener {
 	 */
 	void exitM_extension(GLSLParser.M_extensionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GLSLParser#m_error}.
+	 * Enter a parse tree produced by {@link GLSLParser#m_define}.
 	 * @param ctx the parse tree
 	 */
-	void enterM_error(GLSLParser.M_errorContext ctx);
+	void enterM_define(GLSLParser.M_defineContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GLSLParser#m_error}.
+	 * Exit a parse tree produced by {@link GLSLParser#m_define}.
 	 * @param ctx the parse tree
 	 */
-	void exitM_error(GLSLParser.M_errorContext ctx);
+	void exitM_define(GLSLParser.M_defineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#m_define_content}.
+	 * @param ctx the parse tree
+	 */
+	void enterM_define_content(GLSLParser.M_define_contentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#m_define_content}.
+	 * @param ctx the parse tree
+	 */
+	void exitM_define_content(GLSLParser.M_define_contentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#m_parameter_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterM_parameter_expression(GLSLParser.M_parameter_expressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#m_parameter_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitM_parameter_expression(GLSLParser.M_parameter_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#m_parameter_identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterM_parameter_identifier(GLSLParser.M_parameter_identifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#m_parameter_identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitM_parameter_identifier(GLSLParser.M_parameter_identifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#m_parameterless}.
+	 * @param ctx the parse tree
+	 */
+	void enterM_parameterless(GLSLParser.M_parameterlessContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#m_parameterless}.
+	 * @param ctx the parse tree
+	 */
+	void exitM_parameterless(GLSLParser.M_parameterlessContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#macro_termination}.
+	 * @param ctx the parse tree
+	 */
+	void enterMacro_termination(GLSLParser.Macro_terminationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#macro_termination}.
+	 * @param ctx the parse tree
+	 */
+	void exitMacro_termination(GLSLParser.Macro_terminationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#function_signature}.
 	 * @param ctx the parse tree
@@ -537,6 +587,16 @@ public interface GLSLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLayout_qualifier_id(GLSLParser.Layout_qualifier_idContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GLSLParser#l_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterL_literal(GLSLParser.L_literalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GLSLParser#l_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitL_literal(GLSLParser.L_literalContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GLSLParser#precision_qualifier}.
 	 * @param ctx the parse tree
