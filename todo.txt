@@ -1,14 +1,5 @@
-- code sample
-	- a példakód használja ki a nyelvi elemeket
-- code folding - mûködjön
 - indentation
 	- tab nem okés
-	- kapcsos zárójel if után enter
-- grammar
-	- lexer mode színezése nem okés
-	- line continuation character
-	- lexer módokban csomó minden újradefiniálása
 - hibajelzés
-	- beépített fv nevû változót nem lehet használni
 	- nem lehet valahogy a pozíciót elérni csak a sor helyett?
-- karakterkódolás
+- cleaning, cleaning, cleaning...

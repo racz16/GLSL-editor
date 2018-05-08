@@ -3,20 +3,7 @@ package hu.racz.zalan.editor.syntaxhighlighting;
 import hu.racz.zalan.editor.antlr.generated.*;
 
 public enum GlslTokenType {
-    //preprocessor directives
-    PD_ERROR(GLSLLexer.PD_ERROR, "macro"),
-    PD_PRAGMA(GLSLLexer.PD_PRAGMA, "macro"),
-    PD_VERSION(GLSLLexer.PD_VERSION, "macro"),
-    PD_LINE(GLSLLexer.PD_LINE, "macro"),
-    PD_EXTENSION(GLSLLexer.PD_EXTENSION, "macro"),
-    PD_ELSE(GLSLLexer.PD_ELSE, "macro"),
-    PD_ENDIF(GLSLLexer.PD_ENDIF, "macro"),
-    PD_UNDEF(GLSLLexer.PD_UNDEF, "macro"),
-    PD_IFDEF(GLSLLexer.PD_IFDEF, "macro"),
-    PD_IFNDEF(GLSLLexer.PD_IFNDEF, "macro"),
-    PD_IF(GLSLLexer.PD_IF, "macro"),
-    PD_ELIF(GLSLLexer.PD_ELIF, "macro"),
-    PD_DEFINE(GLSLLexer.PD_DEFINE, "macro"),
+    MACRO(GLSLLexer.MACRO, "macro"),
     //keywords
     KW_BREAK(GLSLLexer.KW_BREAK, "keyword"),
     KW_CONTINUE(GLSLLexer.KW_CONTINUE, "keyword"),
@@ -65,10 +52,6 @@ public enum GlslTokenType {
     Q_LOWP(GLSLLexer.Q_LOWP, "qualifier"),
     //types
     TYPE(GLSLLexer.TYPE, "type"),
-    //built-in features
-    BI_FUNCTION(GLSLLexer.BI_FUNCTION, "builtin_function"),
-    BI_MACRO(GLSLLexer.BI_MACRO, "builtin_macro"),
-    BI_VARIABLE(GLSLLexer.BI_VARIABLE, "builtin_variable"),
     //literals
     BOOL_LITERAL(GLSLLexer.BOOL_LITERAL, "default"),
     INT_LITERAL(GLSLLexer.INT_LITERAL, "number"),
@@ -91,7 +74,6 @@ public enum GlslTokenType {
     OP_ASSIGN(GLSLLexer.OP_ASSIGN, "operator"),
     //comments
     MULTI_LINE_COMMENT(GLSLLexer.MULTI_LINE_COMMENT, "comment"),
-    ONE_LINE_MULTI_LINE_COMMENT(GLSLLexer.ONE_LINE_MULTI_LINE_COMMENT, "comment"),
     SINGLE_LINE_COMMENT(GLSLLexer.SINGLE_LINE_COMMENT, "comment"),
     //characters
     NEW_LINE(GLSLLexer.NEW_LINE, "character"),
@@ -108,61 +90,24 @@ public enum GlslTokenType {
     LCB(GLSLLexer.LCB, "character"),
     RCB(GLSLLexer.RCB, "character"),
     LSB(GLSLLexer.LSB, "character"),
-    RSB(GLSLLexer.RSB, "character"),
-    //preprocessor directive arguments
-    PDA_PRAGMA_DEBUG(GLSLLexer.PDA_PRAGMA_DEBUG, "macro"),
-    PDA_PRAGMA_OPTIMIZE(GLSLLexer.PDA_PRAGMA_OPTIMIZE, "macro"),
-    PDA_PRAGMA_STDGL(GLSLLexer.PDA_PRAGMA_STDGL, "macro"),
-    PDA_PRAGMA_TOGGLE(GLSLLexer.PDA_PRAGMA_TOGGLE, "macro"),
-    PDA_VERSION_PROFILE(GLSLLexer.PDA_VERSION_PROFILE, "macro"),
-    PDA_EXTENSION_ALL_BEHAVIOUR(GLSLLexer.PDA_EXTENSION_ALL_BEHAVIOUR, "macro"),
-    PDA_EXTENSION_BEHAVIOUR(GLSLLexer.PDA_EXTENSION_BEHAVIOUR, "macro"),
-    PDA_EXTENSION_ALL(GLSLLexer.PDA_EXTENSION_ALL, "macro"),
-    //macro mode
-    M_SINGLE_LINE_COMMENT(GLSLLexer.M_SINGLE_LINE_COMMENT, "comment"),
-    M_MULTI_LINE_COMMENT(GLSLLexer.M_MULTI_LINE_COMMENT, "comment"),
-    M_ONE_LINE_MULTI_LINE_COMMENT(GLSLLexer.M_ONE_LINE_MULTI_LINE_COMMENT, "comment"),
-    M_OPERATOR(GLSLLexer.M_OPERATOR, "macro"),
-    M_NEW_LINE(GLSLLexer.M_NEW_LINE, "macro"),
-    M_INT_LITERAL(GLSLLexer.M_INT_LITERAL, "macro"),
-    M_FLOAT_LITERAL(GLSLLexer.M_FLOAT_LITERAL, "macro"),
-    M_CHARACTERS(GLSLLexer.M_CHARACTERS, "macro"),
-    M_COMMA(GLSLLexer.M_COMMA, "macro"),
-    M_LRB(GLSLLexer.M_LRB, "macro"),
-    M_RRB(GLSLLexer.M_RRB, "macro"),
-    M_COLON(GLSLLexer.M_COLON, "macro"),
-    M_IDENTIFIER(GLSLLexer.M_IDENTIFIER, "macro"),
-    M_SPACE(GLSLLexer.M_SPACE, "macro"),
-    M_TAB(GLSLLexer.M_TAB, "macro"),
-    //layout mode
-    QP_LAYOUT(GLSLLexer.QP_LAYOUT, "qualifier_parameter"),
-    QPV_LAYOUT(GLSLLexer.QPV_LAYOUT, "qualifier_parameter"),
-    L_LRB(GLSLLexer.L_RRB, "character"),
-    L_RRB(GLSLLexer.L_LRB, "character"),
-    L_COMMA(GLSLLexer.L_COMMA, "character"),
-    L_SHARED(GLSLLexer.L_SHARED, "qualifier_parameter"),
-    L_ASSIGN(GLSLLexer.L_ASSIGN, "operator"),
-    L_BOOL_LITERAL(GLSLLexer.L_BOOL_LITERAL, "default"),
-    L_INT_LITERAL(GLSLLexer.L_INT_LITERAL, "number"),
-    L_FLOAT_LITERAL(GLSLLexer.L_FLOAT_LITERAL, "number");
-
+    RSB(GLSLLexer.RSB, "character");
     public int id;
     public String category;
     public String text;
 
     private GlslTokenType(int id, String category) {
-        this.id = id;
-        this.category = category;
+	this.id = id;
+	this.category = category;
     }
 
     public static GlslTokenType valueOf(int id) {
-        GlslTokenType[] values = values();
-        for (GlslTokenType value : values) {
-            if (value.id == id) {
-                return value;
-            }
-        }
-        throw new IllegalArgumentException("The id " + id + " is not recognized");
+	GlslTokenType[] values = values();
+	for (GlslTokenType value : values) {
+	    if (value.id == id) {
+		return value;
+	    }
+	}
+	throw new IllegalArgumentException("The id " + id + " is not recognized");
     }
 
 }

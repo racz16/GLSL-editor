@@ -1,29 +1,27 @@
-#version 460 core
-#pragma optimize(off)
+#version 420 core
 
-struct light{
-	vec3 diffuse;
-	vec3 specular;
-	vec3 ambient;        
-};
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 textureCoordinates;
+layout (location = 2) in vec3 normal;
 
-#line 0
-mat4 computeViewMatrix(vec3 forward, vec3 right, vec3 up);
+out vec3 normalF;
+out vec3 fragmentPositionF;
+out vec2 textureCoordinatesF;
+out vec3 viewPositionF;
 
-//egysoros komment
+layout (std140, binding = 2) uniform Matrices {
+    mat4 viewMatrix;                                //0
+    mat4 projectionMatrix;                          //64
+};                                                  //128
+
+uniform vec3 viewPosition;
+uniform mat4 modelMatrix;
+uniform mat3 inverseModelMatrix3x3;
+
 void main(){
-	int i = 0;
-	while(i<100){
-		computeViewMatrix(i, i+1, i+2);
-		i += 1;
-	}
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0f);
+    fragmentPositionF = vec3(modelMatrix * vec4(position, 1.0f));
+    normalF = normalize(normal * inverseModelMatrix3x3);
+    textureCoordinatesF = textureCoordinates;
+    viewPositionF = viewPosition;
 }
-
-mat4 computeViewMatrix(vec3 forward, vec3 right, vec3 up){
-	return forward + right + up;
-}
-
-/* ez egy 
-   többsoros
-   komment
-*/
