@@ -5,36 +5,36 @@ import org.netbeans.spi.lexer.*;
 
 public class GlslLanguageHierarchy extends LanguageHierarchy<GlslTokenId> {
 
-    private static List<GlslTokenId> tokens = new ArrayList<>();
-    private static Map<Integer, GlslTokenId> idToToken = new HashMap<Integer, GlslTokenId>();
+    private static final List<GlslTokenId> TOKENS = new ArrayList<>();
+    private static final Map<Integer, GlslTokenId> ID_TOKEN_MAP = new HashMap<Integer, GlslTokenId>();
 
     static {
-        GlslTokenType[] tokenTypes = GlslTokenType.values();
-        for (GlslTokenType tokenType : tokenTypes) {
-            tokens.add(new GlslTokenId(tokenType.name(), tokenType.category, tokenType.id));
-        }
-        for (GlslTokenId token : tokens) {
-            idToToken.put(token.ordinal(), token);
-        }
+	GlslTokenType[] tokenTypes = GlslTokenType.values();
+	for (GlslTokenType tokenType : tokenTypes) {
+	    TOKENS.add(new GlslTokenId(tokenType.name(), tokenType.getCategory(), tokenType.getId()));
+	}
+	for (GlslTokenId token : TOKENS) {
+	    ID_TOKEN_MAP.put(token.ordinal(), token);
+	}
     }
 
-    static synchronized GlslTokenId getToken(int id) {
-        return idToToken.get(id);
+    public static synchronized GlslTokenId getToken(int id) {
+	return ID_TOKEN_MAP.get(id);
     }
 
     @Override
     protected Collection<GlslTokenId> createTokenIds() {
-        return tokens;
+	return TOKENS;
     }
 
     @Override
     protected Lexer<GlslTokenId> createLexer(LexerRestartInfo<GlslTokenId> lri) {
-        return new GlslLexer(lri);
+	return new GlslLexer(lri);
     }
 
     @Override
     protected String mimeType() {
-        return "text/x-glsl";
+	return "text/x-glsl";
     }
 
 }

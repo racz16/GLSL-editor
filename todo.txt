@@ -1,5 +1,2 @@
-- indentation
-	- tab nem okés
-- hibajelzés
-	- nem lehet valahogy a pozíciót elérni csak a sor helyett?
-- cleaning, cleaning, cleaning...
+- antlr generált fájlok nevében legyen benne, hogy antlr
+- cleaning

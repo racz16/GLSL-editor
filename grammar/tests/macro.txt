@@ -1,3 +1,7 @@
 #pragma optimize(off)
 #version 460 core
 #pragma debug(off)
+
+vec3 asd(){}
+
+asd asd as{

@@ -1,7 +1,7 @@
-parser grammar GLSLParser;
+parser grammar AntlrGlslParser;
 
 options{
-    tokenVocab = GLSLLexer;
+    tokenVocab = AntlrGlslLexer;
 }
 
 start : (function_prototype | function_definition | declaration_statement |
@@ -43,7 +43,7 @@ case_label : (KW_DEFAULT | KW_CASE constant_expression) COLON;
 case_statement_list : (declaration_statement | expression_statement)+;
 
 iteration_statement : for_iteration | while_iteration | do_while_iteration;
-for_iteration : KW_FOR LRB init_declaration_list SEMICOLON expression SEMICOLON expression RRB statement;
+for_iteration : KW_FOR LRB init_declaration_list? SEMICOLON expression? SEMICOLON expression? RRB statement;
 while_iteration : KW_WHILE LRB expression RRB statement;
 do_while_iteration : KW_DO statement KW_WHILE LRB expression RRB SEMICOLON;
 

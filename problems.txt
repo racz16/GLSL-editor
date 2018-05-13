@@ -4,12 +4,14 @@ antlrworks
 		- nem fordít új antlr verzióra
 	- nem minden hibát jelez ki
 	- néha kamu hibákat jelez
+	-> bat fájlok
 - netbeans plugin project
 	- eddig nem ismertem
 	- tutorialok csak régi antlr/javacc és netbeans verzióhoz
 	- csak antlr 4.5-öt támogat: library wrapper module
 	- netbeans profilt nem lehet csinálni
 	- lexer mode nem nagyon tetszik neki
+	- built-in fv-ek, változók, qualifier parameterek kontextustól függnek :(
 - grammar
 	- idegesítõ a parancssoros fordítás, futtatás: .bat szkriptek
 	- mutual left recursion, left recursion

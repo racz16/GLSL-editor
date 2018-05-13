@@ -1,1 +1,1 @@
-antlr4 -o generated_source GLSLParser.g4
+antlr4 -o generated_source AntlrGlslParser.g4

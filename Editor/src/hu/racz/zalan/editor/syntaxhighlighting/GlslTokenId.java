@@ -10,28 +10,28 @@ public class GlslTokenId implements TokenId {
     private static final Language<GlslTokenId> language = new GlslLanguageHierarchy().language();
 
     public GlslTokenId(String name, String primaryCategory, int id) {
-        this.name = name;
-        this.primaryCategory = primaryCategory;
-        this.id = id;
+	this.name = name;
+	this.primaryCategory = primaryCategory;
+	this.id = id;
     }
 
     @Override
     public String name() {
-        return name;
+	return name;
     }
 
     @Override
     public int ordinal() {
-        return id;
+	return id;
     }
 
     @Override
     public String primaryCategory() {
-        return primaryCategory;
+	return primaryCategory;
     }
 
     public static final Language<GlslTokenId> getLanguage() {
-        return language;
+	return language;
     }
 
 }

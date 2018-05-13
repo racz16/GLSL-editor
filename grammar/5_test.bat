@@ -1,2 +1,2 @@
 cd generated_code
-grun GLSL start -tokens -tree -gui ..\tests\complex2.txt
+grun AntlrGlsl start -tokens -tree -gui ..\tests\complex.txt

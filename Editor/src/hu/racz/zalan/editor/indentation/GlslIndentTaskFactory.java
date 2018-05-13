@@ -8,6 +8,6 @@ public class GlslIndentTaskFactory implements IndentTask.Factory {
 
     @Override
     public IndentTask createTask(Context context) {
-        return new GlslIndentTask(context);
+	return new GlslIndentTask(context);
     }
 }

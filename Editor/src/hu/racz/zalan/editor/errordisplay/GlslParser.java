@@ -10,31 +10,27 @@ import org.netbeans.modules.parsing.spi.*;
 public class GlslParser extends Parser {
 
     private Snapshot snapshot;
-    private GLSLParser glslParser;
+    private AntlrGlslParser glslParser;
 
     @Override
     public void parse(Snapshot snpsht, Task task, SourceModificationEvent sme) throws ParseException {
-        this.snapshot = snpsht;
-        ANTLRInputStream ais = new ANTLRInputStream(snapshot.getText().toString());
-        Lexer lexer = new GLSLLexer(ais);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        glslParser = new GLSLParser(tokens);
-        startParser();
+	this.snapshot = snpsht;
+	ANTLRInputStream ais = new ANTLRInputStream(snapshot.getText().toString());
+	Lexer lexer = new AntlrGlslLexer(ais);
+	CommonTokenStream tokens = new CommonTokenStream(lexer);
+	glslParser = new AntlrGlslParser(tokens);
+	startParser();
     }
 
     private void startParser() {
-        try {
-            glslParser.removeErrorListeners();
-            glslParser.addErrorListener(new SyntaxErrorListener());
-            glslParser.start();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+	glslParser.removeErrorListeners();
+	glslParser.addErrorListener(new SyntaxErrorListener());
+	glslParser.start();
     }
 
     @Override
     public Result getResult(Task task) throws ParseException {
-        return new GlslEditorParserResult(snapshot, glslParser);
+	return new GlslEditorParserResult(snapshot, glslParser);
     }
 
     @Override
@@ -49,25 +45,25 @@ public class GlslParser extends Parser {
 
     public static class GlslEditorParserResult extends Result {
 
-        private GLSLParser glslParser;
-        private boolean valid = true;
+	private final AntlrGlslParser glslParser;
+	private boolean valid = true;
 
-        GlslEditorParserResult(Snapshot snapshot, GLSLParser oracleParser) {
-            super(snapshot);
-            this.glslParser = oracleParser;
-        }
+	GlslEditorParserResult(Snapshot snapshot, AntlrGlslParser oracleParser) {
+	    super(snapshot);
+	    this.glslParser = oracleParser;
+	}
 
-        public GLSLParser getGlslParser() throws ParseException {
-            if (!valid) {
-                throw new ParseException();
-            }
-            return glslParser;
-        }
+	public AntlrGlslParser getGlslParser() throws ParseException {
+	    if (!valid) {
+		throw new ParseException();
+	    }
+	    return glslParser;
+	}
 
-        @Override
-        protected void invalidate() {
-            valid = false;
-        }
+	@Override
+	protected void invalidate() {
+	    valid = false;
+	}
     }
 
 }

@@ -44,40 +44,21 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void determineNewBlock() {
-	if (cursorPosition > 1 && cursorPosition < text.length() && text.charAt(cursorPosition) == '}') {
-	    if (text.charAt(cursorPosition - 2) == '{' || cursorPosition > 2 && text.charAt(cursorPosition - 3) == '{') {
-		newBlock = true;
-	    }
-	}
+	newBlock = isCharacterInPosition(cursorPosition, '}') && lastCharactersLeftCurlyBraceNewLine();
     }
 
-    private void printHelper() {
-	System.err.println("----------");
-	for (int i = -10; i < 0; i++) {
-	    printChar(i);
+    private boolean lastCharactersLeftCurlyBraceNewLine() {
+	if (isCharacterInPosition(cursorPosition - 1, '\n') && isCharacterInPosition(cursorPosition - 2, '{')) {
+	    return true;
 	}
-	System.err.println("-----");
-	printChar(0);
-	System.err.println("-----");
-	for (int i = 1; i <= 10; i++) {
-	    printChar(i);
+	if (isCharacterInPosition(cursorPosition - 1, '\n') && isCharacterInPosition(cursorPosition - 2, '\r') && isCharacterInPosition(cursorPosition - 3, '{')) {
+	    return true;
 	}
-	System.err.println("----------");
+	return false;
     }
 
-    private void printChar(int i) {
-	char c = text.charAt(cursorPosition +i);
-	if (c == ' ') {
-	    System.err.println("SPACE");
-	} else if (c == '\r') {
-	    System.err.println("CR");
-	} else if (c == '\n') {
-	    System.err.println("LF");
-	} else if (c == '\t') {
-	    System.err.println("TAB");
-	} else {
-	    System.err.println(c);
-	}
+    private boolean isCharacterInPosition(int index, char c) {
+	return index >= 0 && index < text.length() && text.charAt(index) == c;
     }
 
     private void computeDepth() {
