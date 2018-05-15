@@ -1,2 +1,0 @@
-- antlr generált fájlok nevében legyen benne, hogy antlr
-- cleaning
