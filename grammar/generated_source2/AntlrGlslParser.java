@@ -1,5 +1,4 @@
 // Generated from AntlrGlslParser.g4 by ANTLR 4.7.1
-package hu.racz.zalan.editor.antlr.generated;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -179,11 +178,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StartContext start() throws RecognitionException {
@@ -266,11 +260,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_signature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_signature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Function_signatureContext function_signature() throws RecognitionException {
@@ -336,11 +325,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitReturn_type(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitReturn_type(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -432,11 +416,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_subroutine_qualifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_subroutine_qualifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Function_subroutine_qualifierContext function_subroutine_qualifier() throws RecognitionException {
@@ -498,11 +477,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_parameter_list(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_parameter_list(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -599,11 +573,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_parameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_parameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Function_parameterContext function_parameter() throws RecognitionException {
@@ -686,11 +655,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitParameter_qualifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitParameter_qualifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Parameter_qualifierContext parameter_qualifier() throws RecognitionException {
@@ -772,11 +736,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_prototype(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_prototype(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Function_prototypeContext function_prototype() throws RecognitionException {
@@ -820,11 +779,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_definition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_definition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -870,11 +824,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_call(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_call(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -938,11 +887,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFunction_call_parameter_list(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFunction_call_parameter_list(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1012,11 +956,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStatement_list(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStatement_list(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Statement_listContext statement_list() throws RecognitionException {
@@ -1071,11 +1010,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1182,11 +1116,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitCompound_statement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitCompound_statement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Compound_statementContext compound_statement() throws RecognitionException {
@@ -1253,11 +1182,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitSimple_statement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitSimple_statement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1349,11 +1273,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitSelection_statement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitSelection_statement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Selection_statementContext selection_statement() throws RecognitionException {
@@ -1424,11 +1343,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitSwitch_statement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitSwitch_statement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Switch_statementContext switch_statement() throws RecognitionException {
@@ -1496,11 +1410,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitCase_group(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitCase_group(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Case_groupContext case_group() throws RecognitionException {
@@ -1553,11 +1462,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitCase_label(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitCase_label(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1626,11 +1530,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitCase_statement_list(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitCase_statement_list(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1701,11 +1600,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitIteration_statement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitIteration_statement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1783,11 +1677,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFor_iteration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFor_iteration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1875,11 +1764,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitWhile_iteration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitWhile_iteration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final While_iterationContext while_iteration() throws RecognitionException {
@@ -1934,11 +1818,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitDo_while_iteration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitDo_while_iteration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1995,11 +1874,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitJump_statement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitJump_statement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2082,11 +1956,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitExpression_statement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitExpression_statement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Expression_statementContext expression_statement() throws RecognitionException {
@@ -2166,11 +2035,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitDeclaration_statement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitDeclaration_statement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2353,11 +2217,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitInit_declaration_list(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitInit_declaration_list(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Init_declaration_listContext init_declaration_list() throws RecognitionException {
@@ -2452,11 +2311,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitSingle_declaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitSingle_declaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2566,11 +2420,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStruct_declaration_list(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStruct_declaration_list(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Struct_declaration_listContext struct_declaration_list() throws RecognitionException {
@@ -2632,11 +2481,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStruct_declaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStruct_declaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2711,11 +2555,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStruct_declarator_list(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStruct_declarator_list(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Struct_declarator_listContext struct_declarator_list() throws RecognitionException {
@@ -2773,11 +2612,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStruct_declarator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStruct_declarator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Struct_declaratorContext struct_declarator() throws RecognitionException {
@@ -2831,11 +2665,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStruct_specifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStruct_specifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2926,11 +2755,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3135,11 +2959,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitConstant_expression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitConstant_expression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Constant_expressionContext constant_expression() throws RecognitionException {
@@ -3202,11 +3021,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFully_specified_type(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFully_specified_type(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Fully_specified_typeContext fully_specified_type() throws RecognitionException {
@@ -3267,11 +3081,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitFully_specified_struct(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitFully_specified_struct(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Fully_specified_structContext fully_specified_struct() throws RecognitionException {
@@ -3324,11 +3133,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitType(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitType(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3389,11 +3193,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitType_qualifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitType_qualifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3508,11 +3307,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitType_name_list(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitType_name_list(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Type_name_listContext type_name_list() throws RecognitionException {
@@ -3579,11 +3373,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitStorage_qualifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitStorage_qualifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3701,11 +3490,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitAuxiliary_storage_qualifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitAuxiliary_storage_qualifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Auxiliary_storage_qualifierContext auxiliary_storage_qualifier() throws RecognitionException {
@@ -3755,11 +3539,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitMemory_storage_qualifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitMemory_storage_qualifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3812,11 +3591,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitLayout_qualifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitLayout_qualifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Layout_qualifierContext layout_qualifier() throws RecognitionException {
@@ -3868,11 +3642,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitLayout_qualifier_id_list(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitLayout_qualifier_id_list(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3935,11 +3704,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitLayout_qualifier_id(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitLayout_qualifier_id(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4026,11 +3790,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitPrecision_qualifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitPrecision_qualifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Precision_qualifierContext precision_qualifier() throws RecognitionException {
@@ -4078,11 +3837,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitInterpolation_qualifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitInterpolation_qualifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4132,11 +3886,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LiteralContext literal() throws RecognitionException {
@@ -4183,11 +3932,6 @@ public class AntlrGlslParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitBool_literal(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitBool_literal(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Bool_literalContext bool_literal() throws RecognitionException {
@@ -4225,11 +3969,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitNumber_literal(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitNumber_literal(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4289,11 +4028,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitArray_usage(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitArray_usage(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4367,11 +4101,6 @@ public class AntlrGlslParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof AntlrGlslParserListener ) ((AntlrGlslParserListener)listener).exitArray_declaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlrGlslParserVisitor ) return ((AntlrGlslParserVisitor<? extends T>)visitor).visitArray_declaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 

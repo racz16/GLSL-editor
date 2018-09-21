@@ -1,0 +1,56 @@
+0, JDK-nak telepítve kell lennie (és a környezeti változók, Path alatt meg kell jelennie)
+1, Antlr 4.7.1 letöltése (http://www.antlr.org/download/antlr-4.7.1-complete.jar)
+	- ez tartalmazza:
+		- a .g4 -> .java fordításához szükséges kódot
+		- a kapott .java fájlok (lefordításából kapott .class fájlok) futtatásához szükséges kódot (runtime library)
+		- fejlesztést könnyítõ eszköz (grun) pl. konkrét szöveget lexer szabályokra, parser szabályokra bont, fát épít stb.
+2, Letöltött .jar fájl elhelyezése egy mappába (pl. D:\Programozas\Konyvtarak\antlr)
+	- mellé 2 .bat fájl:
+		- antlr4.bat (fordításshoz):
+			java org.antlr.v4.Tool %*
+		- grun.bat (fejlesztõi eszköz futtatásához):
+			SET TEST_CURRENT_DIR=%CLASSPATH:.;=%
+			if "%TEST_CURRENT_DIR%" == "%CLASSPATH%" ( SET CLASSPATH=.;%CLASSPATH% )
+			java org.antlr.v4.gui.TestRig %*
+3, Környezeti változók beállítása 
+	- keresés: "A rendszer környezeti változóinak beállítása"
+	- "Környezeti változók..." gomb
+	- Rendszerváltozók alatt:
+		- "CLASSPATH" szerkesztése (ha nincs, akkor létrehozás):
+			- értéke: "D:\Programozas\Konyvtarak\antlr\antlr-4.7.1-complete.jar" (vagy ahol a .jar-t raktuk)
+		- "Path" szerkesztése:
+			- értéke "D:\Programozas\Konyvtarak\antlr"
+
+0, Fontos, hogyha külön lexer és parser fájlunk van, akkor a nevük kövesse a következõ mintát:
+	<név>Lexer.g4
+	<név>Parser.g4
+	<név> helyére bármit behelyettesíthetünk, de mindkét fájl nevében meg kell egyeznie
+		pl. ALexer.g4, BParser.g4 helytelen; Lexer.g4, AParser.g4 szintén helytelen; csak az ALexer.g4, AParser.g4 a helyes
+	a lexer fájlnak Lexer.g4-re, a parser fájlnak Parser.g4-re kell végzõdnie
+I, Lexer fordítása
+	antlr4 -o <célmappa> <forrásfájl>
+		-o: generálandó .java fájlok célmappája, elhagyható
+		-package: generálandó .java fájlok package deklarációja, elhagyható (tesztelés esetén érdemes elhagyni, mivel Java esetén a packagenek és a mappahierarchiának összhangban kell lennie)
+		<forrásfájl>: lexer fájl elérési útvonala
+		pl. antlr4 -o generated_source -package hu.racz.zalan.editor.antlr.generated AntlrGlslLexer.g4
+II, Parser fordítása:
+	antlr4 -o <célmappa> -package <package név> <forrásfájl>
+		-o: generálandó .java fájlok célmappája (nem muszáj, de javasolt megegyeznie a lexer célmappával), elhagyható
+		-package: generálandó .java fájlok package deklarációja, elhagyható (tesztelés esetén érdemes elhagyni, mivel Java esetén a packagenek és a mappahierarchiának összhangban kell lennie)
+		<forrásfájl>: parser fájl elérési útvonala
+		pl. antlr4 -o generated_source -package hu.racz.zalan.editor.antlr.generated AntlrGlslParser.g4
+III, Sima, Java fordítás
+	javac -d <célmappa> <forrásmappa>/*.java
+		-d: generálandó .class fájlok célmappája, elhagyható
+		<forrásmappa>: fordítandó .java fájlok elérési útvonala
+ 		pl. javac -d generated_code generated_source/*.java
+IV, Tesztelés, konkrét példán:
+	a lefordított forráskód mappájában kell állni (.class fájlok)
+	grun <nyelvtan> <kezdõszabály> -tokens -tree -gui <forrásfájl>
+		<nyelvtan>: nyelvtan neve, pl. <név>Lexer.g4 és <név>Parser.g4 fájlok esetén <név>
+		<kezdõszabály>: a nyelvtanban létezõ szabályok egyike, innen kezdi a feldolgozász az Antlr
+		-tokens: a feldolgozás során megtalált tokensorozatot kiírja (lexer szabályok), elhagyható
+		-tree: a feldolgozás során felépített fát kiírja (parser szabályok), elhagyható
+		-gui: grafikusan kirajzolja a fát, elhagyható
+		<forrásfájl>: a teszbemenetet tartalmazó fájl elérési útvonala
+		pl. grun AntlrGlsl start -tokens -tree -gui ..\tests\functionSignature.txt

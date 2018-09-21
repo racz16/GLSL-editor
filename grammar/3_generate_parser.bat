@@ -1,1 +1,1 @@
-antlr4 -o generated_source AntlrGlslParser.g4
+antlr4 -o generated_source -visitor AntlrGlslParser.g4

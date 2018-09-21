@@ -15,6 +15,7 @@ public class GlslIndentTask implements IndentTask {
     private boolean nonSpaceTabAfterCursor;
     private boolean rightBraceAfterCursor;
     private int spaceTabCountAfterCursor;
+    private int spaceTabCountBeforeCursor;
 
     private boolean newBlock;
 
@@ -22,139 +23,155 @@ public class GlslIndentTask implements IndentTask {
     private int tabSize;
     private boolean expandTabs;
 
+    private static final char CARRIGE_RETURN = '\r';
+    private static final char LINE_FEED = '\n';
+    private static final char TAB = '\t';
+    private static final char SPACE = ' ';
+    private static final char LCB = '{';
+    private static final char RCB = '}';
+
     public GlslIndentTask(Context context) {
-	this.context = context;
+        this.context = context;
     }
 
     @Override
     public void reindent() throws BadLocationException {
-	initialize();
-	determineNewBlock();
-	computeDepth();
-	String indentation = computeIndentation();
-	context.document().insertString(context.startOffset(), indentation, null);
+        initialize();
+        determineNewBlock();
+        computeDepth();
+        applyIndentation();
     }
 
     private void initialize() throws BadLocationException {
-	cursorPosition = context.startOffset();
-	text = context.document().getText(0, context.document().getLength());
-	indentLevelSize = IndentUtils.indentLevelSize(context.document());
-	tabSize = IndentUtils.tabSize(context.document());
-	expandTabs = IndentUtils.isExpandTabs(context.document());
+        cursorPosition = context.startOffset();
+        text = context.document().getText(0, context.document().getLength());
+        indentLevelSize = IndentUtils.indentLevelSize(context.document());
+        tabSize = IndentUtils.tabSize(context.document());
+        expandTabs = IndentUtils.isExpandTabs(context.document());
     }
 
     private void determineNewBlock() {
-	newBlock = isCharacterInPosition(cursorPosition, '}') && lastCharactersLeftCurlyBraceNewLine();
+        newBlock = isCharacterInPosition(cursorPosition, RCB) && lastCharactersLeftCurlyBraceNewLine();
     }
 
     private boolean lastCharactersLeftCurlyBraceNewLine() {
-	if (isCharacterInPosition(cursorPosition - 1, '\n') && isCharacterInPosition(cursorPosition - 2, '{')) {
-	    return true;
-	}
-	if (isCharacterInPosition(cursorPosition - 1, '\n') && isCharacterInPosition(cursorPosition - 2, '\r') && isCharacterInPosition(cursorPosition - 3, '{')) {
-	    return true;
-	}
-	return false;
+        if (isCharacterInPosition(cursorPosition - 1, LINE_FEED) && isCharacterInPosition(cursorPosition - 2, LCB)) {
+            return true;
+        }
+        if (isCharacterInPosition(cursorPosition - 1, LINE_FEED) && isCharacterInPosition(cursorPosition - 2, CARRIGE_RETURN) && isCharacterInPosition(cursorPosition - 3, LCB)) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isCharacterInPosition(int index, char c) {
-	return index >= 0 && index < text.length() && text.charAt(index) == c;
+        return index >= 0 && index < text.length() && text.charAt(index) == c;
     }
 
     private void computeDepth() {
-	for (int i = 0; i < text.length() && !nonSpaceTabAfterCursor; i++) {
-	    computeCharacterImpact(text.charAt(i), i);
-	}
-	if (rightBraceAfterCursor) {
-	    depth -= spaceTabCountAfterCursor;
-	}
+        for (int i = 0; i < text.length() && !nonSpaceTabAfterCursor; i++) {
+            computeCharacterImpact(text.charAt(i), i);
+        }
+        computeSpaceTabImpactBeforeCursor();
+        depth -= spaceTabCountBeforeCursor;
+        if (rightBraceAfterCursor) {
+            depth -= spaceTabCountAfterCursor;
+        }
     }
 
     private void computeCharacterImpact(char character, int index) {
-	if (index < cursorPosition) {
-	    computeCharacterImpactBeforeCursor(character);
-	} else {
-	    computeCharacterImpactAfterCursor(character);
-	}
+        if (index < cursorPosition) {
+            computeCharacterImpactBeforeCursor(character);
+        } else {
+            computeCharacterImpactAfterCursor(character);
+        }
     }
 
     private void computeCharacterImpactBeforeCursor(char character) {
-	if (character == '{') {
-	    depth += indentLevelSize;
-	} else if (character == '}') {
-	    depth -= indentLevelSize;
-	}
+        if (character == LCB) {
+            depth += indentLevelSize;
+        } else if (character == RCB) {
+            depth -= indentLevelSize;
+        }
     }
 
     private void computeCharacterImpactAfterCursor(char character) {
-	computeSpaceTabImpactAfterCursor(character);
-	if (character != ' ' && character != '\t') {
-	    nonSpaceTabAfterCursor = true;
-	    if (character == '}') {
-		computeRightBraceImpactAfterCursor();
-	    }
-	}
+        computeSpaceTabImpactAfterCursor(character);
+        if (character != SPACE && character != TAB) {
+            nonSpaceTabAfterCursor = true;
+            if (character == RCB) {
+                computeRightBraceImpactAfterCursor();
+            }
+        }
     }
 
     private void computeSpaceTabImpactAfterCursor(char character) {
-	if (character == ' ') {
-	    spaceTabCountAfterCursor += 1;
-	} else if (character == '\t') {
-	    spaceTabCountAfterCursor += tabSize;
-	}
+        if (character == SPACE) {
+            spaceTabCountAfterCursor += 1;
+        } else if (character == TAB) {
+            spaceTabCountAfterCursor += tabSize;
+        }
     }
 
     private void computeRightBraceImpactAfterCursor() {
-	rightBraceAfterCursor = true;
-	depth -= indentLevelSize;
+        rightBraceAfterCursor = true;
+        depth -= indentLevelSize;
     }
 
-    private String computeIndentation() {
-	if (depth < 0) {
-	    return "";
-	} else {
-	    return computeIndentationWithoutInspection();
-	}
+    private void computeSpaceTabImpactBeforeCursor() {
+        int position = context.caretOffset() - 1;
+        while (position > 1) {
+            char character = text.charAt(position);
+            computeSpaceTabImpactBeforeCursor(character);
+            if (character != SPACE && character != TAB) {
+                break;
+            }
+            position--;
+        }
     }
 
-    private String computeIndentationWithoutInspection() {
-	String indentation = computeIndentationString(depth);
-	if (newBlock) {
-	    indentation += computeIndentationString(indentLevelSize)
-		    + System.lineSeparator()
-		    + computeIndentationString(depth);
-	}
-	return indentation;
+    private void computeSpaceTabImpactBeforeCursor(char character) {
+        if (character != LINE_FEED && character != CARRIGE_RETURN) {
+            if (character == SPACE) {
+                spaceTabCountBeforeCursor++;
+            } else if (character == TAB) {
+                spaceTabCountBeforeCursor += tabSize;
+            } else {
+                spaceTabCountBeforeCursor = 0;
+            }
+        }
     }
 
-    private String computeIndentationString(int depth) {
-	if (expandTabs) {
-	    return computeIndentationStringWithSpaces(depth);
-	} else {
-	    return computeIndentationStringWithTabs(depth);
-	}
+    private void applyIndentation() throws BadLocationException {
+        String before = computeIndentationBeforeCursor();
+        context.document().insertString(context.startOffset(), before, null);
+        if (newBlock) {
+            String after = System.lineSeparator() + IndentUtils.createIndentString(depth, expandTabs, tabSize);
+            context.document().insertString(context.startOffset() + 1, after + RCB, null);
+            //ez egy hack, mivel a context.setCaretOffset(...) nem működik
+            //ha az aftert közvetlen a kurzorhoz szúrnám be (ahogy a before-t), akkor eltolná a kurzort
+            //így a kurzor nem a blokk belsejében lenne, hanem egy sorral lentebb, a '}' mellett
+            //a megoldás az, hogy egy karakterrel később, a '}' után szúrum be az indentációt és egy plusz '}' karaktert
+            //majd a végén az eredeti, már fölösleges '}' karaktert törlöm
+            //ezzel elérem, hogy a kurzot a blokk közepén maradjon
+            context.document().remove(context.startOffset(), 1);
+        }
     }
 
-    private String computeIndentationStringWithTabs(int depth) {
-	String indentation = "";
-	while (depth >= tabSize) {
-	    indentation += "\t";
-	    depth -= tabSize;
-	}
-	indentation += computeIndentationStringWithSpaces(depth);
-	return indentation;
-    }
-
-    private String computeIndentationStringWithSpaces(int depth) {
-	String indentation = "";
-	for (int i = 0; i < depth; i++) {
-	    indentation += " ";
-	}
-	return indentation;
+    private String computeIndentationBeforeCursor() {
+        if (depth < 0) {
+            return "";
+        } else {
+            String indentation = IndentUtils.createIndentString(depth, expandTabs, tabSize);
+            if (newBlock) {
+                indentation += IndentUtils.createIndentString(indentLevelSize, expandTabs, tabSize);
+            }
+            return indentation;
+        }
     }
 
     @Override
     public ExtraLock indentLock() {
-	return null;
+        return null;
     }
 }

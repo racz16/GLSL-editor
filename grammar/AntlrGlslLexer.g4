@@ -108,7 +108,7 @@ DECIMAL_INT_LITERAL : NONZERO_DIGIT DIGIT*;
 fragment
 OCTAL_INT_LITERAL : '0' OCTAL_DIGIT*;
 fragment
-HEXADECIMAL_INT_LITERAL : '0' [Xx] HEXADECIMAL_DIGIT*;
+HEXADECIMAL_INT_LITERAL : '0' [Xx] HEXADECIMAL_DIGIT+;
 
 //float literals
 FLOAT_LITERAL : FRACTIONAL_PART EXPONENT_PART? FLOATING_SUFFIX? |
@@ -143,7 +143,7 @@ OP_ASSIGN : '=';
 //hidden------------------------------------------------------------------------
 /////
 MACRO : '#' ('/'? ~[\r\n/])* -> channel(HIDDEN);
-NEW_LINE : [\r\n]+ -> channel(HIDDEN);
+NEW_LINE : ('\r\n' | '\r' | '\n') -> channel(HIDDEN);
 SPACE : ' ' -> channel(HIDDEN);
 TAB : '\t' -> channel(HIDDEN);
 //comments
