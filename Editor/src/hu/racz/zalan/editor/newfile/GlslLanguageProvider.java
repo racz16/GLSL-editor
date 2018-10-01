@@ -9,15 +9,15 @@ public class GlslLanguageProvider extends LanguageProvider {
 
     @Override
     public Language<?> findLanguage(String mimeType) {
-	if ("text/x-glsl".equals(mimeType)) {
-	    return new GlslLanguageHierarchy().language();
-	}
-	return null;
+        if ("text/x-glsl".equals(mimeType)) {
+            return new GlslLanguageHierarchy().language();
+        }
+        return null;
     }
 
     @Override
     public LanguageEmbedding<?> findLanguageEmbedding(Token<?> token, LanguagePath lp, InputAttributes ia) {
-	return null;
+        return null;
     }
 
 }
