@@ -221,11 +221,23 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(AntlrGlslParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlrGlslParser#expression_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_list(AntlrGlslParser.Expression_listContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#constant_expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#fully_specified_type}.
 	 * @param ctx the parse tree

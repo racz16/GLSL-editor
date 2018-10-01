@@ -21,8 +21,8 @@ parameter_qualifier : (Q_CONST | Q_IN | Q_OUT | Q_INOUT | Q_PRECISE) |
 function_prototype : function_signature SEMICOLON;
 function_definition : function_signature compound_statement;
 
-function_call : (TYPE | IDENTIFIER) LRB function_call_parameter_list? RRB;
-function_call_parameter_list: expression | KW_VOID ;
+function_call : type LRB function_call_parameter_list? RRB;
+function_call_parameter_list: expression_list | KW_VOID ;
 
 /////
 //statements--------------------------------------------------------------------
@@ -43,13 +43,13 @@ case_label : (KW_DEFAULT | KW_CASE constant_expression) COLON;
 case_statement_list : (declaration_statement | expression_statement)+;
 
 iteration_statement : for_iteration | while_iteration | do_while_iteration;
-for_iteration : KW_FOR LRB init_declaration_list? SEMICOLON expression? SEMICOLON expression? RRB statement;
+for_iteration : KW_FOR LRB init_declaration_list? SEMICOLON expression? SEMICOLON expression_list? RRB statement;
 while_iteration : KW_WHILE LRB expression RRB statement;
 do_while_iteration : KW_DO statement KW_WHILE LRB expression RRB SEMICOLON;
 
 jump_statement : (KW_CONTINUE | KW_BREAK | KW_DISCARD | KW_RETURN expression?) SEMICOLON;
 
-expression_statement : expression? SEMICOLON;
+expression_statement : expression_list? SEMICOLON;
 
 /////
 //declarations------------------------------------------------------------------
@@ -73,18 +73,20 @@ struct_specifier : KW_STRUCT IDENTIFIER? LCB struct_declaration_list RCB;
 /////
 //expressions-------------------------------------------------------------------
 /////
-expression : IDENTIFIER | function_call |  literal | LRB expression RRB |       //id, function, literal, ()
+expression : variable_usage_identifier | function_call |  literal | LRB expression RRB |       //id, function, literal, ()
              (OP_LOGICAL_UNARY | OP_ADD | OP_SUB | OP_BIT_UNARY | OP_INC |      //prefix unary
                          OP_DEC) expression |                                   
              expression (OP_INC | OP_DEC) |                                     //postfix unary
              expression (OP_MUL | OP_DIV | OP_MOD | OP_ADD | OP_SUB | OP_SHIFT |//binary operator
                          OP_BIT | OP_RELATIONAL | OP_LOGICAL | OP_MODIFY | 
                          OP_ASSIGN) expression |
-             expression QUESTION expression COLON expression |                  //if
+             expression QUESTION expression_list COLON expression_list |        //if
              expression DOT IDENTIFIER |                                        //.field
-             expression array_usage |                                           //array
-             expression COMMA expression;                                       //list
+             expression array_usage;                                            //array
+expression_list: expression (COMMA expression)*;
 constant_expression : literal | IDENTIFIER ;
+
+variable_usage_identifier : IDENTIFIER;
 
 /////
 //types and literals------------------------------------------------------------

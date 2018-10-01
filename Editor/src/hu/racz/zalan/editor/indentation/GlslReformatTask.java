@@ -1,12 +1,11 @@
 package hu.racz.zalan.editor.indentation;
 
 import hu.racz.zalan.editor.antlr.generated.AntlrGlslLexer;
-import hu.racz.zalan.editor.antlr.generated.AntlrGlslParser;
+import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.syntaxhighlighting.GlslTokenType;
 import java.util.List;
 import javax.swing.text.BadLocationException;
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 import org.netbeans.modules.editor.indent.spi.Context;
@@ -23,11 +22,6 @@ public class GlslReformatTask implements ReformatTask {
 
     @Override
     public void reformat() throws BadLocationException {
-        String text = context.document().getText(0, context.document().getLength());
-        text = text.replaceAll("\r\n", "\n");
-        ANTLRInputStream ais = new ANTLRInputStream(text);
-        Lexer lexer = new AntlrGlslLexer(ais);
-
         String ret = "";
         String specialText = "";
         int newLineCount = 0;
@@ -36,7 +30,7 @@ public class GlslReformatTask implements ReformatTask {
         boolean inForHeader = false;
         int forHeaderBraceCount = 0;
 
-        List<? extends Token> tokens = lexer.getAllTokens();
+        List<? extends Token> tokens = GlslProcessor.getTokens();
         if (tokens.isEmpty() || tokens.size() == 1) {
             return;
         }

@@ -358,6 +358,16 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 */
 	void exitExpression(AntlrGlslParser.ExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AntlrGlslParser#expression_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression_list(AntlrGlslParser.Expression_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlrGlslParser#expression_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression_list(AntlrGlslParser.Expression_listContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#constant_expression}.
 	 * @param ctx the parse tree
 	 */
@@ -367,6 +377,16 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#fully_specified_type}.
 	 * @param ctx the parse tree

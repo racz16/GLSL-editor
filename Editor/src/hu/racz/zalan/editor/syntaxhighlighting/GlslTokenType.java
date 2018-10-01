@@ -53,7 +53,7 @@ public enum GlslTokenType {
     //types
     TYPE(AntlrGlslLexer.TYPE, "type"),
     //literals
-    BOOL_LITERAL(AntlrGlslLexer.BOOL_LITERAL, "default"),
+    BOOL_LITERAL(AntlrGlslLexer.BOOL_LITERAL, "keyword"),
     INT_LITERAL(AntlrGlslLexer.INT_LITERAL, "number"),
     FLOAT_LITERAL(AntlrGlslLexer.FLOAT_LITERAL, "number"),
     //operators
@@ -96,26 +96,26 @@ public enum GlslTokenType {
     private final String category;
 
     private GlslTokenType(int id, String category) {
-	this.id = id;
-	this.category = category;
+        this.id = id;
+        this.category = category;
     }
 
     public String getCategory() {
-	return category;
+        return category;
     }
 
     public int getId() {
-	return id;
+        return id;
     }
 
     public static GlslTokenType valueOf(int id) {
-	GlslTokenType[] values = values();
-	for (GlslTokenType value : values) {
-	    if (value.id == id) {
-		return value;
-	    }
-	}
-	throw new IllegalArgumentException("The id " + id + " is not recognized");
+        GlslTokenType[] values = values();
+        for (GlslTokenType value : values) {
+            if (value.id == id) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("The id " + id + " is not recognized");
     }
 
 }

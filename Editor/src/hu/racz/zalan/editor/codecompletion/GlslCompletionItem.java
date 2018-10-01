@@ -1,49 +1,44 @@
 package hu.racz.zalan.editor.codecompletion;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.StyledDocument;
-import org.netbeans.api.editor.completion.Completion;
-import org.netbeans.spi.editor.completion.CompletionItem;
-import org.netbeans.spi.editor.completion.CompletionResultSet;
-import org.netbeans.spi.editor.completion.CompletionTask;
-import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
-import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
-import org.netbeans.spi.editor.completion.support.CompletionUtilities;
-import org.openide.util.Exceptions;
-import org.openide.util.ImageUtilities;
+import hu.racz.zalan.editor.core.scope.*;
+import hu.racz.zalan.editor.core.scope.Element;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.text.*;
+import org.netbeans.api.editor.completion.*;
+import org.netbeans.spi.editor.completion.*;
+import org.netbeans.spi.editor.completion.support.*;
+import org.openide.util.*;
 
 public class GlslCompletionItem implements CompletionItem {
 
-    private String text;
-    private String rightText;
-    private ImageIcon fieldIcon;
-    private static Color fieldColor = Color.decode("0x0000B2");
-    private int caretOffset;
+    private final static Color BACKGROUND = Color.WHITE;
+    private final static Color SELECTED_BACKGROUND = Color.decode("0x0000B2");
 
-    public GlslCompletionItem(String text, String rightText, int caretOffset, String image) {
-        this.text = text;
-        this.rightText = rightText;
+    private final CompletionElement element;
+    private final int filterLength;
+    private final int caretOffset;
+
+    public GlslCompletionItem(CompletionElement element, int filterLength, int caretOffset) {
+        this.element = element;
+        this.filterLength = filterLength;
         this.caretOffset = caretOffset;
-        fieldIcon = new ImageIcon(ImageUtilities.loadImage(image));
     }
 
     @Override
     public void defaultAction(JTextComponent jtc) {
         try {
-            StyledDocument doc = (StyledDocument) jtc.getDocument();
-            doc.insertString(caretOffset, text, null);
-            //This statement will close the code completion box:
+            insertCompletionText(jtc);
             Completion.get().hideAll();
         } catch (BadLocationException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    private void insertCompletionText(JTextComponent jtc) throws BadLocationException {
+        StyledDocument doc = (StyledDocument) jtc.getDocument();
+        doc.remove(caretOffset - filterLength, filterLength);
+        doc.insertString(caretOffset - filterLength, element.getPasteText(), null);
     }
 
     @Override
@@ -53,23 +48,20 @@ public class GlslCompletionItem implements CompletionItem {
 
     @Override
     public int getPreferredWidth(Graphics graphics, Font font) {
-        return CompletionUtilities.getPreferredWidth(text, rightText, graphics, font);
+        return CompletionUtilities.getPreferredWidth(element.getLeftText(), element.getRightText(), graphics, font);
     }
 
     @Override
     public void render(Graphics g, Font defaultFont, Color color, Color color1, int width, int height, boolean selected) {
-        CompletionUtilities.renderHtml(fieldIcon, text, rightText, g, defaultFont, (selected ? Color.white : fieldColor), width, height, selected);
+        CompletionUtilities.renderHtml(element.getIcon(), element.getLeftText(), element.getRightText(), g, defaultFont, (selected ? BACKGROUND : SELECTED_BACKGROUND), width, height, selected);
     }
 
     @Override
     public CompletionTask createDocumentationTask() {
-        return new AsyncCompletionTask(new AsyncCompletionQuery() {
-            @Override
-            protected void query(CompletionResultSet completionResultSet, Document document, int i) {
-                completionResultSet.setDocumentation(new GlslCompletionDocumentation(GlslCompletionItem.this));
-                completionResultSet.finish();
-            }
-        });
+        if (element.getDocumentationName() == null) {
+            return null;
+        }
+        return new AsyncCompletionTask(new GlslAsyncCompletionItemQuery());
     }
 
     @Override
@@ -84,17 +76,26 @@ public class GlslCompletionItem implements CompletionItem {
 
     @Override
     public int getSortPriority() {
-        return 0;
+        return element.getPriority();
     }
 
     @Override
     public CharSequence getSortText() {
-        return text;
+        return element.getPasteText();
     }
 
     @Override
     public CharSequence getInsertPrefix() {
-        return text;
+        return element.getPasteText();
+    }
+
+    private class GlslAsyncCompletionItemQuery extends AsyncCompletionQuery {
+
+        @Override
+        protected void query(CompletionResultSet completionResultSet, Document document, int i) {
+            completionResultSet.setDocumentation(new GlslCompletionDocumentation(element.getDocumentationName()));
+            completionResultSet.finish();
+        }
     }
 
 }

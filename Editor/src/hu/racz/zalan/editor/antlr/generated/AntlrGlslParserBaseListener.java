@@ -436,6 +436,18 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExpression_list(AntlrGlslParser.Expression_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression_list(AntlrGlslParser.Expression_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterConstant_expression(AntlrGlslParser.Constant_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -443,6 +455,18 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
