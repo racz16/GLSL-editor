@@ -18,7 +18,6 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
 
     public GlslCompletionDocumentation(String elementName) {
         this.elementName = elementName;
-        docUrl = null;
         try {
             docUrl = new URL("https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/" + elementName + ".xhtml");
         } catch (MalformedURLException ex) {
@@ -31,38 +30,42 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
         String result = DOCUMENTATION_CACHE.get(elementName);
         if (result == null) {
             result = loadDocumentation();
+            DOCUMENTATION_CACHE.put(elementName, result);
         }
         return result;
     }
 
     private String loadDocumentation() {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(docUrl.openStream()))) {
-            readDocumentation(result, br);
+            result = readDocumentation(br);
         } catch (IOException ex) {
             return "Not found";
         }
         return transformDocumentationToNetbeansCompatible(result);
     }
 
-    private void readDocumentation(StringBuilder result, BufferedReader br) throws IOException {
+    private StringBuilder readDocumentation(BufferedReader br) throws IOException {
+        StringBuilder result = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
             result.append(line);
         }
+        return result;
     }
 
     private String transformDocumentationToNetbeansCompatible(StringBuilder documentation) {
         documentation = selectHtmlBody(documentation);
         replaceNetbeansIncompatibleCharacters(documentation);
         String result = documentation.toString();
-        DOCUMENTATION_CACHE.put(elementName, result);
         return result;
     }
 
     private StringBuilder selectHtmlBody(StringBuilder documentation) {
-        int start = documentation.indexOf("<body>") + 6;
-        int end = documentation.indexOf("</body>");
+        String startTag = "<body>";
+        String endTag = "</body>";
+        int start = documentation.indexOf(startTag) + startTag.length();
+        int end = documentation.indexOf(endTag);
         return new StringBuilder(documentation.substring(start, end));
     }
 
@@ -78,8 +81,14 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
     }
 
     @Override
-    public CompletionDocumentation resolveLink(String string) {
-        return null;
+    public CompletionDocumentation resolveLink(String link) {
+        int xhtmlIndex = link.indexOf(".xhtml");
+        if (xhtmlIndex > 0) {
+            String elementName = link.substring(0, xhtmlIndex);
+            return new GlslCompletionDocumentation(elementName);
+        } else {
+            return null;
+        }
     }
 
     @Override

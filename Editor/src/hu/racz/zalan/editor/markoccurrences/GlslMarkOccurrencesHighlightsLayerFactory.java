@@ -20,7 +20,7 @@ public class GlslMarkOccurrencesHighlightsLayerFactory implements HighlightsLaye
         return new HighlightsLayer[]{
             HighlightsLayer.create(
             GlslMarkOccurrencesHighlighter.class.getName(),
-            ZOrder.CARET_RACK.forPosition(2000),
+            ZOrder.SHOW_OFF_RACK,
             true,
             getMarkOccurrencesHighlighter(context.getDocument()).getHighlightsBag())
         };

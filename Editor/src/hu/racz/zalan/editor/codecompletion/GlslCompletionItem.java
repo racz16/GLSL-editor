@@ -1,7 +1,6 @@
 package hu.racz.zalan.editor.codecompletion;
 
 import hu.racz.zalan.editor.core.scope.*;
-import hu.racz.zalan.editor.core.scope.Element;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.text.*;
@@ -17,12 +16,12 @@ public class GlslCompletionItem implements CompletionItem {
 
     private final CompletionElement element;
     private final int filterLength;
-    private final int caretOffset;
+    private final int caretPosition;
 
-    public GlslCompletionItem(CompletionElement element, int filterLength, int caretOffset) {
+    public GlslCompletionItem(CompletionElement element, int filterLength, int caretPosition) {
         this.element = element;
         this.filterLength = filterLength;
-        this.caretOffset = caretOffset;
+        this.caretPosition = caretPosition;
     }
 
     @Override
@@ -37,8 +36,8 @@ public class GlslCompletionItem implements CompletionItem {
 
     private void insertCompletionText(JTextComponent jtc) throws BadLocationException {
         StyledDocument doc = (StyledDocument) jtc.getDocument();
-        doc.remove(caretOffset - filterLength, filterLength);
-        doc.insertString(caretOffset - filterLength, element.getPasteText(), null);
+        doc.remove(caretPosition - filterLength, filterLength);
+        doc.insertString(caretPosition - filterLength, element.getPasteText(), null);
     }
 
     @Override

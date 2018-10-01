@@ -5,13 +5,13 @@ import org.netbeans.api.lexer.*;
 public class GlslTokenId implements TokenId {
 
     private final String name;
-    private final String primaryCategory;
+    private final TokenCategory category;
     private final int id;
     private static final Language<GlslTokenId> LANGUAGE = new GlslLanguageHierarchy().language();
 
-    public GlslTokenId(String name, String primaryCategory, int id) {
+    public GlslTokenId(String name, TokenCategory category, int id) {
         this.name = name;
-        this.primaryCategory = primaryCategory;
+        this.category = category;
         this.id = id;
     }
 
@@ -27,7 +27,7 @@ public class GlslTokenId implements TokenId {
 
     @Override
     public String primaryCategory() {
-        return primaryCategory;
+        return category.getCategoryName();
     }
 
     public static final Language<GlslTokenId> getLanguage() {

@@ -9,14 +9,13 @@ public class GlslIndentTask implements IndentTask {
     private final Context context;
 
     private String text;
-    private int cursorPosition;
+    private int caretPosition;
 
     private int depth;
     private boolean nonSpaceTabAfterCursor;
     private boolean rightBraceAfterCursor;
     private int spaceTabCountAfterCursor;
     private int spaceTabCountBeforeCursor;
-
     private boolean newBlock;
 
     private int indentLevelSize;
@@ -43,7 +42,7 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void initialize() throws BadLocationException {
-        cursorPosition = context.startOffset();
+        caretPosition = context.startOffset();
         text = context.document().getText(0, context.document().getLength());
         indentLevelSize = IndentUtils.indentLevelSize(context.document());
         tabSize = IndentUtils.tabSize(context.document());
@@ -51,14 +50,14 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void determineNewBlock() {
-        newBlock = isCharacterInPosition(cursorPosition, RCB) && lastCharactersLeftCurlyBraceNewLine();
+        newBlock = isCharacterInPosition(caretPosition, RCB) && lastCharactersLeftCurlyBraceNewLine();
     }
 
     private boolean lastCharactersLeftCurlyBraceNewLine() {
-        if (isCharacterInPosition(cursorPosition - 1, LINE_FEED) && isCharacterInPosition(cursorPosition - 2, LCB)) {
+        if (isCharacterInPosition(caretPosition - 1, LINE_FEED) && isCharacterInPosition(caretPosition - 2, LCB)) {
             return true;
         }
-        if (isCharacterInPosition(cursorPosition - 1, LINE_FEED) && isCharacterInPosition(cursorPosition - 2, CARRIGE_RETURN) && isCharacterInPosition(cursorPosition - 3, LCB)) {
+        if (isCharacterInPosition(caretPosition - 1, LINE_FEED) && isCharacterInPosition(caretPosition - 2, CARRIGE_RETURN) && isCharacterInPosition(caretPosition - 3, LCB)) {
             return true;
         }
         return false;
@@ -73,6 +72,10 @@ public class GlslIndentTask implements IndentTask {
             computeCharacterImpact(text.charAt(i), i);
         }
         computeSpaceTabImpactBeforeCursor();
+        correctDepth();
+    }
+
+    private void correctDepth() {
         depth -= spaceTabCountBeforeCursor;
         if (rightBraceAfterCursor) {
             depth -= spaceTabCountAfterCursor;
@@ -80,7 +83,7 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void computeCharacterImpact(char character, int index) {
-        if (index < cursorPosition) {
+        if (index < caretPosition) {
             computeCharacterImpactBeforeCursor(character);
         } else {
             computeCharacterImpactAfterCursor(character);
@@ -119,32 +122,34 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void computeSpaceTabImpactBeforeCursor() {
-        int position = context.caretOffset() - 1;
-        while (position > 1) {
-            char character = text.charAt(position);
+        for (int i = context.caretOffset() - 1; i > 1; i--) {
+            char character = text.charAt(i);
             computeSpaceTabImpactBeforeCursor(character);
             if (character != SPACE && character != TAB) {
                 break;
             }
-            position--;
         }
     }
 
     private void computeSpaceTabImpactBeforeCursor(char character) {
         if (character != LINE_FEED && character != CARRIGE_RETURN) {
-            if (character == SPACE) {
-                spaceTabCountBeforeCursor++;
-            } else if (character == TAB) {
-                spaceTabCountBeforeCursor += tabSize;
-            } else {
-                spaceTabCountBeforeCursor = 0;
-            }
+            computeSpaceTabImpactBeforeCursorUnsafe(character);
+        }
+    }
+
+    private void computeSpaceTabImpactBeforeCursorUnsafe(char character) {
+        if (character == SPACE) {
+            spaceTabCountBeforeCursor++;
+        } else if (character == TAB) {
+            spaceTabCountBeforeCursor += tabSize;
+        } else {
+            spaceTabCountBeforeCursor = 0;
         }
     }
 
     private void applyIndentation() throws BadLocationException {
         String before = computeIndentationBeforeCursor();
-        context.document().insertString(context.startOffset(), before, null);
+        context.document().insertString(caretPosition, before, null);
         if (newBlock) {
             String after = System.lineSeparator() + IndentUtils.createIndentString(depth, expandTabs, tabSize);
             context.document().insertString(context.startOffset() + 1, after + RCB, null);
@@ -162,12 +167,16 @@ public class GlslIndentTask implements IndentTask {
         if (depth < 0) {
             return "";
         } else {
-            String indentation = IndentUtils.createIndentString(depth, expandTabs, tabSize);
-            if (newBlock) {
-                indentation += IndentUtils.createIndentString(indentLevelSize, expandTabs, tabSize);
-            }
-            return indentation;
+            return computeIndentationBeforeCursorUnsafe();
         }
+    }
+
+    private String computeIndentationBeforeCursorUnsafe() {
+        String indentation = IndentUtils.createIndentString(depth, expandTabs, tabSize);
+        if (newBlock) {
+            indentation += IndentUtils.createIndentString(indentLevelSize, expandTabs, tabSize);
+        }
+        return indentation;
     }
 
     @Override

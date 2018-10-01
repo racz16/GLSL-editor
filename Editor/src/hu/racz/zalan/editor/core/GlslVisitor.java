@@ -96,7 +96,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     @Override
     public Object visitStatement(AntlrGlslParser.StatementContext ctx) {
         if (!(ctx.parent instanceof AntlrGlslParser.Statement_listContext) && ctx.compound_statement() == null) {
-            System.out.println(ctx.getText());
 
             Scope s = new Scope();
             s.setStartIndex(ctx.start.getStartIndex());

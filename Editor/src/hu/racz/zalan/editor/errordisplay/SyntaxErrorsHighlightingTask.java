@@ -119,7 +119,6 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
         public MyFix(int start, int end) {
             this.start = start;
             this.end = end;
-            System.out.println(start + "   " + end);
         }
 
         @Override
