@@ -9,6 +9,6 @@ public class GlslBracesMatcherFactory implements BracesMatcherFactory {
 
     @Override
     public BracesMatcher createMatcher(MatcherContext context) {
-	return BracesMatcherSupport.characterMatcher(context, -1, -1, new char[]{'(', ')', '{', '}', '[', ']'});
+        return BracesMatcherSupport.characterMatcher(context, -1, -1, new char[]{'(', ')', '{', '}', '[', ']'});
     }
 }
