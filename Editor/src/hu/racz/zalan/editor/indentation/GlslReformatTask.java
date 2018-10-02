@@ -133,21 +133,19 @@ public class GlslReformatTask implements ReformatTask {
                         || tt1 == AntlrGlslLexer.MACRO) {
                     ret += "\n";
                     indent = true;
-                } else if (tt2 == AntlrGlslLexer.SEMICOLON
-                        || tt2 == AntlrGlslLexer.COMMA
-                        || tt1 == AntlrGlslLexer.LRB
-                        || tt1 == AntlrGlslLexer.LSB
-                        || tt2 == AntlrGlslLexer.RRB
-                        || tt2 == AntlrGlslLexer.RSB
-                        || tt1 == AntlrGlslLexer.DOT
-                        || tt2 == AntlrGlslLexer.DOT
-                        || (tt1 == AntlrGlslLexer.IDENTIFIER || tt1 == AntlrGlslLexer.TYPE || tt1 == AntlrGlslLexer.Q_LAYOUT || tt1 == AntlrGlslLexer.KW_IF || tt1 == AntlrGlslLexer.KW_WHILE || tt1 == AntlrGlslLexer.KW_FOR) && tt2 == AntlrGlslLexer.LRB
-                        || tt1 == AntlrGlslLexer.IDENTIFIER && tt2 == AntlrGlslLexer.LSB
-                        || tt1 == AntlrGlslLexer.OP_LOGICAL_UNARY
-                        || (tt1 == AntlrGlslLexer.OP_INC || tt1 == AntlrGlslLexer.OP_DEC) && tt2 == AntlrGlslLexer.IDENTIFIER
-                        || (tt2 == AntlrGlslLexer.OP_INC || tt2 == AntlrGlslLexer.OP_DEC) && (tt1 == AntlrGlslLexer.IDENTIFIER || tt1 == AntlrGlslLexer.RRB)) {
-
-                } else {
+                } else if (tt2 != AntlrGlslLexer.SEMICOLON
+                        && tt2 != AntlrGlslLexer.COMMA
+                        && tt1 != AntlrGlslLexer.LRB
+                        && tt1 != AntlrGlslLexer.LSB
+                        && tt2 != AntlrGlslLexer.RRB
+                        && tt2 != AntlrGlslLexer.RSB
+                        && tt1 != AntlrGlslLexer.DOT
+                        && tt2 != AntlrGlslLexer.DOT
+                        && (tt1 != AntlrGlslLexer.IDENTIFIER && tt1 != AntlrGlslLexer.TYPE && tt1 != AntlrGlslLexer.Q_LAYOUT && tt1 != AntlrGlslLexer.KW_IF && tt1 != AntlrGlslLexer.KW_WHILE && tt1 != AntlrGlslLexer.KW_FOR || tt2 != AntlrGlslLexer.LRB)
+                        && (tt1 != AntlrGlslLexer.IDENTIFIER || tt2 != AntlrGlslLexer.LSB)
+                        && tt1 != AntlrGlslLexer.OP_LOGICAL_UNARY
+                        && (tt1 != AntlrGlslLexer.OP_INC && tt1 != AntlrGlslLexer.OP_DEC || tt2 != AntlrGlslLexer.IDENTIFIER)
+                        && (tt2 != AntlrGlslLexer.OP_INC && tt2 != AntlrGlslLexer.OP_DEC || (tt1 != AntlrGlslLexer.IDENTIFIER && tt1 != AntlrGlslLexer.RRB))) {
                     ret += " ";
                     indent = false;
                 }

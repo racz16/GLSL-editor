@@ -54,8 +54,8 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
         return result;
     }
 
-    private String transformDocumentationToNetbeansCompatible(StringBuilder documentation) {
-        documentation = selectHtmlBody(documentation);
+    private String transformDocumentationToNetbeansCompatible(StringBuilder doc) {
+        StringBuilder documentation = selectHtmlBody(doc);
         replaceNetbeansIncompatibleCharacters(documentation);
         String result = documentation.toString();
         return result;

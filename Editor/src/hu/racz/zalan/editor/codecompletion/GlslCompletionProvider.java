@@ -37,9 +37,6 @@ public class GlslCompletionProvider implements CompletionProvider {
     private static final char COLON = ':';
     private static final char SEMICOLON = ';';
 
-    public GlslCompletionProvider() {
-    }
-
     static {
         addKeywords();
         addBuiltInTypes();

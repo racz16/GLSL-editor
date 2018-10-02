@@ -23,7 +23,6 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener {
     private final OffsetsBag bag;
 
     private JTextComponent comp;
-    private final WeakReference<Document> weakDoc;
 
     private final RequestProcessor rp;
     private final static int REFRESH_DELAY = 100;
@@ -34,7 +33,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener {
     public GlslMarkOccurrencesHighlighter(Document doc) {
         rp = new RequestProcessor(GlslMarkOccurrencesHighlighter.class);
         bag = new OffsetsBag(doc);
-        weakDoc = new WeakReference<>((Document) doc);
+        WeakReference<Document> weakDoc = new WeakReference<>((Document) doc);
         DataObject dobj = NbEditorUtilities.getDataObject(weakDoc.get());
         if (dobj != null) {
             EditorCookie pane = dobj.getLookup().lookup(EditorCookie.class);

@@ -19,9 +19,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
 
     private boolean isFunctionDefinition;
 
-    public GlslVisitor() {
-    }
-
     public Scope getRootScope() {
         return currentScope;
     }
