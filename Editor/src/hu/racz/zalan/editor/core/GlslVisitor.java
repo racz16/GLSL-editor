@@ -5,6 +5,7 @@ import hu.racz.zalan.editor.core.scope.variable.VariableDeclaration;
 import hu.racz.zalan.editor.antlr.generated.AntlrGlslParser;
 import hu.racz.zalan.editor.antlr.generated.AntlrGlslParserBaseVisitor;
 import hu.racz.zalan.editor.core.scope.*;
+import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import java.util.ArrayList;
@@ -18,6 +19,18 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     private final List<Scope> bracelessScopes = new ArrayList<>();
 
     private boolean isFunctionDefinition;
+
+    public TypeDeclaration getTypeDeclaration(Scope scope, String type) {
+        while (scope != null) {
+            for (TypeDeclaration td : scope.getTypeDeclarations()) {
+                if (td.getName().equals(type)) {
+                    return td;
+                }
+            }
+            scope = scope.getParent();
+        }
+        return null;
+    }
 
     public Scope getRootScope() {
         return currentScope;
@@ -62,7 +75,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
         }
         if (sdc.IDENTIFIER() != null) {
             VariableDeclaration var = new VariableDeclaration();
-            var.setType(type);
+            var.setTypeOLD(type);
             var.setName(sdc.IDENTIFIER().getText());
             var.setStartIndex(sdc.IDENTIFIER().getSymbol().getStartIndex());
             var.setStopIndex(sdc.IDENTIFIER().getSymbol().getStopIndex() + 1);
@@ -70,10 +83,10 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
             if (currentScope.getParent() == null) {
                 var.setGlobal(true);
             }
-            currentScope.addVariable(var);
+            currentScope.addVariableDeclaration(var);
             for (TerminalNode name : ctx.IDENTIFIER()) {
                 VariableDeclaration v = new VariableDeclaration();
-                v.setType(type);
+                v.setTypeOLD(type);
                 v.setName(name.getText());
                 v.setStartIndex(name.getSymbol().getStartIndex());
                 v.setStopIndex(name.getSymbol().getStopIndex() + 1);
@@ -81,7 +94,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
                 if (currentScope.getParent() == null) {
                     v.setGlobal(true);
                 }
-                currentScope.addVariable(v);
+                currentScope.addVariableDeclaration(v);
             }
         }
         //isFor = false;
@@ -132,15 +145,24 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
         currentScope.addChild(s);
         s.setParent(currentScope);
 
-        Function func = new Function();
+        FunctionDefinition func = new FunctionDefinition();
         AntlrGlslParser.Function_signatureContext fsc = ctx.function_signature();
         func.setName(fsc.IDENTIFIER().getText());
-        func.setReturnType(fsc.return_type().getText());
+
+        if (!fsc.return_type().getText().equals("void")) {
+            TypeUsage returnType = new TypeUsage();
+            TypeDeclaration td = getTypeDeclaration(currentScope, fsc.return_type().getText());
+            returnType.setDeclaration(td);
+            func.setReturnType(returnType);
+        } else {
+            func.setReturnType(TypeUsage.VOID);
+        }
+
         if (fsc.function_parameter_list() != null) {
             for (AntlrGlslParser.Function_parameterContext param : fsc.function_parameter_list().function_parameter()) {
                 if (param.type() != null) {
                     VariableDeclaration p = new VariableDeclaration();
-                    p.setType(param.type().getText());
+                    p.setTypeOLD(param.type().getText());
                     if (param.IDENTIFIER() != null) {
                         p.setName(param.IDENTIFIER().getText());
                         p.setStartIndex(param.IDENTIFIER().getSymbol().getStartIndex());
@@ -149,24 +171,26 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
                             p.setArray(true);
                         }
                     }
-                    func.addParameter(p);
-                    s.addVariable(p);
+                    func.getSignature().addParameter(p);
+                    s.addVariableDeclaration(p);
                 }
             }
         }
         func.setStartIndex(ctx.start.getStartIndex());
         func.setStopIndex(ctx.stop.getStopIndex() + 1);
-        func.setSignatureStopIndex(fsc.stop.getStopIndex() + 1);
-        func.setNameStartIndex(fsc.IDENTIFIER().getSymbol().getStartIndex());
-        func.setNameStopIndex(fsc.IDENTIFIER().getSymbol().getStopIndex() + 1);
+        func.getSignature().setName(fsc.IDENTIFIER().getText());
+        func.getSignature().setStartIndex(fsc.start.getStartIndex());
+        func.getSignature().setStopIndex(fsc.stop.getStopIndex() + 1);
+        func.getSignature().setNameStartIndex(fsc.IDENTIFIER().getSymbol().getStartIndex());
+        func.getSignature().setNameStopIndex(fsc.IDENTIFIER().getSymbol().getStopIndex() + 1);
         /*Scope rootScope = currentScope;
         while (rootScope.getParent() != null) {
             rootScope = rootScope.getParent();
         }*/
-        for (Function fp : currentScope.getFunctionPrototypes()) {
-            if (fp.equals(func)) {
-                fp.addUsage(func);
-                func.addUsage(fp);
+        for (FunctionPrototype fp : currentScope.getFunctionPrototypes()) {
+            if (fp.isPrototypeOf(func)) {
+                fp.setDefinition(func);
+                func.setPrototype(fp);
             }
         }
         currentScope.addFunctionDefinition(func);
@@ -181,28 +205,38 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     @Override
     public Object visitFunction_prototype(AntlrGlslParser.Function_prototypeContext ctx) {
         isFunctionDefinition = false;
-        Function func = new Function();
+        FunctionPrototype func = new FunctionPrototype();
         AntlrGlslParser.Function_signatureContext fsc = ctx.function_signature();
         func.setName(fsc.IDENTIFIER().getText());
-        func.setReturnType(fsc.return_type().getText());
+
+        if (!fsc.return_type().getText().equals("void")) {
+            TypeUsage returnType = new TypeUsage();
+            TypeDeclaration td = getTypeDeclaration(currentScope, fsc.return_type().getText());
+            returnType.setDeclaration(td);
+            func.setReturnType(returnType);
+        } else {
+            func.setReturnType(TypeUsage.VOID);
+        }
+
         if (fsc.function_parameter_list() != null) {
             for (AntlrGlslParser.Function_parameterContext param : fsc.function_parameter_list().function_parameter()) {
                 if (param.type() != null) {
                     VariableDeclaration p = new VariableDeclaration();
-                    p.setType(param.type().getText());
+                    p.setTypeOLD(param.type().getText());
                     if (param.IDENTIFIER() != null) {
                         p.setName(param.IDENTIFIER().getText());
                     }
-                    func.addParameter(p);
+                    func.getSignature().addParameter(p);
                 }
             }
         }
         func.setStartIndex(ctx.start.getStartIndex());
         func.setStopIndex(ctx.stop.getStopIndex() + 1);
-        func.setSignatureStopIndex(fsc.stop.getStopIndex() + 1);
-        func.setNameStartIndex(fsc.IDENTIFIER().getSymbol().getStartIndex());
-        func.setNameStopIndex(fsc.IDENTIFIER().getSymbol().getStopIndex() + 1);
-        func.setPrototype(true);
+        func.getSignature().setName(fsc.IDENTIFIER().getText());
+        func.getSignature().setStartIndex(fsc.start.getStartIndex());
+        func.getSignature().setStopIndex(fsc.stop.getStopIndex() + 1);
+        func.getSignature().setNameStartIndex(fsc.IDENTIFIER().getSymbol().getStartIndex());
+        func.getSignature().setNameStopIndex(fsc.IDENTIFIER().getSymbol().getStopIndex() + 1);
         currentScope.addFunctionPrototype(func);
         return super.visitFunction_prototype(ctx);
     }
@@ -213,7 +247,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
             for (AntlrGlslParser.Function_parameterContext param : ctx.function_parameter()) {
                 if (param.IDENTIFIER() != null) {
                     VariableDeclaration var = new VariableDeclaration();
-                    var.setType(param.type().getText());
+                    var.setTypeOLD(param.type().getText());
 
                     TypeUsage tu = new TypeUsage();
                     tu.setName(param.type().getText());
@@ -280,7 +314,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
         Scope scope = currentScope;
         search:
         while (scope != null) {
-            for (VariableDeclaration vd : scope.getVariables()) {
+            for (VariableDeclaration vd : scope.getVariableDeclarations()) {
                 if (vd.getName().equals(var.getName())) {
                     var.setDeclaration(vd);
                     vd.addUsage(var);

@@ -14,6 +14,12 @@ public class GlslParser extends Parser {
     @Override
     public void parse(Snapshot snpsht, Task task, SourceModificationEvent sme) throws ParseException {
         this.snapshot = snpsht;
+        //TODO: várni párszár millisec-et, hogy gyors gépelésnél ne járjuk be az egész fát minden karakterre
+        //de mondjuk azért néha jó lenne azonnal
+        //  - pl. ha még nem volt soha futtatva, nehogy valami nullptr exception legyen
+        //  - vagy a code completionnál, mert ha megállunk a gépeléssel, a code completion még a régi adatokat kapta a parsertől
+        //          és utána már hiába van meg a friss a parsernél, a code completion nem fogja újra megkérdezni, amíg nem ütünk 
+        //          egy új karaktert
         GlslProcessor.setText(snpsht.getText().toString());
     }
 

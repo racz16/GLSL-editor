@@ -2,14 +2,13 @@ package hu.racz.zalan.editor.errordisplay;
 
 import java.util.*;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 
 public class GlslErrorListener extends BaseErrorListener {
 
     private final List<SyntaxError> syntaxErrors = new ArrayList<>();
 
     public List<SyntaxError> getSyntaxErrors() {
-        return syntaxErrors;
+        return Collections.unmodifiableList(syntaxErrors);
     }
 
     @Override
@@ -17,8 +16,4 @@ public class GlslErrorListener extends BaseErrorListener {
         syntaxErrors.add(new SyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
     }
 
-    @Override
-    public String toString() {
-        return Utils.join(syntaxErrors.iterator(), "\n");
-    }
 }

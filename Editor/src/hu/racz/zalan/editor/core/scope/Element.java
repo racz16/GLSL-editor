@@ -4,7 +4,7 @@ public abstract class Element {
 
     private int startIndex = 0;
     private int stopIndex = 0;
-    private String name = "";
+    protected String name = "";
 
     public int getStartIndex() {
         return startIndex;

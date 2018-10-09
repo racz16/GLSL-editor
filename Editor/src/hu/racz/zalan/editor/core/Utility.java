@@ -27,17 +27,21 @@ public class Utility {
         getTextComponent(document).setCaretPosition(position);
     }
 
-    private static JTextComponent getTextComponent(Document document) {
-        WeakReference<Document> weakDoc = new WeakReference<>((Document) document);
+    public static JTextComponent getTextComponent(Document document) {
+        WeakReference<Document> weakDoc = new WeakReference<>(document);
         DataObject dobj = NbEditorUtilities.getDataObject(weakDoc.get());
         if (dobj != null) {
-            EditorCookie pane = dobj.getLookup().lookup(EditorCookie.class);
-            JEditorPane[] panes = pane.getOpenedPanes();
-            if (panes != null && panes.length > 0) {
-                JTextComponent comp = panes[0];
-                return comp;
-            }
+            return getTextComponent(dobj);
         }
-        throw new IllegalArgumentException();
+        return null;
+    }
+
+    private static JTextComponent getTextComponent(DataObject dobj) {
+        EditorCookie pane = dobj.getLookup().lookup(EditorCookie.class);
+        JEditorPane[] panes = pane.getOpenedPanes();
+        if (panes != null && panes.length > 0) {
+            return panes[0];
+        }
+        return null;
     }
 }

@@ -21,14 +21,16 @@ public class GlslLexer implements Lexer<GlslTokenId> {
     public org.netbeans.api.lexer.Token<GlslTokenId> nextToken() {
         Token token = glslLexer.nextToken();
         if (token.getType() != Token.EOF) {
-            GlslTokenId tokenId = GlslLanguageHierarchy.getToken(token.getType());
-            return info.tokenFactory().createToken(tokenId);
+            return createToken(token.getType());
         } else if (info.input().readLength() > 0) {
-            GlslTokenId tokenId = GlslLanguageHierarchy.getToken(AntlrGlslLexer.SPACE);
-            return info.tokenFactory().createToken(tokenId);
-        } else {
-            return null;
+            return createToken(AntlrGlslLexer.SPACE);
         }
+        return null;
+    }
+
+    private org.netbeans.api.lexer.Token<GlslTokenId> createToken(int token) {
+        GlslTokenId tokenId = GlslLanguageHierarchy.getToken(token);
+        return info.tokenFactory().createToken(tokenId);
     }
 
     @Override

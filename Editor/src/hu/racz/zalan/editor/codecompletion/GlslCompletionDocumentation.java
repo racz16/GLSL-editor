@@ -13,13 +13,13 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
 
     private static final HashMap<String, String> DOCUMENTATION_CACHE = new HashMap<>();
 
-    private URL docUrl;
+    private URL documentationUrl;
     private String elementName;
 
     public GlslCompletionDocumentation(String elementName) {
         this.elementName = elementName;
         try {
-            docUrl = new URL("https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/" + elementName + ".xhtml");
+            documentationUrl = new URL("https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/" + elementName + ".xhtml");
         } catch (MalformedURLException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -37,7 +37,7 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
 
     private String loadDocumentation() {
         StringBuilder result;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(docUrl.openStream()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(documentationUrl.openStream()))) {
             result = readDocumentation(br);
         } catch (IOException ex) {
             return "Not found";
@@ -57,8 +57,7 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
     private String transformDocumentationToNetbeansCompatible(StringBuilder doc) {
         StringBuilder documentation = selectHtmlBody(doc);
         replaceNetbeansIncompatibleCharacters(documentation);
-        String result = documentation.toString();
-        return result;
+        return documentation.toString();
     }
 
     private StringBuilder selectHtmlBody(StringBuilder documentation) {
@@ -77,15 +76,15 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
 
     @Override
     public URL getURL() {
-        return docUrl;
+        return documentationUrl;
     }
 
     @Override
     public CompletionDocumentation resolveLink(String link) {
         int xhtmlIndex = link.indexOf(".xhtml");
         if (xhtmlIndex > 0) {
-            String elementName = link.substring(0, xhtmlIndex);
-            return new GlslCompletionDocumentation(elementName);
+            String name = link.substring(0, xhtmlIndex);
+            return new GlslCompletionDocumentation(name);
         } else {
             return null;
         }

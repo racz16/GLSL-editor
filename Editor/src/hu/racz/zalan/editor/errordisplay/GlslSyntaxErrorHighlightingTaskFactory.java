@@ -9,7 +9,7 @@ import org.netbeans.modules.parsing.spi.*;
 public class GlslSyntaxErrorHighlightingTaskFactory extends TaskFactory {
 
     @Override
-    public Collection create(Snapshot snapshot) {
+    public Collection<SyntaxErrorsHighlightingTask> create(Snapshot snapshot) {
         return Collections.singleton(new SyntaxErrorsHighlightingTask());
     }
 

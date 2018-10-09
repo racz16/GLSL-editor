@@ -1,5 +1,6 @@
 package hu.racz.zalan.editor.core.scope;
 
+import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import java.util.*;
@@ -9,11 +10,12 @@ public class Scope {
     private Scope parent;
     private final List<Scope> children = new ArrayList<>();
 
+    //TODO: lehet, hogy ezeket érdemes volna egy mapba rakni
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
     private final List<VariableUsage> variableUsages = new ArrayList<>();
 
-    private final List<Function> functionPrototypes = new ArrayList<>();
-    private final List<Function> functionDefinitions = new ArrayList<>();
+    private final List<FunctionPrototype> functionPrototypes = new ArrayList<>();
+    private final List<FunctionDefinition> functionDefinitions = new ArrayList<>();
 
     private final List<TypeDeclaration> typeDeclarations = new ArrayList<>();
     private final List<TypeUsage> typeusages = new ArrayList<>();
@@ -52,21 +54,21 @@ public class Scope {
     }
 
     //
-    //variables-----------------------------------------------------------------
+    //variable declarations-----------------------------------------------------
     //
-    public VariableDeclaration getVariable(int index) {
+    public VariableDeclaration getVariableDeclaration(int index) {
         return variableDeclarations.get(index);
     }
 
-    public void addVariable(VariableDeclaration var) {
+    public void addVariableDeclaration(VariableDeclaration var) {
         variableDeclarations.add(var);
     }
 
-    public int getVariableCount() {
+    public int getVariableDeclarationCount() {
         return variableDeclarations.size();
     }
 
-    public List<? extends VariableDeclaration> getVariables() {
+    public List<? extends VariableDeclaration> getVariableDeclarations() {
         return Collections.unmodifiableList(variableDeclarations);
     }
 
@@ -92,11 +94,11 @@ public class Scope {
     //
     //function prototypes-------------------------------------------------------
     //
-    public Function getFunctionPrototype(int index) {
+    public FunctionPrototype getFunctionPrototype(int index) {
         return functionPrototypes.get(index);
     }
 
-    public void addFunctionPrototype(Function func) {
+    public void addFunctionPrototype(FunctionPrototype func) {
         functionPrototypes.add(func);
     }
 
@@ -104,18 +106,18 @@ public class Scope {
         return functionPrototypes.size();
     }
 
-    public List<? extends Function> getFunctionPrototypes() {
+    public List<? extends FunctionPrototype> getFunctionPrototypes() {
         return Collections.unmodifiableList(functionPrototypes);
     }
 
     //
     //function definitions------------------------------------------------------
     //
-    public Function getFunctionDefinition(int index) {
+    public FunctionDefinition getFunctionDefinition(int index) {
         return functionDefinitions.get(index);
     }
 
-    public void addFunctionDefinition(Function func) {
+    public void addFunctionDefinition(FunctionDefinition func) {
         functionDefinitions.add(func);
     }
 
@@ -123,7 +125,7 @@ public class Scope {
         return functionDefinitions.size();
     }
 
-    public List<? extends Function> getFunctionDefinitions() {
+    public List<? extends FunctionDefinition> getFunctionDefinitions() {
         return Collections.unmodifiableList(functionDefinitions);
     }
 

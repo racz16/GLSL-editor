@@ -9,38 +9,38 @@ public class SyntaxError {
     private final int line;
     private final int charPositionInLine;
     private final String message;
-    private final RecognitionException e;
+    private final RecognitionException exception;
 
     public SyntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-	this.recognizer = recognizer;
-	this.offendingSymbol = offendingSymbol;
-	this.line = line;
-	this.charPositionInLine = charPositionInLine;
-	this.message = msg;
-	this.e = e;
+        this.recognizer = recognizer;
+        this.offendingSymbol = offendingSymbol;
+        this.line = line;
+        this.charPositionInLine = charPositionInLine;
+        this.message = msg;
+        this.exception = e;
     }
 
     public Recognizer<?, ?> getRecognizer() {
-	return recognizer;
+        return recognizer;
     }
 
     public Object getOffendingSymbol() {
-	return offendingSymbol;
+        return offendingSymbol;
     }
 
     public int getLine() {
-	return line;
+        return line;
     }
 
     public int getCharPositionInLine() {
-	return charPositionInLine;
+        return charPositionInLine;
     }
 
     public String getMessage() {
-	return message;
+        return message;
     }
 
     public RecognitionException getException() {
-	return e;
+        return exception;
     }
 }

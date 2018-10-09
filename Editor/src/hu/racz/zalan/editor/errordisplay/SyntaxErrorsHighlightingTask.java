@@ -1,9 +1,13 @@
 package hu.racz.zalan.editor.errordisplay;
 
+import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
+import hu.racz.zalan.editor.core.scope.function.*;
+import hu.racz.zalan.editor.core.scope.type.*;
 import java.util.*;
 import javax.swing.text.*;
+import org.antlr.v4.runtime.*;
 import org.netbeans.modules.parsing.spi.*;
 import org.netbeans.spi.editor.hints.*;
 import org.openide.util.*;
@@ -36,35 +40,41 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
         Scope rootScope = GlslProcessor.getRootScope();
 
+        Token ft = GlslProcessor.getTokens().get(0);
+        if (ft.getType() != AntlrGlslLexer.MACRO || !ft.getText().startsWith("#version")) {
+            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, "The shader should starts with the version macro", document, new MyPosition(ft.getStartIndex()), new MyPosition(ft.getStopIndex()));
+            errors.add(ed);
+        }
+
         for (int i = 0; i < rootScope.getFunctionDefinitionCount(); i++) {
-            Function def = rootScope.getFunctionDefinition(i);
+            FunctionDefinition def = rootScope.getFunctionDefinition(i);
             boolean valid = false;
             boolean valid2 = true;
-            if (def.getName().equals("main") && def.getParameterCount() == 0 && def.getReturnType().equals("void")) {
+            if (def.getSignature().getName().equals("main") && def.getSignature().getParameterCount() == 0 && def.getReturnType() == TypeUsage.VOID) {
                 valid = true;
             }
             for (int j = 0; j < rootScope.getFunctionPrototypeCount(); j++) {
-                Function prot = rootScope.getFunctionPrototype(j);
-                if (prot.equals(def) && prot.getStopIndex() < def.getStartIndex()) {
+                FunctionPrototype prot = rootScope.getFunctionPrototype(j);
+                if (prot.isPrototypeOf(def) && prot.getStopIndex() < def.getStartIndex()) {
                     valid = true;
                 }
             }
             for (int j = 0; j < rootScope.getFunctionDefinitionCount(); j++) {
-                Function def2 = rootScope.getFunctionDefinition(j);
-                if (def != def2 && def.equalsSignature(def2) && def.getStopIndex() > def2.getStartIndex()) {
+                FunctionDefinition def2 = rootScope.getFunctionDefinition(j);
+                if (def != def2 && def.getSignature().equals(def2.getSignature()) && def.getStopIndex() > def2.getStartIndex()) {
                     valid2 = false;
                 }
             }
             if (!valid) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new CreateFunctionPrototype(def));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignatureStopIndex()));
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignature().getStopIndex()));
                 errors.add(ed);
             }
             if (!valid2) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new MyFix(def.getStartIndex(), def.getStopIndex()));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignatureStopIndex()));
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignature().getStopIndex()));
                 errors.add(ed);
             }
         }
@@ -89,9 +99,9 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
     public class CreateFunctionPrototype implements Fix {
 
-        private final Function functionDefinition;
+        private final FunctionDefinition functionDefinition;
 
-        public CreateFunctionPrototype(Function func) {
+        public CreateFunctionPrototype(FunctionDefinition func) {
             this.functionDefinition = func;
         }
 

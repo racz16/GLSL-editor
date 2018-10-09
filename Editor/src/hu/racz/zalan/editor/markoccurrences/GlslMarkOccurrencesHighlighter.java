@@ -2,164 +2,219 @@ package hu.racz.zalan.editor.markoccurrences;
 
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
+import hu.racz.zalan.editor.core.scope.Element;
+import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import java.awt.*;
-import java.lang.ref.*;
-import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 import org.netbeans.api.editor.settings.*;
-import org.netbeans.modules.editor.*;
 import org.netbeans.spi.editor.highlighting.support.*;
-import org.openide.cookies.*;
-import org.openide.loaders.*;
 import org.openide.util.*;
 
-public class GlslMarkOccurrencesHighlighter implements CaretListener {
+public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
 
-    private static final AttributeSet defaultColors = AttributesUtilities.createImmutable(StyleConstants.Background, new Color(236, 235, 163));
+    private static final AttributeSet HIGHLIGHT_COLOR = AttributesUtilities.createImmutable(StyleConstants.Background, new Color(236, 235, 163));
+    private final static int REFRESH_DELAY = 100;
 
     private final OffsetsBag bag;
-
-    private JTextComponent comp;
-
-    private final RequestProcessor rp;
-    private final static int REFRESH_DELAY = 100;
+    private final Document document;
+    private final JTextComponent textComponent;
+    private final RequestProcessor requestProcessor;
     private RequestProcessor.Task lastRefreshTask;
 
-    private int caret;
+    private int caretPosition;
+    private Scope rootScope;
+    private Scope caretScope;
 
-    public GlslMarkOccurrencesHighlighter(Document doc) {
-        rp = new RequestProcessor(GlslMarkOccurrencesHighlighter.class);
-        bag = new OffsetsBag(doc);
-        WeakReference<Document> weakDoc = new WeakReference<>((Document) doc);
-        DataObject dobj = NbEditorUtilities.getDataObject(weakDoc.get());
-        if (dobj != null) {
-            EditorCookie pane = dobj.getLookup().lookup(EditorCookie.class);
-            JEditorPane[] panes = pane.getOpenedPanes();
-            if (panes != null && panes.length > 0) {
-                comp = panes[0];
-                comp.addCaretListener(this);
-            }
+    public GlslMarkOccurrencesHighlighter(Document document) {
+        requestProcessor = new RequestProcessor(GlslMarkOccurrencesHighlighter.class);
+        bag = new OffsetsBag(document);
+        this.document = document;
+        textComponent = Utility.getTextComponent(document);
+        if (textComponent != null) {
+            textComponent.addCaretListener(this);
         }
     }
 
     @Override
     public void caretUpdate(CaretEvent e) {
-        bag.clear();
-        caret = comp.getCaretPosition();
-        setupAutoRefresh();
-    }
-
-    public void setupAutoRefresh() {
         if (lastRefreshTask == null) {
-            lastRefreshTask = rp.create(new Runnable() {
-                @Override
-                public void run() {
-                    Scope rootScope = GlslProcessor.getRootScope();
-                    if (rootScope == null) {
-                        return;
-                    }
-                    addFunctionOccurrences(rootScope);
-                    addVariableOccurrences();
-                    addTypeOccurrences();
-                }
-            });
+            lastRefreshTask = requestProcessor.create(this);
         }
         lastRefreshTask.schedule(REFRESH_DELAY);
     }
 
-    private void addFunctionOccurrences(Scope rootScope) {
-        for (Function fd : rootScope.getFunctionDefinitions()) {
-            if (fd.getNameStartIndex() <= caret && fd.getNameStopIndex() >= caret) {
-                bag.addHighlight(fd.getNameStartIndex(), fd.getNameStopIndex(), defaultColors);
-                if (fd.getUsageCount() > 0) {
-                    Function fp = fd.getUsage(0);
-                    bag.addHighlight(fp.getNameStartIndex(), fp.getNameStopIndex(), defaultColors);
-                }
+    @Override
+    public void run() {
+        initializeHighlight();
+        addFunctionOccurrences();
+        addVariableOccurrences();
+        addTypeOccurrences();
+    }
+
+    private void initializeHighlight() {
+        bag.clear();
+        caretPosition = textComponent.getCaretPosition();
+        initializeScopes();
+    }
+
+    private void initializeScopes() {
+        try {
+            rootScope = getRootScope();
+            caretScope = GlslProcessor.getCaretScope(caretPosition);
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private Scope getRootScope() throws BadLocationException {
+        Scope ret = GlslProcessor.getRootScope();
+        if (rootScope == null) {
+            GlslProcessor.setText(document.getText(0, document.getLength()));
+            ret = GlslProcessor.getRootScope();
+        }
+        return ret;
+    }
+
+    //
+    //functions-----------------------------------------------------------------
+    //
+    private void addFunctionOccurrences() {
+        FunctionPrototype prototype = findFunctionPrototype();
+        addFunctionOccurrences(prototype);
+    }
+
+    private FunctionPrototype findFunctionPrototype() {
+        FunctionPrototype fp = funcFunctionPrototypeAtCaret();
+        return fp == null ? findFunctionDefinitionSPrototypeAtCaret() : fp;
+    }
+
+    private FunctionPrototype funcFunctionPrototypeAtCaret() {
+        for (FunctionPrototype fp : rootScope.getFunctionPrototypes()) {
+            if (isElementAtCaret(fp)) {
+                return fp;
             }
         }
-        for (Function fp : rootScope.getFunctionPrototypes()) {
-            if (fp.getNameStartIndex() <= caret && fp.getNameStopIndex() >= caret) {
-                bag.addHighlight(fp.getNameStartIndex(), fp.getNameStopIndex(), defaultColors);
-                for (Function fd : fp.getUsages()) {
-                    bag.addHighlight(fd.getNameStartIndex(), fd.getNameStopIndex(), defaultColors);
-                }
+        return null;
+    }
+
+    private FunctionPrototype findFunctionDefinitionSPrototypeAtCaret() {
+        for (FunctionDefinition fd : rootScope.getFunctionDefinitions()) {
+            if (isElementAtCaret(fd)) {
+                return fd.getPrototype();
+            }
+        }
+        return null;
+    }
+
+    private void addFunctionOccurrences(FunctionPrototype prototype) {
+        if (prototype != null) {
+            addElementToBag(prototype);
+            if (prototype.getDefinition() != null) {
+                addElementToBag(prototype.getDefinition());
             }
         }
     }
 
+    //
+    //variables-----------------------------------------------------------------
+    //
     private void addVariableOccurrences() {
         VariableDeclaration declaration = findVariableDeclaration();
         addVariableOccurrences(declaration);
     }
 
     private VariableDeclaration findVariableDeclaration() {
-        VariableDeclaration declaration = null;
-        Scope scope = GlslProcessor.getCaretScope(caret);
-        search:
-        while (scope != null) {
-            for (VariableDeclaration vd : scope.getVariables()) {
-                if (vd.getStartIndex() <= caret && vd.getStopIndex() >= caret) {
-                    declaration = vd;
-                    break search;
-                }
+        VariableDeclaration vd = findVariableDeclarationAtCaret();
+        return vd == null ? findVariableUsageSDeclarationAtCaret() : vd;
+    }
+
+    private VariableDeclaration findVariableDeclarationAtCaret() {
+        for (VariableDeclaration vd : caretScope.getVariableDeclarations()) {
+            if (isElementAtCaret(vd)) {
+                return vd;
             }
-            for (VariableUsage vu : scope.getVariableUsages()) {
-                if (vu.getStartIndex() <= caret && vu.getStopIndex() >= caret) {
-                    declaration = vu.getDeclaration();
-                    break search;
-                }
-            }
-            scope = scope.getParent();
         }
-        return declaration;
+        return null;
+    }
+
+    private VariableDeclaration findVariableUsageSDeclarationAtCaret() {
+        for (VariableUsage vu : caretScope.getVariableUsages()) {
+            if (isElementAtCaret(vu)) {
+                return vu.getDeclaration();
+            }
+        }
+        return null;
     }
 
     private void addVariableOccurrences(VariableDeclaration declaration) {
         if (declaration != null) {
-            bag.addHighlight(declaration.getStartIndex(), declaration.getStopIndex(), defaultColors);
+            addElementToBag(declaration);
             for (VariableUsage vu : declaration.getUsages()) {
-                bag.addHighlight(vu.getStartIndex(), vu.getStopIndex(), defaultColors);
+                addElementToBag(vu);
             }
         }
     }
 
+    //
+    //types---------------------------------------------------------------------
+    //
     private void addTypeOccurrences() {
         TypeDeclaration declaration = findTypeDeclaration();
         addTypeOccurrences(declaration);
     }
 
     private TypeDeclaration findTypeDeclaration() {
-        TypeDeclaration declaration = null;
-        Scope scope = GlslProcessor.getCaretScope(caret);
-        search:
-        while (scope != null) {
-            for (TypeDeclaration td : scope.getTypeDeclarations()) {
-                if (td.getStartIndex() <= caret && td.getStopIndex() >= caret) {
-                    declaration = td;
-                    break search;
-                }
+        TypeDeclaration td = findTypeDeclarationAtCaret();
+        return td == null ? findTypeUsageSDeclarationAtCaret() : td;
+    }
+
+    private TypeDeclaration findTypeDeclarationAtCaret() {
+        for (TypeDeclaration td : caretScope.getTypeDeclarations()) {
+            if (isElementAtCaret(td)) {
+                return td;
             }
-            for (TypeUsage tu : scope.getTypeUsages()) {
-                if (tu.getStartIndex() <= caret && tu.getStopIndex() >= caret) {
-                    declaration = tu.getDeclaration();
-                    break search;
-                }
-            }
-            scope = scope.getParent();
         }
-        return declaration;
+        return null;
+    }
+
+    private TypeDeclaration findTypeUsageSDeclarationAtCaret() {
+        for (TypeUsage vu : caretScope.getTypeUsages()) {
+            if (isElementAtCaret(vu)) {
+                return vu.getDeclaration();
+            }
+        }
+        return null;
     }
 
     private void addTypeOccurrences(TypeDeclaration declaration) {
         if (declaration != null) {
-            bag.addHighlight(declaration.getStartIndex(), declaration.getStopIndex(), defaultColors);
+            addElementToBag(declaration);
             for (TypeUsage tu : declaration.getUsages()) {
-                bag.addHighlight(tu.getStartIndex(), tu.getStopIndex(), defaultColors);
+                addElementToBag(tu);
             }
         }
+    }
+
+    //
+    //misc----------------------------------------------------------------------
+    //
+    private boolean isElementAtCaret(Element element) {
+        return element.getStartIndex() <= caretPosition && element.getStopIndex() >= caretPosition;
+    }
+
+    private boolean isElementAtCaret(FunctionBase element) {
+        return element.getSignature().getNameStartIndex() <= caretPosition && element.getSignature().getNameStopIndex() >= caretPosition;
+    }
+
+    private void addElementToBag(Element element) {
+        bag.addHighlight(element.getStartIndex(), element.getStopIndex(), HIGHLIGHT_COLOR);
+    }
+
+    private void addElementToBag(FunctionBase element) {
+        bag.addHighlight(element.getSignature().getNameStartIndex(), element.getSignature().getNameStopIndex(), HIGHLIGHT_COLOR);
     }
 
     public OffsetsBag getHighlightsBag() {

@@ -1,6 +1,7 @@
 package hu.racz.zalan.editor.core.scope.variable;
 
 import hu.racz.zalan.editor.core.scope.*;
+import hu.racz.zalan.editor.core.scope.type.*;
 import java.util.*;
 import javax.swing.ImageIcon;
 import org.openide.util.ImageUtilities;
@@ -15,9 +16,17 @@ public class VariableDeclaration extends Element implements CompletionElement {
     private boolean global;
     private boolean array;
     //TODO: type ne string legyen, hanem TypeUsage
-    private String type = "";
+    private String typeOLD = "";
+    private TypeDeclaration type;
 
     private final List<VariableUsage> usages = new ArrayList<>();
+
+    public VariableDeclaration(TypeDeclaration type, String name, boolean builtIn, boolean array) {
+        this.type = type;
+        setName(name);
+        setBuiltIn(builtIn);
+        setArray(array);
+    }
 
     public VariableDeclaration(String type, String name, boolean builtIn, boolean array) {
         this(type, name, builtIn);
@@ -25,25 +34,25 @@ public class VariableDeclaration extends Element implements CompletionElement {
     }
 
     public VariableDeclaration(String type, String name, boolean builtIn) {
-        setType(type);
+        setTypeOLD(type);
         setName(name);
         setBuiltIn(builtIn);
     }
 
     public VariableDeclaration(String type, String name) {
-        setType(type);
+        setTypeOLD(type);
         setName(name);
     }
 
     public VariableDeclaration() {
     }
 
-    public String getType() {
-        return type;
+    public String getTypeOLD() {
+        return typeOLD;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypeOLD(String type) {
+        this.typeOLD = type;
     }
 
     public boolean isBuiltIn() {
@@ -98,7 +107,7 @@ public class VariableDeclaration extends Element implements CompletionElement {
 
     @Override
     public String getRightText() {
-        return getType() + (isArray() ? "[]" : "");
+        return (getTypeOLD().equals("") ? type.getName() : getTypeOLD()) + (isArray() ? "[]" : "");
     }
 
     @Override
@@ -114,6 +123,12 @@ public class VariableDeclaration extends Element implements CompletionElement {
     @Override
     public String getPasteText() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        VariableDeclaration vd = (VariableDeclaration) obj;
+        return getName().equals(vd.getName());
     }
 
 }

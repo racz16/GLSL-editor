@@ -1,0 +1,3131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builtin>
+
+    
+    <keywords>
+        <keyword>break</keyword>
+        <keyword>continue</keyword>
+        <keyword>do</keyword>
+        <keyword>for</keyword>
+        <keyword>while</keyword>
+        <keyword>switch</keyword>
+        <keyword>case</keyword>
+        <keyword>default</keyword>
+        <keyword>if</keyword>
+        <keyword>else</keyword>
+        <keyword>discard</keyword>
+        <keyword>return</keyword>
+        <keyword>struct</keyword>
+        <keyword>void</keyword>
+        <keyword>precision</keyword>
+        <keyword>layout</keyword>
+        <keyword>precise</keyword>
+        <keyword>invariant</keyword>
+        <keyword>subroutine</keyword>
+        <keyword>smooth</keyword>
+        <keyword>flat</keyword>
+        <keyword>noperspective</keyword>
+        <keyword>const</keyword>
+        <keyword>inout</keyword>
+        <keyword>in</keyword>
+        <keyword>out</keyword>
+        <keyword>centroid</keyword>
+        <keyword>patch</keyword>
+        <keyword>sample</keyword>
+        <keyword>uniform</keyword>
+        <keyword>buffer</keyword>
+        <keyword>varying</keyword>
+        <keyword>attribute</keyword>
+        <keyword>coherent</keyword>
+        <keyword>volatile</keyword>
+        <keyword>restrict</keyword>
+        <keyword>readonly</keyword>
+        <keyword>writeonly</keyword>
+        <keyword>shared</keyword>
+        <keyword>highp</keyword>
+        <keyword>mediump</keyword>
+        <keyword>lowp</keyword>
+        <keyword>true</keyword>
+        <keyword>false</keyword>
+    </keywords>
+
+
+    <types>
+        <type>bool</type>
+        <type>int</type>
+        <type>uint</type>
+        <type>float</type>
+        <type>double</type>
+        <type>vec2</type>
+        <type>vec3</type>
+        <type>vec4</type>
+        <type>dvec2</type>
+        <type>dvec3</type>
+        <type>dvec4</type>
+        <type>bvec2</type>
+        <type>bvec3</type>
+        <type>bvec4</type>
+        <type>ivec2</type>
+        <type>ivec3</type>
+        <type>ivec4 </type>
+        <type>uvec2</type>
+        <type>uvec3</type>
+        <type>uvec4</type>
+        <type>mat2</type>
+        <type>mat3</type>
+        <type>mat4</type>
+        <type>mat2x2</type>
+        <type>mat2x3</type>
+        <type>mat2x4</type>
+        <type>mat3x2</type>
+        <type>mat3x3</type>
+        <type>mat3x4</type>
+        <type>mat4x2</type>
+        <type>mat4x3</type>
+        <type>mat4x4</type>
+        <type>dmat2</type>
+        <type>dmat3</type>
+        <type>dmat4</type>
+        <type>dmat2x2</type>
+        <type>dmat2x3</type>
+        <type>dmat2x4</type>
+        <type>dmat3x2</type>
+        <type>dmat3x3</type>
+        <type>dmat3x4</type>
+        <type>dmat4x2</type>
+        <type>dmat4x3</type>
+        <type>dmat4x4</type>
+        <type>sampler1D</type>
+        <type>image1D</type>
+        <type>sampler2D</type>
+        <type>image2D</type>
+        <type>sampler3D</type>
+        <type>image3D</type>
+        <type>samplerCube</type>
+        <type>imageCube</type>
+        <type>sampler2DRect</type>
+        <type>image2DRect</type>
+        <type>sampler1DArray</type>
+        <type>image1DArray</type>
+        <type>sampler2DArray</type>
+        <type>image2DArray</type>
+        <type>samplerBuffer</type>
+        <type>imageBuffer</type>
+        <type>sampler2DMS</type>
+        <type>image2DMS</type>
+        <type>sampler2DMSArray</type>
+        <type>image2DMSArray</type>
+        <type>samplerCubeArray</type>
+        <type>imageCubeArray</type>
+        <type>sampler1DShadow</type>
+        <type>sampler2DShadow</type>
+        <type>sampler2DRectShadow</type>
+        <type>sampler1DArrayShadow</type>
+        <type>sampler2DArrayShadow</type>
+        <type>samplerCubeShadow</type>
+        <type>samplerCubeArrayShadow</type>
+        <type>isampler1D</type>
+        <type>iimage1D</type>
+        <type>isampler2D</type>
+        <type>iimage2D</type>
+        <type>isampler3D</type>
+        <type>iimage3D</type>
+        <type>isamplerCube</type>
+        <type>iimageCube</type>
+        <type>isampler2DRect</type>
+        <type>iimage2DRect</type>
+        <type>isampler1DArray</type>
+        <type>iimage1DArray</type>
+        <type>isampler2DArray</type>
+        <type>iimage2DArray</type>
+        <type>isamplerBuffer</type>
+        <type>iimageBuffer</type>
+        <type>isampler2DMS</type>
+        <type>iimage2DMS</type>
+        <type>isampler2DMSArray</type>
+        <type>iimage2DMSArray</type>
+        <type>isamplerCubeArray</type>
+        <type>iimageCubeArray</type>
+        <type>usampler1D</type>
+        <type>uimage1D</type>
+        <type>usampler2D</type>
+        <type>uimage2D</type>
+        <type>usampler3D</type>
+        <type>uimage3D</type>
+        <type>usamplerCube</type>
+        <type>uimageCube</type>
+        <type>usampler2DRect</type>
+        <type>uimage2DRect</type>
+        <type>usampler1DArray</type>
+        <type>uimage1DArray</type>
+        <type>usampler2DArray</type>
+        <type>uimage2DArray</type>
+        <type>usamplerBuffer</type>
+        <type>uimageBuffer</type>
+        <type>usampler2DMS</type>
+        <type>uimage2DMS</type>
+        <type>usampler2DMSArray</type>
+        <type>uimage2DMSArray</type>
+        <type>usamplerCubeArray</type>
+        <type>uimageCubeArray</type>
+    </types>
+
+
+    <variables>
+        <variable>
+            <type>uvec3</type>
+            <name>gl_NumWorkGroups</name>
+        </variable>
+        <variable>
+            <type>uvec3</type>
+            <name>gl_WorkGroupSize</name>
+        </variable>
+        <variable>
+            <type>uvec3</type>
+            <name>gl_WorkGroupID</name>
+        </variable>
+        <variable>
+            <type>uvec3</type>
+            <name>gl_LocalInvocationID</name>
+        </variable>
+        <variable>
+            <type>uvec3</type>
+            <name>gl_GlobalInvocationID</name>
+        </variable>
+        <variable>
+            <type>uint</type>
+            <name>gl_LocalInvocationIndex</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_VertexID</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_InstanceID</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_DrawID</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_BaseVertex</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_BaseInstance</name>
+        </variable>
+        <variable>
+            <type>vec4</type>
+            <name>gl_Position</name>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_PointSize</name>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_ClipDistance</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_CullDistance</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>gl_PerVertex</type>
+            <name>gl_in</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_PrimitiveIDIn</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_InvocationID</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_PatchVerticesIn</name>
+        </variable>
+        <variable>
+            <type>vec3</type>
+            <name>gl_TessCoord</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_PrimitiveID</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_Layer</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_ViewportIndex</name>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_TessLevelOuter</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_TessLevelInner</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>vec4</type>
+            <name>gl_FragCoord</name>
+        </variable>
+        <variable>
+            <type>bool</type>
+            <name>gl_FrontFacing</name>
+        </variable>
+        <variable>
+            <type>vec2</type>
+            <name>gl_PointCoord</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_SampleID</name>
+        </variable>
+        <variable>
+            <type>vec2</type>
+            <name>gl_SamplePosition</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_SampleMaskIn</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>bool</type>
+            <name>gl_HelperInvocation</name>
+        </variable>
+        <variable>
+            <type>float</type>
+            <name>gl_FragDepth</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_SampleMask</name>
+            <array>true</array>
+        </variable>
+        <variable>
+            <type>gl_DepthRangeParameters</type>
+            <name>gl_DepthRange</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_NumSamples</name>
+        </variable>
+        <variable>
+            <type>ivec3</type>
+            <name>gl_MaxComputeWorkGroupCount</name>
+        </variable>
+        <variable>
+            <type>ivec3</type>
+            <name>gl_MaxComputeWorkGroupSize</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxComputeUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxComputeTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxComputeImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxComputeAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxComputeAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexAttribs</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVaryingComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryInputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentInputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedImageUnitsAndFragmentOutputs</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedShaderOutputResources</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxImageSamples</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedImageUniforms</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxDrawBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxClipDistances</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryOutputVertices</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryTotalOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryVaryingComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlInputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlTotalOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationInputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationOutputComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationTextureImageUnits</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationUniformComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessPatchComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxPatchVertices</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessGenLevel</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxViewports</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexUniformVectors</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentUniformVectors</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVaryingVectors</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedAtomicCounters</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxAtomicCounterBindings</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxVertexAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessControlAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTessEvaluationAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxGeometryAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxFragmentAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedAtomicCounterBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxAtomicCounterBufferSize</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MinProgramTexelOffset</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxProgramTexelOffset</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTransformFeedbackBuffers</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxTransformFeedbackInterleavedComponents</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCullDistances</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxCombinedClipAndCullDistances</name>
+        </variable>
+        <variable>
+            <type>int</type>
+            <name>gl_MaxSamples</name>
+        </variable>
+    </variables>
+
+
+    <functions>
+        <function>
+            <type>genType</type>
+            <name>radians</name>
+            <parameters>genType degrees</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>degrees</name>
+            <parameters>genType radians</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>sin</name>
+            <parameters>genType angle</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>cos</name>
+            <parameters>genType angle</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>tan</name>
+            <parameters>genType angle</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>asin</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>acos</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>atan</name>
+            <parameters>genType y, genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>atan</name>
+            <parameters>genType y_over_x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>sinh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>cosh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>tanh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>asinh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>acosh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>atanh</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>pow</name>
+            <parameters>genType x, genType y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>exp</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>log</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>exp2</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>log2</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>sqrt</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>sqrt</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>inversesqrt</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>inversesqrt</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>abs</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>abs</name>
+            <parameters>genIType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>abs</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>sign</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>sign</name>
+            <parameters>genIType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>sign</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>floor</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>floor</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>trunc</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>trunc</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>round</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>round</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>roundEven</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>roundEven</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>ceil</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>ceil</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>fract</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>fract</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>mod</name>
+            <parameters>genType x, float y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>mod</name>
+            <parameters>genType x, genType y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>mod</name>
+            <parameters>genDType x, double y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>mod</name>
+            <parameters>genDType x, genDType y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>modf</name>
+            <parameters>genType x, genType i</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>modf</name>
+            <parameters>genDType x, genDType i</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>min</name>
+            <parameters>genType x, genType y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>min</name>
+            <parameters>genType x, float y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>min</name>
+            <parameters>genDType x, genDType y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>min</name>
+            <parameters>genDType x, double y</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>min</name>
+            <parameters>genIType x, genIType y</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>min</name>
+            <parameters>genIType x, int y</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>min</name>
+            <parameters>genUType x, genUType y</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>min</name>
+            <parameters>genUType x, uint y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>max</name>
+            <parameters>genType x, genType y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>max</name>
+            <parameters>genType x, float y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>max</name>
+            <parameters>genDType x, genDType y</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>max</name>
+            <parameters>genDType x, double y</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>max</name>
+            <parameters>genIType x, genIType y</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>max</name>
+            <parameters>genIType x, int y</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>max</name>
+            <parameters>genUType x, genUType y</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>max</name>
+            <parameters>genUType x, uint y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>clamp</name>
+            <parameters>genType x, genType minVal, genType maxVal</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>clamp</name>
+            <parameters>genType x, float minVal, float maxVal</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>clamp</name>
+            <parameters>genDType x, genDType minVal, genDType maxVal</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>clamp</name>
+            <parameters>genDType x, double minVal, double maxVal</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>clamp</name>
+            <parameters>genIType x, genIType minVal, genIType maxVal</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>clamp</name>
+            <parameters>genIType x, int minVal, int maxVal</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>clamp</name>
+            <parameters>genUType x, genUType minVal, genUType maxVal</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>clamp</name>
+            <parameters>genUType x, uint minVal, uint maxVal</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>mix</name>
+            <parameters>genType x, genType y, genType a</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>mix</name>
+            <parameters>genType x, genType y, float a</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>mix</name>
+            <parameters>genDType x, genDType y, genDType a</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>mix</name>
+            <parameters>genDType x, genDType y, double a</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>mix</name>
+            <parameters>genType x, genType y, genBType a</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>mix</name>
+            <parameters>genDType x, genDType y, genBType a</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>mix</name>
+            <parameters>genIType x, genIType y, genBType a</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>mix</name>
+            <parameters>genUType x, genUType y, genBType a</parameters>
+        </function>
+        <function>
+            <type>genBType</type>
+            <name>mix</name>
+            <parameters>genBType x, genBType y, genBType a</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>step</name>
+            <parameters>genType edge, genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>step</name>
+            <parameters>float edge, genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>step</name>
+            <parameters>genDType edge, genDType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>step</name>
+            <parameters>double edge, genDType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>smoothstep</name>
+            <parameters>genType edge0, genType edge1, genType x</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>smoothstep</name>
+            <parameters>float edge0, float edge1, genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>smoothstep</name>
+            <parameters>genDType edge0, genDType edge1, genDType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>smoothstep</name>
+            <parameters>double edge0, double edge1, genDType x</parameters>
+        </function>
+        <function>
+            <type>genBType</type>
+            <name>isnan</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genBType</type>
+            <name>isnan</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genBType</type>
+            <name>isinf</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genBType</type>
+            <name>isinf</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>floatBitsToInt</name>
+            <parameters>genType value</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>floatBitsToUint</name>
+            <parameters>genType value</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>intBitsToFloat</name>
+            <parameters>genIType value</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>uintBitsToFloat</name>
+            <parameters>genUType value</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>fma</name>
+            <parameters>genType a, genType b, genType c</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>fma</name>
+            <parameters>genDType a, genDType b, genDType c</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>frexp</name>
+            <parameters>genType x, genIType exp</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>frexp</name>
+            <parameters>genDType x, genIType exp</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>ldexp</name>
+            <parameters>genType x, genIType exp</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>ldexp</name>
+            <parameters>genDType x, genIType exp</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>packUnorm2x16</name>
+            <parameters>vec2 v</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>packSnorm2x16</name>
+            <parameters>vec2 v</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>packUnorm4x8</name>
+            <parameters>vec4 v</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>packSnorm4x8</name>
+            <parameters>vec4 v</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>unpackUnorm2x16</name>
+            <parameters>uint p</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>unpackSnorm2x16</name>
+            <parameters>uint p</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>unpackUnorm4x8</name>
+            <parameters>uint p</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>unpackSnorm4x8</name>
+            <parameters>uint p</parameters>
+        </function>
+        <function>
+            <type>double</type>
+            <name>packDouble2x32</name>
+            <parameters>uvec2 v</parameters>
+        </function>
+        <function>
+            <type>uvec2</type>
+            <name>unpackDouble2x32</name>
+            <parameters>double v</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>packHalf2x16</name>
+            <parameters>vec2 v</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>unpackHalf2x16</name>
+            <parameters>uint v</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>length</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>double</type>
+            <name>length</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>distance</name>
+            <parameters>genType p0, genType p1</parameters>
+        </function>
+        <function>
+            <type>double</type>
+            <name>distance</name>
+            <parameters>genDType p0, genDType p1</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>dot</name>
+            <parameters>genType x, genType y</parameters>
+        </function>
+        <function>
+            <type>double</type>
+            <name>dot</name>
+            <parameters>genDType x, genDType y</parameters>
+        </function>
+        <function>
+            <type>vec3</type>
+            <name>cross</name>
+            <parameters>vec3 x, vec3 y</parameters>
+        </function>
+        <function>
+            <type>dvec3</type>
+            <name>cross</name>
+            <parameters>dvec3 x, dvec3 y</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>normalize</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>normalize</name>
+            <parameters>genDType x</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>ftransform</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>faceforward</name>
+            <parameters>genType N, genType I, genType Nref</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>faceforward</name>
+            <parameters>genDType N, genDType I, genDType Nref</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>reflect</name>
+            <parameters>genType I, genType N</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>reflect</name>
+            <parameters>genDType I, genDType N</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>refract</name>
+            <parameters>genType I, genType N, float eta</parameters>
+        </function>
+        <function>
+            <type>genDType</type>
+            <name>refract</name>
+            <parameters>genDType I, genDType N, float eta</parameters>
+        </function>
+        <function>
+            <type>mat</type>
+            <name>matrixCompMult</name>
+            <parameters>mat x, mat y</parameters>
+        </function>
+        <function>
+            <type>mat2</type>
+            <name>outerProduct</name>
+            <parameters>vec2 c, vec2 r</parameters>
+        </function>
+        <function>
+            <type>mat3</type>
+            <name>outerProduct</name>
+            <parameters>vec3 c, vec3 r</parameters>
+        </function>
+        <function>
+            <type>mat4</type>
+            <name>outerProduct</name>
+            <parameters>vec4 c, vec4 r</parameters>
+        </function>
+        <function>
+            <type>mat2x3</type>
+            <name>outerProduct</name>
+            <parameters>vec3 c, vec2 r</parameters>
+        </function>
+        <function>
+            <type>mat3x2</type>
+            <name>outerProduct</name>
+            <parameters>vec2 c, vec3 r</parameters>
+        </function>
+        <function>
+            <type>mat2x4</type>
+            <name>outerProduct</name>
+            <parameters>vec4 c, vec2 r</parameters>
+        </function>
+        <function>
+            <type>mat4x2</type>
+            <name>outerProduct</name>
+            <parameters>vec2 c, vec4 r</parameters>
+        </function>
+        <function>
+            <type>mat3x4</type>
+            <name>outerProduct</name>
+            <parameters>vec4 c, vec3 r</parameters>
+        </function>
+        <function>
+            <type>mat4x3</type>
+            <name>outerProduct</name>
+            <parameters>vec3 c, vec4 r</parameters>
+        </function>
+        <function>
+            <type>mat2</type>
+            <name>transpose</name>
+            <parameters>mat2 m</parameters>
+        </function>
+        <function>
+            <type>mat3</type>
+            <name>transpose</name>
+            <parameters>mat3 m</parameters>
+        </function>
+        <function>
+            <type>mat4</type>
+            <name>transpose</name>
+            <parameters>mat4 m</parameters>
+        </function>
+        <function>
+            <type>mat2x3</type>
+            <name>transpose</name>
+            <parameters>mat3x2 m</parameters>
+        </function>
+        <function>
+            <type>mat3x2</type>
+            <name>transpose</name>
+            <parameters>mat2x3 m</parameters>
+        </function>
+        <function>
+            <type>mat2x4</type>
+            <name>transpose</name>
+            <parameters>mat4x2 m</parameters>
+        </function>
+        <function>
+            <type>mat4x2</type>
+            <name>transpose</name>
+            <parameters>mat2x4 m</parameters>
+        </function>
+        <function>
+            <type>mat3x4</type>
+            <name>transpose</name>
+            <parameters>mat4x3 m</parameters>
+        </function>
+        <function>
+            <type>mat4x3</type>
+            <name>transpose</name>
+            <parameters>mat3x4 m</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>determinant</name>
+            <parameters>mat2 m</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>determinant</name>
+            <parameters>mat3 m</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>determinant</name>
+            <parameters>mat4 m</parameters>
+        </function>
+        <function>
+            <type>mat2</type>
+            <name>inverse</name>
+            <parameters>mat2 m</parameters>
+        </function>
+        <function>
+            <type>mat3</type>
+            <name>inverse</name>
+            <parameters>mat3 m</parameters>
+        </function>
+        <function>
+            <type>mat4</type>
+            <name>inverse</name>
+            <parameters>mat4 m</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThan</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThan</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThan</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThanEqual</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThanEqual</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>lessThanEqual</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThan</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThan</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThan</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThanEqual</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThanEqual</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>greaterThanEqual</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>equal</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>equal</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>equal</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>equal</name>
+            <parameters>bvec x, bvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>notEqual</name>
+            <parameters>vec x, vec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>notEqual</name>
+            <parameters>ivec x, ivec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>notEqual</name>
+            <parameters>uvec x, uvec y</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>notEqual</name>
+            <parameters>bvec x, bvec y</parameters>
+        </function>
+        <function>
+            <type>bool</type>
+            <name>any</name>
+            <parameters>bvec x</parameters>
+        </function>
+        <function>
+            <type>bool</type>
+            <name>all</name>
+            <parameters>bvec x</parameters>
+        </function>
+        <function>
+            <type>bvec</type>
+            <name>not</name>
+            <parameters>bvec x</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>uaddCarry</name>
+            <parameters>genUType x, genUType y, genUType carry</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>usubBorrow</name>
+            <parameters>genUType x, genUType y, genUType borrow</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>umulExtended</name>
+            <parameters>genUType x, genUType y, genUType msb, genUType lsb</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>imulExtended</name>
+            <parameters>genIType x, genIType y, genIType msb, genIType lsb</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>bitfieldExtract</name>
+            <parameters>genIType value, int offset, int bits</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>bitfieldExtract</name>
+            <parameters>genUType value, int offset, int bits</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>bitfieldInsert</name>
+            <parameters>genIType base, genIType insert, int offset, int bits</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>bitfieldInsert</name>
+            <parameters>genUType base, genUType insert, int offset, int bits</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>bitfieldReverse</name>
+            <parameters>genIType value</parameters>
+        </function>
+        <function>
+            <type>genUType</type>
+            <name>bitfieldReverse</name>
+            <parameters>genUType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>bitCount</name>
+            <parameters>genIType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>bitCount</name>
+            <parameters>genUType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>findLSB</name>
+            <parameters>genIType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>findLSB</name>
+            <parameters>genUType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>findMSB</name>
+            <parameters>genIType value</parameters>
+        </function>
+        <function>
+            <type>genIType</type>
+            <name>findMSB</name>
+            <parameters>genUType value</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureSize</name>
+            <parameters>gsampler1D sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>gsampler2D sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>gsampler3D sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>gsamplerCube sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureSize</name>
+            <parameters>sampler1DShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>sampler2DShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>samplerCubeShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>gsamplerCubeArray sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>samplerCubeArrayShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>gsampler2DRect sampler</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>sampler2DRectShadow sampler</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>gsampler1DArray sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>gsampler2DArray sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>sampler1DArrayShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>sampler2DArrayShadow sampler, int lod</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureSize</name>
+            <parameters>gsamplerBuffer sampler</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>textureSize</name>
+            <parameters>gsampler2DMS sampler</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>textureSize</name>
+            <parameters>gsampler2DMSArray sampler</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsampler1D sampler, float P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsampler2D sampler, vec2 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsampler3D sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsamplerCube sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsampler1DArray sampler, float P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsampler2DArray sampler, vec2 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>gsamplerCubeArray sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>sampler1DShadow sampler, float P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>sampler2DShadow sampler, vec2 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>samplerCubeShadow sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>sampler1DArrayShadow sampler, float P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>sampler2DArrayShadow sampler, vec2 P</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>textureQueryLod</name>
+            <parameters>samplerCubeArrayShadow sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsampler1D sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsampler2D sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsampler3D sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsamplerCube sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsampler1DArray sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsampler2DArray sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>gsamplerCubeArray sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>sampler1DShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>sampler2DShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>samplerCubeShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>sampler1DArrayShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>sampler2DArrayShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureQueryLevels</name>
+            <parameters>samplerCubeArrayShadow sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureSamples</name>
+            <parameters>gsampler2DMS sampler</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>textureSamples</name>
+            <parameters>gsampler2DMSArray sampler</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler1D sampler, float P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler2D sampler, vec2 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler3D sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsamplerCube sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>sampler1DShadow sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>sampler2DShadow sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>samplerCubeShadow sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler1DArray sampler, vec2 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler2DArray sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsamplerCubeArray sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>sampler2DArrayShadow sampler, vec4 P</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texture</name>
+            <parameters>gsampler2DRect sampler, vec2 P</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>sampler2DRectShadow sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>texture</name>
+            <parameters>gsamplerCubeArrayShadow sampler, vec4 P, float compare</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler1D sampler, vec2 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler1D sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler2D sampler, vec3 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler2D sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler3D sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProj</name>
+            <parameters>sampler1DShadow sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProj</name>
+            <parameters>sampler2DShadow sampler, vec4 P [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler2DRect sampler, vec3 P</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProj</name>
+            <parameters>gsampler2DRect sampler, vec4 P</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProj</name>
+            <parameters>sampler2DRectShadow sampler, vec4 P</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsampler1D sampler, float P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsampler2D sampler, vec2 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsampler3D sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsamplerCube sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLod</name>
+            <parameters>sampler1DShadow sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLod</name>
+            <parameters>sampler2DShadow sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsampler1DArray sampler, vec2 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsampler2DArray sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLod</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLod</name>
+            <parameters>gsamplerCubeArray sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler1D sampler, float P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler2D sampler, vec2 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler3D sampler, vec3 P, ivec3 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler2DRect sampler, vec2 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec3 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureOffset</name>
+            <parameters>sampler1DShadow sampler, vec3 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureOffset</name>
+            <parameters>sampler2DShadow sampler, vec3 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler1DArray sampler, vec2 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureOffset</name>
+            <parameters>gsampler2DArray sampler, vec3 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureOffset</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureOffset</name>
+            <parameters>sampler2DArrayShadow sampler, vec4 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler1D sampler, int P, int lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler2D sampler, ivec2 P, int lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler3D sampler, ivec3 P, int lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler2DRect sampler, ivec2 P</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler1DArray sampler, ivec2 P, int lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler2DArray sampler, ivec3 P, int lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsamplerBuffer sampler, int P</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler2DMS sampler, ivec2 P, int sample</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetch</name>
+            <parameters>gsampler2DMSArray sampler, ivec3 P, int sample</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler1D sampler, int P, int lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler2D sampler, ivec2 P, int lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler3D sampler, ivec3 P, int lod, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler2DRect sampler, ivec2 P, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler1DArray sampler, ivec2 P, int lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>texelFetchOffset</name>
+            <parameters>gsampler2DArray sampler, ivec3 P, int lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler1D sampler, vec2 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler1D sampler, vec4 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler2D sampler, vec3 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler2D sampler, vec4 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler3D sampler, vec4 P, ivec3 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler2DRect sampler, vec3 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjOffset</name>
+            <parameters>gsampler2DRect sampler, vec4 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec4 P, ivec2 offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjOffset</name>
+            <parameters>sampler1DShadow sampler, vec4 P, int offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjOffset</name>
+            <parameters>sampler2DShadow sampler, vec4 P, ivec2 offset [, float bias] </parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLodOffset</name>
+            <parameters>gsampler1D sampler, float P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLodOffset</name>
+            <parameters>gsampler2D sampler, vec2 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLodOffset</name>
+            <parameters>gsampler3D sampler, vec3 P, float lod, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLodOffset</name>
+            <parameters>sampler1DShadow sampler, vec3 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLodOffset</name>
+            <parameters>sampler2DShadow sampler, vec3 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLodOffset</name>
+            <parameters>gsampler1DArray sampler, vec2 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureLodOffset</name>
+            <parameters>gsampler2DArray sampler, vec3 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureLodOffset</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLod</name>
+            <parameters>gsampler1D sampler, vec2 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLod</name>
+            <parameters>gsampler1D sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLod</name>
+            <parameters>gsampler2D sampler, vec3 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLod</name>
+            <parameters>gsampler2D sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLod</name>
+            <parameters>gsampler3D sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjLod</name>
+            <parameters>sampler1DShadow sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjLod</name>
+            <parameters>sampler2DShadow sampler, vec4 P, float lod</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLodOffset</name>
+            <parameters>gsampler1D sampler, vec2 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLodOffset</name>
+            <parameters>gsampler1D sampler, vec4 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLodOffset</name>
+            <parameters>gsampler2D sampler, vec3 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLodOffset</name>
+            <parameters>gsampler2D sampler, vec4 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjLodOffset</name>
+            <parameters>gsampler3D sampler, vec4 P, float lod, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjLodOffset</name>
+            <parameters>sampler1DShadow sampler, vec4 P, float lod, int offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjLodOffset</name>
+            <parameters>sampler2DShadow sampler, vec4 P, float lod, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler1D sampler, float P, float dPdx, float dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler2D sampler, vec2 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler3D sampler, vec3 P, vec3 dPdx, vec3 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsamplerCube sampler, vec3 P, vec3 dPdx, vec3 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler2DRect sampler, vec2 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>sampler2DRectShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>sampler1DShadow sampler, vec3 P, float dPdx, float dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>samplerCubeShadow sampler, vec4 P, vec3 dPdx, vec3 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler1DArray sampler, vec2 P, float dPdx, float dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsampler2DArray sampler, vec3 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGrad</name>
+            <parameters>sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGrad</name>
+            <parameters>gsamplerCubeArray sampler, vec4 P, vec3 dPdx, vec3 dPdy</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler1D sampler, float P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2D sampler, vec2 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler3D sampler, vec3 P, vec3 dPdx, vec3 dPdy, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2DRect sampler, vec2 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler1DShadow sampler, vec3 P, float dPdx, float dPdy, int offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler1DArray sampler, vec2 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2DArray sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler1D sampler, float P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2D sampler, vec2 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler3D sampler, vec3 P, vec3 dPdx, vec3 dPdy, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2DRect sampler, vec2 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler1DShadow sampler, vec3 P, float dPdx, float dPdy, int offset </parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DShadow sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler1DArray sampler, vec2 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGradOffset</name>
+            <parameters>gsampler2DArray sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler1DArrayShadow sampler, vec3 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureGradOffset</name>
+            <parameters>sampler2DArrayShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler1D sampler, vec2 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler1D sampler, vec4 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler2D sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler2D sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler2DRect sampler, vec3 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler2DRect sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjGradOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureProjGradOffset</name>
+            <parameters>gsampler3D sampler, vec4 P, vec3 dPdx, vec3 dPdy, ivec3 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjGradOffset</name>
+            <parameters>sampler1DShadow sampler, vec4 P, float dPdx, float dPdy, int offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>textureProjGradOffset</name>
+            <parameters>sampler2DShadow sampler, vec4 P, vec2 dPdx, vec2 dPdy, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGather</name>
+            <parameters>gsampler2D sampler, vec2 P [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGather</name>
+            <parameters>gsampler2DArray sampler, vec3 P [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGather</name>
+            <parameters>gsamplerCube sampler, vec3 P [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGather</name>
+            <parameters>gsamplerCubeArray sampler, vec4 P[, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGather</name>
+            <parameters>gsampler2DRect sampler, vec2 P[, int comp]</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGather</name>
+            <parameters>sampler2DShadow sampler, vec2 P, float refZ</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGather</name>
+            <parameters>sampler2DArrayShadow sampler, vec3 P, float refZ</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGather</name>
+            <parameters>samplerCubeShadow sampler, vec3 P, float refZ</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGather</name>
+            <parameters>samplerCubeArrayShadow sampler, vec4 P, float refZ</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGather</name>
+            <parameters>sampler2DRectShadow sampler, vec2 P, float refZ</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>gsampler2D sampler, vec2 P, ivec2 offset [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>gsampler2DArray sampler, vec3 P, ivec2 offset [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>gsampler2DRect sampler, vec2 P, ivec2 offset [, int comp]</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>sampler2DShadow sampler, vec2 P, float refZ, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>sampler2DArrayShadow sampler, vec3 P, float refZ, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffset</name>
+            <parameters>sampler2DRectShadow sampler, vec2 P, float refZ, ivec2 offset</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>gsampler2D sampler, vec2 P, ivec2 offsets[4][, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>gsampler2DArray sampler, vec3 P, ivec2 offsets[4] [, int comp]</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>gsampler2DRect sampler, vec2 P, ivec2 offsets[4] [, int comp]</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>sampler2DShadow sampler, vec2 P, float refZ, ivec2 offsets[4]</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>sampler2DArrayShadow sampler, vec3 P, float refZ, ivec2 offsets[4]</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>textureGatherOffsets</name>
+            <parameters>sampler2DRectShadow sampler, vec2 P, float refZ, ivec2 offsets[4]</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterIncrement</name>
+            <parameters>atomic_uint c</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterDecrement</name>
+            <parameters>atomic_uint c</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounter</name>
+            <parameters>atomic_uint c</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterAdd</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterSubtract</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterMin</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterMax</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterAnd</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterOr</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterXor</name>
+            <parameters>atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterExchange</name>
+            <parameters> atomic_uint c, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCounterCompSwap</name>
+            <parameters>atomic_uint c, uint compare, uint data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicAdd</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicAdd</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicMin</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicMin</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicMax</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicMax</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicAnd</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicAnd</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicOr</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicOr</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicXor</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicXor</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicExchange</name>
+            <parameters>uint mem, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicExchange</name>
+            <parameters>int mem, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>atomicCompSwap</name>
+            <parameters>uint mem, uint compare, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>atomicCompSwap</name>
+            <parameters>int mem, int compare, int data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageSize</name>
+            <parameters>gimage1D image</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>imageSize</name>
+            <parameters>gimage2D image</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>imageSize</name>
+            <parameters>gimage3D image</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>imageSize</name>
+            <parameters>gimageCube image</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>imageSize</name>
+            <parameters>gimageCubeArray image</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>imageSize</name>
+            <parameters>gimageRect image</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>imageSize</name>
+            <parameters>gimage1DArray image</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>imageSize</name>
+            <parameters>gimage2DArray image</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageSize</name>
+            <parameters>gimageBuffer image</parameters>
+        </function>
+        <function>
+            <type>ivec2</type>
+            <name>imageSize</name>
+            <parameters>gimage2DMS image</parameters>
+        </function>
+        <function>
+            <type>ivec3</type>
+            <name>imageSize</name>
+            <parameters>gimage2DMSArray image</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageSamples</name>
+            <parameters>gimage2DMS image</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageSamples</name>
+            <parameters>rgimage2DMSArray image</parameters>
+        </function>
+        <function>
+            <type>gvec4</type>
+            <name>imageLoad</name>
+            <parameters>IMAGE_PARAMS</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>imageStore</name>
+            <parameters>IMAGE_PARAMS, gvec4 data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicAdd</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicAdd</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicMin</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicMin</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicMax</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicMax</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicAnd</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicAnd</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicOr</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicOr</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicXor</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicXor</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicExchange</name>
+            <parameters>IMAGE_PARAMS, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicExchange</name>
+            <parameters>IMAGE_PARAMS, int data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicExchange</name>
+            <parameters>IMAGE_PARAMS, float data</parameters>
+        </function>
+        <function>
+            <type>uint</type>
+            <name>imageAtomicCompSwap</name>
+            <parameters>IMAGE_PARAMS, uint compare, uint data</parameters>
+        </function>
+        <function>
+            <type>int</type>
+            <name>imageAtomicCompSwap</name>
+            <parameters>IMAGE_PARAMS, int compare, int data</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdx</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdy</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdxFine</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdyFine</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdxCoarse</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>dFdyCoarse</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>fwidth</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>fwidthFine</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>genType</type>
+            <name>fwidthCoarse</name>
+            <parameters>genType p</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>interpolateAtCentroid</name>
+            <parameters>float interpolant</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>interpolateAtCentroid</name>
+            <parameters>vec2 interpolant</parameters>
+        </function>
+        <function>
+            <type>vec3</type>
+            <name>interpolateAtCentroid</name>
+            <parameters>vec3 interpolant</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>interpolateAtCentroid</name>
+            <parameters>vec4 interpolant</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>interpolateAtSample</name>
+            <parameters>float interpolant, int sample</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>interpolateAtSample</name>
+            <parameters>vec2 interpolant, int sample</parameters>
+        </function>
+        <function>
+            <type>vec3</type>
+            <name>interpolateAtSample</name>
+            <parameters>vec3 interpolant, int sample</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>interpolateAtSample</name>
+            <parameters>vec4 interpolant, int sample</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>interpolateAtOffset</name>
+            <parameters>float interpolant, vec2 offset</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>interpolateAtOffset</name>
+            <parameters>vec2 interpolant, vec2 offset</parameters>
+        </function>
+        <function>
+            <type>vec3</type>
+            <name>interpolateAtOffset</name>
+            <parameters>vec3 interpolant, vec2 offset</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>interpolateAtOffset</name>
+            <parameters>vec4 interpolant, vec2 offset</parameters>
+        </function>
+        <function>
+            <type>float</type>
+            <name>noise1</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>vec2</type>
+            <name>noise2</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>vec3</type>
+            <name>noise3</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>vec4</type>
+            <name>noise4</name>
+            <parameters>genType x</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>EmitStreamVertex</name>
+            <parameters>int stream</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>EndStreamPrimitive</name>
+            <parameters>int stream</parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>EmitVertex</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>EndPrimitive</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>barrier</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>memoryBarrier</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>memoryBarrierAtomicCounter</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>memoryBarrierBuffer</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>memoryBarrierShared</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>memoryBarrierImage</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>void</type>
+            <name>groupMemoryBarrier</name>
+            <parameters></parameters>
+        </function>
+        <function>
+            <type>bool</type>
+            <name>anyInvocation</name>
+            <parameters>bool value</parameters>
+        </function>
+        <function>
+            <type>bool</type>
+            <name>allInvocations</name>
+            <parameters>bool value</parameters>
+        </function>
+        <function>
+            <type>bool</type>
+            <name>anyInvocationsEqual</name>
+            <parameters>bool value</parameters>
+        </function>
+    </functions>
+    
+    
+</builtin>
