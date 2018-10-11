@@ -16,10 +16,4 @@ public class FunctionDefinition extends FunctionBase {
         return fp.isPrototypeOf(this);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        FunctionDefinition fd = (FunctionDefinition) obj;
-        return getSignature().equals(fd.getSignature()) && getReturnType().equals(fd.getReturnType());
-    }
-
 }

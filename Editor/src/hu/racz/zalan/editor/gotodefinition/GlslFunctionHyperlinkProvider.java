@@ -27,7 +27,7 @@ public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (FunctionDefinition fd : scope.getFunctionDefinitions()) {
-            if (fd.getSignature().getNameStartIndex() <= caretPosition && fd.getSignature().getNameStopIndex() >= caretPosition && fd.getPrototype() != null) {
+            if (fd.getNameStartIndex() <= caretPosition && fd.getNameStopIndex() >= caretPosition && fd.getPrototype() != null) {
                 function = fd;
                 return true;
             }
@@ -38,7 +38,7 @@ public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
     @Override
     public int[] getHyperlinkSpan(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            return new int[]{function.getSignature().getNameStartIndex(), function.getSignature().getNameStopIndex()};
+            return new int[]{function.getNameStartIndex(), function.getNameStopIndex()};
         } else {
             return null;
         }
@@ -47,7 +47,7 @@ public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
     @Override
     public void performClickAction(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            Utility.setCaretPosition(document, function.getPrototype().getSignature().getNameStartIndex());
+            Utility.setCaretPosition(document, function.getPrototype().getNameStartIndex());
         }
     }
 

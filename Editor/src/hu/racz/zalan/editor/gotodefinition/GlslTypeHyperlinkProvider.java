@@ -27,7 +27,7 @@ public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (TypeUsage tu : scope.getTypeUsages()) {
-            if (tu.getStartIndex() <= caretPosition && tu.getStopIndex() >= caretPosition && tu.getDeclaration() != null) {
+            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null) {
                 usage = tu;
                 return true;
             }
@@ -38,7 +38,7 @@ public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
     @Override
     public int[] getHyperlinkSpan(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            return new int[]{usage.getStartIndex(), usage.getStopIndex()};
+            return new int[]{usage.getNameStartIndex(), usage.getNameStopIndex()};
         } else {
             return null;
         }
@@ -47,7 +47,7 @@ public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
     @Override
     public void performClickAction(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            Utility.setCaretPosition(document, usage.getDeclaration().getStartIndex());
+            Utility.setCaretPosition(document, usage.getDeclaration().getNameStartIndex());
         }
     }
 

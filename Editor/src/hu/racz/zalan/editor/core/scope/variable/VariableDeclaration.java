@@ -15,44 +15,49 @@ public class VariableDeclaration extends Element implements CompletionElement {
     private boolean builtIn;
     private boolean global;
     private boolean array;
-    //TODO: type ne string legyen, hanem TypeUsage
-    private String typeOLD = "";
-    private TypeDeclaration type;
+    private TypeUsage type;
 
+    private int declarationStartIndex;
+    private int declarationStopIndex;
+
+    //TODO: milyen módosítói vannak? pl. readonly, out stb., függvényparamétereknél még jól jöhet
+    //TODO: lehetne valami szülő vagy ilyesmi, hogy milyen structban van benne
+    //----------------------------------------------------------
     private final List<VariableUsage> usages = new ArrayList<>();
 
-    public VariableDeclaration(TypeDeclaration type, String name, boolean builtIn, boolean array) {
+    public VariableDeclaration(TypeUsage type, String name, boolean builtIn, boolean array) {
+        this(type, name);
+        setArray(array);
+        setBuiltIn(builtIn);
+    }
+
+    public VariableDeclaration(TypeUsage type, String name) {
+        setType(type);
+        setName(name);
+    }
+
+    public TypeUsage getType() {
+        return type;
+    }
+
+    public void setType(TypeUsage type) {
         this.type = type;
-        setName(name);
-        setBuiltIn(builtIn);
-        setArray(array);
     }
 
-    public VariableDeclaration(String type, String name, boolean builtIn, boolean array) {
-        this(type, name, builtIn);
-        setArray(array);
+    public int getDeclarationStartIndex() {
+        return declarationStartIndex;
     }
 
-    public VariableDeclaration(String type, String name, boolean builtIn) {
-        setTypeOLD(type);
-        setName(name);
-        setBuiltIn(builtIn);
+    public void setDeclarationStartIndex(int declarationStartIndex) {
+        this.declarationStartIndex = declarationStartIndex;
     }
 
-    public VariableDeclaration(String type, String name) {
-        setTypeOLD(type);
-        setName(name);
+    public int getDeclarationStopIndex() {
+        return declarationStopIndex;
     }
 
-    public VariableDeclaration() {
-    }
-
-    public String getTypeOLD() {
-        return typeOLD;
-    }
-
-    public void setTypeOLD(String type) {
-        this.typeOLD = type;
+    public void setDeclarationStopIndex(int declarationStopIndex) {
+        this.declarationStopIndex = declarationStopIndex;
     }
 
     public boolean isBuiltIn() {
@@ -79,6 +84,9 @@ public class VariableDeclaration extends Element implements CompletionElement {
         this.array = array;
     }
 
+    //
+    //usages--------------------------------------------------------------------
+    //
     public int getUsageCount() {
         return usages.size();
     }
@@ -95,6 +103,9 @@ public class VariableDeclaration extends Element implements CompletionElement {
         return Collections.unmodifiableList(usages);
     }
 
+    //
+    //misc----------------------------------------------------------------------
+    //
     @Override
     public ImageIcon getIcon() {
         return isBuiltIn() ? BI_ICON : isGlobal() ? GL_ICON : ICON;
@@ -107,7 +118,7 @@ public class VariableDeclaration extends Element implements CompletionElement {
 
     @Override
     public String getRightText() {
-        return (getTypeOLD().equals("") ? type.getName() : getTypeOLD()) + (isArray() ? "[]" : "");
+        return type.getName() + (isArray() ? "[]" : "");
     }
 
     @Override
@@ -123,12 +134,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
     @Override
     public String getPasteText() {
         return getName();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        VariableDeclaration vd = (VariableDeclaration) obj;
-        return getName().equals(vd.getName());
     }
 
 }

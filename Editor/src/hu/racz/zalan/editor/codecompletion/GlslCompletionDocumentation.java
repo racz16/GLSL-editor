@@ -71,7 +71,7 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
     private void replaceNetbeansIncompatibleCharacters(StringBuilder documentation) {
         Utility.replaceAll(documentation, Pattern.compile("â€”"), "-");
         Utility.replaceAll(documentation, Pattern.compile("Â"), "");
-        Utility.replaceAll(documentation, Pattern.compile("âś”"), "+");
+        Utility.replaceAll(documentation, Pattern.compile("âś”"), "✔");
     }
 
     @Override

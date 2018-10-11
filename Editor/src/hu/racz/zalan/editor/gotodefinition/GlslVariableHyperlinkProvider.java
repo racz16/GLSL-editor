@@ -27,7 +27,7 @@ public class GlslVariableHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (VariableUsage vu : scope.getVariableUsages()) {
-            if (vu.getStartIndex() <= caretPosition && vu.getStopIndex() >= caretPosition && vu.getDeclaration() != null) {
+            if (vu.getNameStartIndex() <= caretPosition && vu.getNameStopIndex() >= caretPosition && vu.getDeclaration() != null) {
                 usage = vu;
                 return true;
             }
@@ -38,7 +38,7 @@ public class GlslVariableHyperlinkProvider implements HyperlinkProvider {
     @Override
     public int[] getHyperlinkSpan(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            return new int[]{usage.getStartIndex(), usage.getStopIndex()};
+            return new int[]{usage.getNameStartIndex(), usage.getNameStopIndex()};
         } else {
             return null;
         }
@@ -47,7 +47,7 @@ public class GlslVariableHyperlinkProvider implements HyperlinkProvider {
     @Override
     public void performClickAction(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            Utility.setCaretPosition(document, usage.getDeclaration().getStartIndex());
+            Utility.setCaretPosition(document, usage.getDeclaration().getNameStartIndex());
         }
     }
 

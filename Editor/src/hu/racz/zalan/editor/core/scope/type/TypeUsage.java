@@ -9,8 +9,11 @@ public class TypeUsage extends Element {
     private TypeDeclaration declaration;
 
     static {
-        VOID = new TypeUsage();
-        VOID.setName("void");
+        VOID = new TypeUsage("void");
+    }
+
+    public TypeUsage(String name) {
+        setName(name);
     }
 
     public TypeDeclaration getDeclaration() {
@@ -19,12 +22,6 @@ public class TypeUsage extends Element {
 
     public void setDeclaration(TypeDeclaration declaration) {
         this.declaration = declaration;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        TypeUsage tu = (TypeUsage) obj;
-        return getName().equals(tu.getName());
     }
 
 }

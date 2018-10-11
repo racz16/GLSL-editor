@@ -202,19 +202,19 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     //misc----------------------------------------------------------------------
     //
     private boolean isElementAtCaret(Element element) {
-        return element.getStartIndex() <= caretPosition && element.getStopIndex() >= caretPosition;
+        return element.getNameStartIndex() <= caretPosition && element.getNameStopIndex() >= caretPosition;
     }
 
     private boolean isElementAtCaret(FunctionBase element) {
-        return element.getSignature().getNameStartIndex() <= caretPosition && element.getSignature().getNameStopIndex() >= caretPosition;
+        return element.getNameStartIndex() <= caretPosition && element.getNameStopIndex() >= caretPosition;
     }
 
     private void addElementToBag(Element element) {
-        bag.addHighlight(element.getStartIndex(), element.getStopIndex(), HIGHLIGHT_COLOR);
+        bag.addHighlight(element.getNameStartIndex(), element.getNameStopIndex(), HIGHLIGHT_COLOR);
     }
 
     private void addElementToBag(FunctionBase element) {
-        bag.addHighlight(element.getSignature().getNameStartIndex(), element.getSignature().getNameStopIndex(), HIGHLIGHT_COLOR);
+        bag.addHighlight(element.getNameStartIndex(), element.getNameStopIndex(), HIGHLIGHT_COLOR);
     }
 
     public OffsetsBag getHighlightsBag() {

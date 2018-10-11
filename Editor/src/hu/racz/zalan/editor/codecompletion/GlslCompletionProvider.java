@@ -73,7 +73,7 @@ public class GlslCompletionProvider implements CompletionProvider {
     private void addUserFunctions() {
         Scope rootScope = GlslProcessor.getRootScope();
         for (FunctionPrototype function : rootScope.getFunctionPrototypes()) {
-            if (function.getSignature().getStopIndex() < caretPosition) {
+            if (function.getNameStopIndex() < caretPosition) {
                 addElement(function);
             }
         }
@@ -81,7 +81,7 @@ public class GlslCompletionProvider implements CompletionProvider {
 
     private void addElementListIfDeclared(List<? extends Element> elements) {
         for (Element element : elements) {
-            if (element.getStopIndex() < caretPosition) {
+            if (element.getNameStopIndex() < caretPosition) {
                 addElement(element);
             }
         }

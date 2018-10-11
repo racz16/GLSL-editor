@@ -2,24 +2,24 @@ package hu.racz.zalan.editor.core.scope;
 
 public abstract class Element {
 
-    private int startIndex = 0;
-    private int stopIndex = 0;
-    protected String name = "";
+    private int nameStartIndex = 0;
+    private int nameStopIndex = 0;
+    private String name = "";
 
-    public int getStartIndex() {
-        return startIndex;
+    public int getNameStartIndex() {
+        return nameStartIndex;
     }
 
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
+    public void setNameStartIndex(int startIndex) {
+        this.nameStartIndex = startIndex;
     }
 
-    public int getStopIndex() {
-        return stopIndex;
+    public int getNameStopIndex() {
+        return nameStopIndex;
     }
 
-    public void setStopIndex(int stopIndex) {
-        this.stopIndex = stopIndex;
+    public void setNameStopIndex(int stopIndex) {
+        this.nameStopIndex = stopIndex;
     }
 
     public String getName() {
@@ -28,6 +28,16 @@ public abstract class Element {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean equals(Object obj) {
+        Element kw = (Element) obj;
+        return getName().equals(kw.getName());
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

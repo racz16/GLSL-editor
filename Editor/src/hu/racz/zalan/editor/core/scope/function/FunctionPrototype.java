@@ -10,11 +10,11 @@ public class FunctionPrototype extends FunctionBase implements CompletionElement
 
     private FunctionDefinition definition;
 
+    //TODO: ide majd jönnek a haszálatok
     private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/function.png"));
     private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/bi_function.png"));
 
     private boolean builtIn;
-
     private String builtInParameters;
 
     public String getBuiltInParameters() {
@@ -53,7 +53,7 @@ public class FunctionPrototype extends FunctionBase implements CompletionElement
 
     @Override
     public String getLeftText() {
-        return isBuiltIn() ? name + "(" + getBuiltInParameters() + ")" : getSignature().toString();
+        return toStringSignature(true);
     }
 
     @Override
@@ -63,32 +63,25 @@ public class FunctionPrototype extends FunctionBase implements CompletionElement
 
     @Override
     public String getPasteText() {
-        return isBuiltIn() ? name + "()" : getSignature().toStringReplaceParameters("");
+        return toStringSignature(false);
     }
 
     @Override
     public String getDocumentationName() {
-        return isBuiltIn() ? name : null;
+        return isBuiltIn() ? getName() : null;
     }
 
     public boolean isPrototypeOf(FunctionDefinition fd) {
-        return getSignature().equals(fd.getSignature()) && getReturnType().equals(fd.getReturnType());
+        return equalsSignature(fd) && getReturnType().equals(fd.getReturnType());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        FunctionPrototype fs = (FunctionPrototype) obj;
-        return getSignature().equals(fs.getSignature()) && getReturnType().equals(fs.getReturnType());
-    }
-
-    @Override
-    public String getName() {
-        return isBuiltIn() ? name : super.getName();
-    }
-
-    @Override
-    public String toString() {
-        return isBuiltIn() ? getReturnType().getName() + " " + name + "(" + getBuiltInParameters() + ")" : super.toString();
+    public String toStringSignature(boolean showParameters) {
+        if (!isBuiltIn()) {
+            return super.toStringSignature(showParameters);
+        } else {
+            return getName() + "(" + (showParameters ? getBuiltInParameters() : "") + ")";
+        }
     }
 
 }

@@ -12,8 +12,12 @@ public class TypeDeclaration extends Element implements CompletionElement {
     private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/type.png"));
 
     private boolean builtIn;
+    private int structStartIndex;
     private int structStopIndex;
 
+    //TODO: a benne deklarált változókat is el lehetne itt tárolni
+    //pl. code completionhoz jól jöhet
+    //------------------------------------------------------
     private final List<TypeUsage> usages = new ArrayList<>();
 
     public TypeDeclaration(String name) {
@@ -33,6 +37,14 @@ public class TypeDeclaration extends Element implements CompletionElement {
         this.builtIn = builtIn;
     }
 
+    public int getStructStartIndex() {
+        return structStartIndex;
+    }
+
+    public void setStructStartIndex(int structStartIndex) {
+        this.structStartIndex = structStartIndex;
+    }
+
     public int getStructStopIndex() {
         return structStopIndex;
     }
@@ -41,6 +53,9 @@ public class TypeDeclaration extends Element implements CompletionElement {
         this.structStopIndex = structStopIndex;
     }
 
+    //
+    //usages--------------------------------------------------------------------
+    //
     public int getUsageCount() {
         return usages.size();
     }
@@ -57,6 +72,9 @@ public class TypeDeclaration extends Element implements CompletionElement {
         return Collections.unmodifiableList(usages);
     }
 
+    //
+    //misc----------------------------------------------------------------------
+    //
     @Override
     public ImageIcon getIcon() {
         return isBuiltIn() ? BI_ICON : ICON;

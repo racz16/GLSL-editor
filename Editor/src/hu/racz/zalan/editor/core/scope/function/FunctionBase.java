@@ -2,16 +2,18 @@ package hu.racz.zalan.editor.core.scope.function;
 
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.type.*;
+import hu.racz.zalan.editor.core.scope.variable.*;
+import java.util.*;
 
 public abstract class FunctionBase extends Element {
 
     private TypeUsage returnType;
-    private FunctionSignature signature = new FunctionSignature();
+    private final List<VariableDeclaration> parameters = new ArrayList<>();
 
-    @Override
-    public String getName() {
-        return signature.getName();
-    }
+    private int startIndex;
+    private int stopIndex;
+    private int signatureStartIndex;
+    private int signatureStopIndex;
 
     public TypeUsage getReturnType() {
         return returnType;
@@ -21,16 +23,115 @@ public abstract class FunctionBase extends Element {
         this.returnType = returnType;
     }
 
-    public FunctionSignature getSignature() {
-        return signature;
+    //
+    //indices-------------------------------------------------------------------
+    //
+    public int getSignatureStartIndex() {
+        return signatureStartIndex;
     }
 
-    public void setSignature(FunctionSignature signature) {
-        this.signature = signature;
+    public void setSignatureStartIndex(int signatureStartIndex) {
+        this.signatureStartIndex = signatureStartIndex;
+    }
+
+    public int getSignatureStopIndex() {
+        return signatureStopIndex;
+    }
+
+    public void setSignatureStopIndex(int signatureStopIndex) {
+        this.signatureStopIndex = signatureStopIndex;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
+    }
+
+    public int getStopIndex() {
+        return stopIndex;
+    }
+
+    public void setStopIndex(int stopIndex) {
+        this.stopIndex = stopIndex;
+    }
+
+    //
+    //parameters----------------------------------------------------------------
+    //
+    public VariableDeclaration getParameter(int index) {
+        return parameters.get(index);
+    }
+
+    public int getParameterCount() {
+        return parameters.size();
+    }
+
+    public void addParameter(VariableDeclaration parameter) {
+        parameters.add(parameter);
+    }
+
+    public List<VariableDeclaration> getParameters() {
+        return Collections.unmodifiableList(parameters);
+    }
+
+    //
+    //misc----------------------------------------------------------------------
+    //
+    public boolean equalsSignature(Object obj) {
+        FunctionBase fb = (FunctionBase) obj;
+        if (!getName().equals(fb.getName()) || parameters.size() != fb.parameters.size()) {
+            return false;
+        }
+        return equalsParameters(fb);
+    }
+
+    private boolean equalsParameters(FunctionBase function) {
+        for (int i = 0; i < parameters.size(); i++) {
+            if (!parameters.get(i).getType().equals(function.parameters.get(i).getType())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        FunctionBase fb = (FunctionBase) obj;
+        return equalsSignature(fb) && returnType.equals(fb.getReturnType());
+    }
+
+    public String toStringSignature(boolean showParameters) {
+        String ret = getName() + "(";
+        if (showParameters) {
+            ret += toStringParameterList();
+        }
+        ret += ")";
+        return ret;
+    }
+
+    public String toStringParameterList() {
+        String ret = "";
+        for (int i = 0; i < parameters.size(); i++) {
+            ret += toStringParameter(i);
+        }
+        return ret;
+    }
+
+    private String toStringParameter(int index) {
+        String ret = "";
+        VariableDeclaration param = parameters.get(index);
+        ret += param.getType() + " " + param.getName();
+        if (index != parameters.size() - 1) {
+            ret += ", ";
+        }
+        return ret;
     }
 
     @Override
     public String toString() {
-        return getReturnType().getName() + " " + getSignature();
+        return getReturnType() + " " + toStringSignature(true);
     }
 }

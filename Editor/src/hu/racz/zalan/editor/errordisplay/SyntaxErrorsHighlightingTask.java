@@ -50,31 +50,31 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
             FunctionDefinition def = rootScope.getFunctionDefinition(i);
             boolean valid = false;
             boolean valid2 = true;
-            if (def.getSignature().getName().equals("main") && def.getSignature().getParameterCount() == 0 && def.getReturnType() == TypeUsage.VOID) {
+            if (def.getName().equals("main") && def.getParameterCount() == 0 && def.getReturnType() == TypeUsage.VOID) {
                 valid = true;
             }
             for (int j = 0; j < rootScope.getFunctionPrototypeCount(); j++) {
                 FunctionPrototype prot = rootScope.getFunctionPrototype(j);
-                if (prot.isPrototypeOf(def) && prot.getStopIndex() < def.getStartIndex()) {
+                if (prot.isPrototypeOf(def) && prot.getNameStopIndex() < def.getNameStartIndex()) {
                     valid = true;
                 }
             }
             for (int j = 0; j < rootScope.getFunctionDefinitionCount(); j++) {
                 FunctionDefinition def2 = rootScope.getFunctionDefinition(j);
-                if (def != def2 && def.getSignature().equals(def2.getSignature()) && def.getStopIndex() > def2.getStartIndex()) {
+                if (def != def2 && def.equalsSignature(def2) && def.getNameStopIndex() > def2.getNameStartIndex()) {
                     valid2 = false;
                 }
             }
             if (!valid) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new CreateFunctionPrototype(def));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignature().getStopIndex()));
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new MyPosition(def.getSignatureStartIndex()), new MyPosition(def.getSignatureStopIndex()));
                 errors.add(ed);
             }
             if (!valid2) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new MyFix(def.getStartIndex(), def.getStopIndex()));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new MyPosition(def.getStartIndex()), new MyPosition(def.getSignature().getStopIndex()));
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new MyPosition(def.getSignatureStartIndex()), new MyPosition(def.getSignatureStopIndex()));
                 errors.add(ed);
             }
         }
