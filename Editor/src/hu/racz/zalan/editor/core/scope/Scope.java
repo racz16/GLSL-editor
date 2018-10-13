@@ -10,6 +10,8 @@ public class Scope {
     private Scope parent;
     private final List<Scope> children = new ArrayList<>();
 
+    private static final List<Scope> BRACELESS_SCOPES = new ArrayList<>();
+
     //TODO: lehet, hogy ezeket érdemes volna egy mapba rakni
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
     private final List<VariableUsage> variableUsages = new ArrayList<>();
@@ -21,7 +23,27 @@ public class Scope {
     private final List<TypeUsage> typeusages = new ArrayList<>();
 
     private int startIndex;
-    private int endIndex;
+    private int stopIndex;
+
+    public static void clearBracelessScopes() {
+        BRACELESS_SCOPES.clear();
+    }
+
+    public static Scope getBracelessScope(int index) {
+        return BRACELESS_SCOPES.get(index);
+    }
+
+    public static void addBracelessScope(Scope scope) {
+        BRACELESS_SCOPES.add(scope);
+    }
+
+    public static int getBracelessScopedCount() {
+        return BRACELESS_SCOPES.size();
+    }
+
+    public static List<? extends Scope> getBracelessScopes() {
+        return Collections.unmodifiableList(BRACELESS_SCOPES);
+    }
 
     //
     //parent--------------------------------------------------------------------
@@ -178,12 +200,12 @@ public class Scope {
         this.startIndex = startIndex;
     }
 
-    public int getEndIndex() {
-        return endIndex;
+    public int getStopIndex() {
+        return stopIndex;
     }
 
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
+    public void setStopIndex(int endIndex) {
+        this.stopIndex = endIndex;
     }
 
 }

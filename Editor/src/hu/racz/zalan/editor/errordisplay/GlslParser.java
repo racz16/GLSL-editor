@@ -11,8 +11,27 @@ public class GlslParser extends Parser {
 
     private Snapshot snapshot;
 
+    public static class CaretListener2 implements CaretListener {
+
+        public static int CARET_POSITION;
+
+        @Override
+        public void caretUpdate(CaretEvent e) {
+            CARET_POSITION = e.getDot();
+            System.out.println(CARET_POSITION);
+        }
+
+    }
+
+    boolean added;
+
     @Override
     public void parse(Snapshot snpsht, Task task, SourceModificationEvent sme) throws ParseException {
+        if (!added) {
+            org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().addCaretListener(new CaretListener2());
+            added = false;
+        }
+
         this.snapshot = snpsht;
         //TODO: várni párszár millisec-et, hogy gyors gépelésnél ne járjuk be az egész fát minden karakterre
         //de mondjuk azért néha jó lenne azonnal

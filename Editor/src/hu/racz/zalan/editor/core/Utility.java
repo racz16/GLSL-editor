@@ -1,12 +1,15 @@
 package hu.racz.zalan.editor.core;
 
+import java.awt.*;
 import java.lang.ref.*;
 import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.netbeans.modules.editor.*;
+import org.netbeans.modules.editor.indent.spi.*;
 import org.openide.cookies.*;
 import org.openide.loaders.*;
+import org.openide.util.*;
 
 public class Utility {
 
@@ -43,5 +46,61 @@ public class Utility {
             return panes[0];
         }
         return null;
+    }
+
+    public static int getCaretPositionInAwtThread(final Context context) {
+        ThreadReturner r = new ThreadReturner() {
+            @Override
+            public void run() {
+                //System.out.println(org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().getCaretPosition());
+
+                /*System.out.println(context.caretOffset());
+                System.out.println(context.startOffset());
+                System.out.println(context.endOffset());
+                System.out.println(getCaretPosition(context.document()));
+                System.out.println(getTextComponent(context.document()).getCaretPosition());
+                System.out.println(getTextComponent(context.document()).getCaret().getDot());*/
+                setValue(context.caretOffset());
+            }
+        };
+        EventQueue.invokeLater(r);
+
+        return r.getValue();
+    }
+
+    private static abstract class ThreadReturner implements Runnable {
+
+        private int value;
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+    }
+
+    public static void setCaretPositionInAwtThread(final Context context, final int position) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    context.setCaretOffset(position);
+                } catch (BadLocationException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        });
+    }
+
+    public static void setCaretPositionInAwtThread(final Document document, final int position) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Utility.setCaretPosition(document, position);
+            }
+        });
     }
 }

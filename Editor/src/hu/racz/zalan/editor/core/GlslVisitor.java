@@ -38,6 +38,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
 
     @Override
     public Object visitStart(AntlrGlslParser.StartContext ctx) {
+        Scope.clearBracelessScopes();
         currentScope = new Scope();
         return super.visitStart(ctx);
     }
@@ -101,16 +102,30 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitCase_statement_list(AntlrGlslParser.Case_statement_listContext ctx) {
+        Scope s = new Scope();
+        s.setStartIndex(ctx.start.getStartIndex());
+        s.setStopIndex(ctx.stop.getStopIndex() + 1);
+        currentScope.addChild(s);
+        s.setParent(currentScope);
+        currentScope = s;
+        Scope.addBracelessScope(s);
+        Object ret = super.visitCase_statement_list(ctx);
+        currentScope = s.getParent();
+        return ret;
+    }
+
+    @Override
     public Object visitStatement(AntlrGlslParser.StatementContext ctx) {
         if (!(ctx.parent instanceof AntlrGlslParser.Statement_listContext) && ctx.compound_statement() == null) {
-
             Scope s = new Scope();
             s.setStartIndex(ctx.start.getStartIndex());
-            s.setEndIndex(ctx.stop.getStopIndex());
+            s.setStopIndex(ctx.stop.getStopIndex() + 1);
             currentScope.addChild(s);
             s.setParent(currentScope);
             currentScope = s;
-            bracelessScopes.add(s);
+            //bracelessScopes.add(s);
+            Scope.addBracelessScope(s);
             Object ret = super.visitStatement(ctx);
             currentScope = s.getParent();
             return ret;
@@ -123,7 +138,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     public Object visitCompound_statement(AntlrGlslParser.Compound_statementContext ctx) {
         Scope s = new Scope();
         s.setStartIndex(ctx.start.getStartIndex());
-        s.setEndIndex(ctx.stop.getStopIndex());
+        s.setStopIndex(ctx.stop.getStopIndex());
         currentScope.addChild(s);
         s.setParent(currentScope);
         currentScope = s;
@@ -138,7 +153,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
 
         Scope s = new Scope();
         s.setStartIndex(ctx.start.getStartIndex());
-        s.setEndIndex(ctx.stop.getStopIndex());
+        s.setStopIndex(ctx.stop.getStopIndex());
         currentScope.addChild(s);
         s.setParent(currentScope);
 
@@ -276,7 +291,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<Object> {
     public Object visitFor_iteration(AntlrGlslParser.For_iterationContext ctx) {
         Scope s = new Scope();
         s.setStartIndex(ctx.start.getStartIndex());
-        s.setEndIndex(ctx.stop.getStopIndex());
+        s.setStopIndex(ctx.stop.getStopIndex());
         currentScope.addChild(s);
         s.setParent(currentScope);
         currentScope = s;

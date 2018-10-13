@@ -68,7 +68,7 @@ public class GlslProcessor {
     private static Scope getScope(Scope scope, int caretOffset) {
         for (int i = 0; i < scope.getChildCount(); i++) {
             Scope child = scope.getChild(i);
-            if (child.getStartIndex() <= caretOffset && child.getEndIndex() >= caretOffset) {
+            if (child.getStartIndex() <= caretOffset && child.getStopIndex() >= caretOffset) {
                 return getScope(child, caretOffset);
             }
         }

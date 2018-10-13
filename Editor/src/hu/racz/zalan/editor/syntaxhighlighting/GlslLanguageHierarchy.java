@@ -60,7 +60,7 @@ public class GlslLanguageHierarchy extends LanguageHierarchy<GlslTokenId> {
         tokens.add(new GlslTokenId("while", TokenCategory.KEYWORD, AntlrGlslLexer.KW_WHILE));
         tokens.add(new GlslTokenId("switch", TokenCategory.KEYWORD, AntlrGlslLexer.KW_SWITCH));
         tokens.add(new GlslTokenId("case", TokenCategory.KEYWORD, AntlrGlslLexer.KW_CASE));
-        tokens.add(new GlslTokenId("default", TokenCategory.KEYWORD, AntlrGlslLexer.KW_DEFAULT));
+        tokens.add(new GlslTokenId("default keyword", TokenCategory.KEYWORD, AntlrGlslLexer.KW_DEFAULT));
         tokens.add(new GlslTokenId("if", TokenCategory.KEYWORD, AntlrGlslLexer.KW_IF));
         tokens.add(new GlslTokenId("else", TokenCategory.KEYWORD, AntlrGlslLexer.KW_ELSE));
         tokens.add(new GlslTokenId("discard", TokenCategory.KEYWORD, AntlrGlslLexer.KW_DISCARD));
