@@ -1,25 +1,58 @@
 package hu.racz.zalan.editor.indentation;
 
-import hu.racz.zalan.editor.antlr.generated.*;
+import static hu.racz.zalan.editor.antlr.generated.AntlrGlslLexer.*;
+
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.errordisplay.*;
-import java.awt.*;
-import java.util.List;
+import java.util.*;
 import javax.swing.text.BadLocationException;
 import org.antlr.v4.runtime.Token;
 import org.netbeans.modules.editor.indent.api.*;
-import org.netbeans.modules.editor.indent.spi.Context;
-import org.netbeans.modules.editor.indent.spi.ExtraLock;
-import org.netbeans.modules.editor.indent.spi.ReformatTask;
+import org.netbeans.modules.editor.indent.spi.*;
 
 public class GlslReformatTask implements ReformatTask {
 
-    private final Context context;
+    //characters
+    private static final char LINE_FEED = '\n';
 
+    //document
+    private final Context context;
+    private int caretPosition;
+
+    //settings
     private int indentLevelSize;
     private int tabSize;
     private boolean expandTabs;
+
+    //tokens
+    private Token currentToken;
+    private int previousTokenType = -1;
+    private int currentTokenType;
+
+    //struct state
+    private boolean inStructBody;
+    private boolean inStructInitList;
+
+    //for state
+    private boolean inForHeader;
+    private int forHeaderBraceCount;
+
+    //else if state
+    private boolean lastRegularElse;
+    private final List<Scope> ignoredBracelessScopes = new ArrayList();
+
+    //user's text
+    private static final int MAX_ALLOWED_BLANK_LINES = 1;
+    private String userSpaceTabNewLine = "";
+    private int userNewLineCount;
+
+    //indentation
+    private int indentLevel;
+
+    //results
+    private int resultCaretPosition;
+    private String result = "";
 
     public GlslReformatTask(Context context) {
         this.context = context;
@@ -27,205 +60,260 @@ public class GlslReformatTask implements ReformatTask {
 
     @Override
     public void reformat() throws BadLocationException {
+        initialize();
+        List<? extends Token> tokens = GlslProcessor.getTokens();
+        for (Token token : tokens) {
+            setToken(token);
+            formatToken();
+        }
+        setResultTextAndCaretPosition();
+    }
+
+    private void initialize() {
         indentLevelSize = IndentUtils.indentLevelSize(context.document());
         tabSize = IndentUtils.tabSize(context.document());
         expandTabs = IndentUtils.isExpandTabs(context.document());
+        caretPosition = GlslParser.CaretListener2.CARET_POSITION;
+    }
 
-        int caretPosition = GlslParser.CaretListener2.CARET_POSITION;
-        int resCar = 0;
-        //System.out.println(Utility.getCaretPositionInAwtThread(context));
-        Utility.getCaretPositionInAwtThread(context);
-        //String ret1 = "";
-        //String ret2 = "";
-        String ret = "";
-        String specialText = "";
-        int newLineCount = 0;
-        boolean indent = true;
-        int indentLevel = 0;
-        boolean inForHeader = false;
-        boolean inStruct = false;
-        boolean inStructInitList = false;
-        int forHeaderBraceCount = 0;
-        boolean caret = false;
+    private void setToken(Token token) {
+        currentToken = token;
+        currentTokenType = currentToken.getType();
+    }
 
-        List<? extends Token> tokens = GlslProcessor.getTokens();
-        if (tokens.isEmpty() || tokens.size() == 1) {
-            return;
-        }
-
-        Token lastReal = tokens.get(0);
-        int tt1 = lastReal.getType();
-        if (tt1 == AntlrGlslLexer.KW_STRUCT) {
-            inStruct = true;
-        }
-        if (tt1 == AntlrGlslLexer.SPACE || tt1 == AntlrGlslLexer.NEW_LINE || tt1 == AntlrGlslLexer.TAB) {
-            specialText += lastReal.getText();
-            if (tt1 == AntlrGlslLexer.NEW_LINE) {
-                newLineCount++;
-            }
+    private void formatToken() {
+        if (isCurrentTokenOneOfThem(SPACE, NEW_LINE, TAB)) {
+            formatSpaceTabNewLine();
+        } else if (isCurrentTokenOneOfThem(MULTI_LINE_COMMENT, SINGLE_LINE_COMMENT)) {
+            formatComment();
         } else {
-            indent = false;
-            ret += lastReal.getText();
+            formatRegular();
         }
+    }
 
-        Token current;
-        int tt2;
+    private void refreshStructState() {
+        refreshStructBodyStartState();
+        refreshStructBodyStopState();
+        refreshStructEndState();
+    }
 
-        for (int i = 1; i < tokens.size(); i++) {
-            current = tokens.get(i);
-            tt2 = current.getType();
+    private void refreshStructBodyStartState() {
+        if (isCurrentTokenOneOfThem(KW_STRUCT)) {
+            inStructBody = true;
+        }
+    }
 
-            if (tt2 == AntlrGlslLexer.KW_STRUCT) {
-                inStruct = true;
-            }
-            if (inStruct && tt2 == AntlrGlslLexer.RCB) {
-                inStruct = false;
-                inStructInitList = true;
-            }
-            if (inStructInitList && tt2 == AntlrGlslLexer.SEMICOLON) {
-                inStructInitList = false;
-            }
+    private void refreshStructBodyStopState() {
+        if (inStructBody && isCurrentTokenOneOfThem(RCB)) {
+            inStructBody = false;
+            inStructInitList = true;
+        }
+    }
 
-            if (tt2 == AntlrGlslLexer.SPACE || tt2 == AntlrGlslLexer.NEW_LINE || tt2 == AntlrGlslLexer.TAB) {
-                specialText += current.getText();
-                if (tt2 == AntlrGlslLexer.NEW_LINE) {
-                    newLineCount = newLineCount == 2 ? 2 : newLineCount + 1;
-                }
-                if (current.getStartIndex() <= caretPosition && current.getStopIndex() + 1 >= caretPosition) {
-                    resCar = ret.length() + (caretPosition - current.getStartIndex());
-                }
-            } else if (tt2 == AntlrGlslLexer.MULTI_LINE_COMMENT || tt2 == AntlrGlslLexer.SINGLE_LINE_COMMENT) {
-                String res = "";
-                int index = specialText.lastIndexOf("\n");
-                if (index != -1) {
-                    res += specialText.substring(index);
-                    specialText = specialText.substring(0, index);
+    private void refreshStructEndState() {
+        if (inStructInitList && isCurrentTokenOneOfThem(SEMICOLON)) {
+            inStructInitList = false;
+        }
+    }
 
-                    index = specialText.lastIndexOf("\n");
-                    if (index != -1) {
-                        res += specialText.substring(index);
-                    } else {
-                        res += specialText;
-                    }
-                } else {
-                    res += specialText;
-                }
-                if (caret) {
-                    resCar += res.length();
-                }
+    private void formatSpaceTabNewLine() {
+        refreshUserTextState();
+        refreshResultCaretPosition();
+    }
 
-                if (current.getStartIndex() <= caretPosition && current.getStopIndex() + 1 >= caretPosition) {
-                    resCar = ret.length() + res.length() + (caretPosition - current.getStartIndex());
-                }
+    private void refreshUserTextState() {
+        userSpaceTabNewLine += currentToken.getText();
+        if (isCurrentTokenOneOfThem(NEW_LINE)) {
+            userNewLineCount = userNewLineCount == 2 ? 2 : userNewLineCount + 1;
+        }
+    }
 
-                ret += res + current.getText();
-                specialText = "";
-                newLineCount = 0;
-                lastReal = current;
-                tt1 = tt2;
-            } else {
-                if (tt2 == AntlrGlslLexer.KW_FOR) {
-                    inForHeader = true;
-                }
-                if (inForHeader) {
-                    if (tt2 == AntlrGlslLexer.LRB) {
-                        forHeaderBraceCount++;
-                    } else if (tt2 == AntlrGlslLexer.RRB) {
-                        forHeaderBraceCount--;
-                        if (forHeaderBraceCount == 0) {
-                            inForHeader = false;
-                        }
-                    }
-                }
-                specialText = "";
-                if (tt1 == AntlrGlslLexer.LCB
-                        || tt1 == AntlrGlslLexer.SINGLE_LINE_COMMENT
-                        || (tt1 == AntlrGlslLexer.RCB && tt2 != AntlrGlslLexer.SEMICOLON && tt2 != AntlrGlslLexer.KW_ELSE && !inStructInitList)
-                        || tt1 == AntlrGlslLexer.SEMICOLON && forHeaderBraceCount == 0
-                        || tt1 == AntlrGlslLexer.MACRO
-                        || isBracelessScopeSStart(current)) {
-                    ret += "\n";
-                    indent = true;
-                } else if (tt2 != AntlrGlslLexer.SEMICOLON
-                        && tt2 != AntlrGlslLexer.COMMA
-                        && tt1 != AntlrGlslLexer.LRB
-                        && tt1 != AntlrGlslLexer.LSB
-                        && tt2 != AntlrGlslLexer.RRB
-                        && tt2 != AntlrGlslLexer.RSB
-                        && tt1 != AntlrGlslLexer.DOT
-                        && tt2 != AntlrGlslLexer.DOT
-                        && (tt1 != AntlrGlslLexer.IDENTIFIER && tt1 != AntlrGlslLexer.TYPE && tt1 != AntlrGlslLexer.Q_LAYOUT && tt1 != AntlrGlslLexer.KW_IF && tt1 != AntlrGlslLexer.KW_WHILE && tt1 != AntlrGlslLexer.KW_FOR || tt2 != AntlrGlslLexer.LRB)
-                        && (tt1 != AntlrGlslLexer.IDENTIFIER || tt2 != AntlrGlslLexer.LSB)
-                        && tt1 != AntlrGlslLexer.OP_LOGICAL_UNARY
-                        && (tt1 != AntlrGlslLexer.OP_INC && tt1 != AntlrGlslLexer.OP_DEC || tt2 != AntlrGlslLexer.IDENTIFIER)
-                        && (tt2 != AntlrGlslLexer.OP_INC && tt2 != AntlrGlslLexer.OP_DEC || (tt1 != AntlrGlslLexer.IDENTIFIER && tt1 != AntlrGlslLexer.RRB))) {
-                    ret += " ";
-                    indent = false;
-                }
-                if (indent) {
-                    for (int j = 0; j < newLineCount - 1; j++) {
-                        ret += "\n";
-                    }
-                    newLineCount = 0;
-                    int depth = (tt2 == AntlrGlslLexer.RCB ? indentLevel - 1 : indentLevel) * indentLevelSize;
-                    for (Scope bs : Scope.getBracelessScopes()) {
-                        if (bs.getStartIndex() <= current.getStartIndex() && bs.getStopIndex() >= current.getStopIndex()) {
-                            depth += indentLevelSize;
-                        }
-                    }
-                    ret += IndentUtils.createIndentString(depth, expandTabs, tabSize);
-                    /*for (int j = 0; j < (tt2 == AntlrGlslLexer.RCB ? indentLevel - 1 : indentLevel); j++) {
-                        ret += "    ";
-                    }*/
-                    indent = false;
-                }
-                if (current.getStartIndex() <= caretPosition && current.getStopIndex() + 1 >= caretPosition) {
-                    resCar = ret.length() + (caretPosition - current.getStartIndex());
-                }
-                ret += current.getText();
+    private void refreshResultCaretPosition() {
+        if (currentToken.getStartIndex() <= caretPosition && currentToken.getStopIndex() + 1 >= caretPosition) {
+            resultCaretPosition = result.length() + (caretPosition - currentToken.getStartIndex());
+        }
+    }
 
-                if (tt2 == AntlrGlslLexer.LCB) {
-                    indentLevel++;
-                } else if (tt2 == AntlrGlslLexer.RCB) {
-                    indentLevel--;
-                }
+    private void formatComment() {
+        result += computeUserText();
+        refreshResultCaretPosition();
+        result += currentToken.getText();
+        previousTokenType = currentTokenType;
+        clearUserTextState();
+    }
 
-                lastReal = current;
-                tt1 = tt2;
+    private String computeUserText() {
+        return substringFromNthLastIndexOf(userSpaceTabNewLine, LINE_FEED, MAX_ALLOWED_BLANK_LINES + 1);
+
+    }
+
+    private String substringFromNthLastIndexOf(String str, char character, int n) {
+        int lastIndexOfC = str.lastIndexOf(character);
+        if (n < 1 || lastIndexOfC == -1) {
+            return str;
+        } else {
+            return substringFromNthLastIndexOf(str.substring(0, lastIndexOfC), character, n - 1) + str.substring(lastIndexOfC);
+        }
+    }
+
+    private void clearUserTextState() {
+        userSpaceTabNewLine = "";
+        userNewLineCount = 0;
+    }
+
+    private void formatRegular() {
+        refreshStates();
+        format();
+        refreshIndentState();
+        userSpaceTabNewLine = "";
+        lastRegularElse = isCurrentTokenOneOfThem(KW_ELSE);
+        previousTokenType = currentTokenType;
+    }
+
+    private void refreshStates() {
+        if (lastRegularElse && isCurrentTokenOneOfThem(KW_IF)) {
+            addStartScopeToIgnored();
+        }
+        refreshStructState();
+        refreshForState();
+    }
+
+    private void addStartScopeToIgnored() {
+        for (Scope bs : Scope.getBracelessScopes()) {
+            if (bs.getStartIndex() == currentToken.getStartIndex()) {
+                ignoredBracelessScopes.add(bs);
             }
         }
+    }
 
-        //ret2 = ret;
-        //ret = ret1 + ret2;
-//        int len = context.document().getLength();
-//        int len1 = caretPosition;
-//        int len2 = len - caretPosition;
-//
-//        context.document().remove(len1 + 1, len2 - 1);
-//        context.document().insertString(len1 + 1, ret2, null);
-//        context.document().remove(0, len1 + 1);
-//        context.document().insertString(0, ret1 + "---", null);
-        context.document().remove(0, context.document().getLength());
-        context.document().insertString(0, ret, null);
+    private void refreshForState() {
+        refreshForHeaderState();
+        if (inForHeader) {
+            refreshForHeaderBraceCount();
+        }
+    }
 
-        //Utility.setCaretPositionInAwtThread(context, resCar);
-        Utility.setCaretPositionInAwtThread(context.document(), resCar);
+    private void refreshForHeaderState() {
+        if (isCurrentTokenOneOfThem(KW_FOR)) {
+            inForHeader = true;
+        }
+    }
 
-//        EventQueue.invokeLater(new Runnable() {
-//
-//            
-//            public void run() {
-//                Utility.setCaretPosition(context.document(), resCar);
-//            }
-//        });
-        //context.setCaretOffset(10);
-        //context.document().insertString(len, ret, null);
-        //context.document().remove(0, len);
+    private void refreshForHeaderBraceCount() {
+        if (isCurrentTokenOneOfThem(LRB)) {
+            forHeaderBraceCount++;
+        } else if (isCurrentTokenOneOfThem(RRB)) {
+            forHeaderBraceCount--;
+            refreshForHeaderStop();
+        }
+    }
+
+    private void refreshForHeaderStop() {
+        if (forHeaderBraceCount == 0) {
+            inForHeader = false;
+        }
+    }
+
+    private void format() {
+        if (previousTokenType != -1) {
+            addSpaceOrIndentationOrNothing();
+        }
+        refreshResultCaretPosition();
+        result += currentToken.getText();
+    }
+
+    private void addSpaceOrIndentationOrNothing() {
+        if (isIndentationNeeded()) {
+            result += computeIndentation();
+            userNewLineCount = 0;
+        } else if (isSpaceNeeded()) {
+            result += " ";
+        }
+    }
+
+    private void refreshIndentState() {
+        if (isCurrentTokenOneOfThem(LCB)) {
+            indentLevel++;
+        } else if (isCurrentTokenOneOfThem(RCB)) {
+            indentLevel--;
+        }
+    }
+
+    private String computeIndentation() {
+        String indentationNewLines = computeIndentationNewLines();
+        int depth = computeIndentationDepth();
+        return indentationNewLines + IndentUtils.createIndentString(depth, expandTabs, tabSize);
+    }
+
+    private String computeIndentationNewLines() {
+        String indentationNewLines = "";
+        for (int j = 0; j < userNewLineCount - 1; j++) {
+            indentationNewLines += LINE_FEED;
+        }
+        indentationNewLines += LINE_FEED;
+        return indentationNewLines;
+    }
+
+    private int computeIndentationDepth() {
+        int depth = (isCurrentTokenOneOfThem(RCB) ? indentLevel - 1 : indentLevel) * indentLevelSize;
+        for (Scope bs : Scope.getBracelessScopes()) {
+            if (!isBracelessScopeIgnored(bs) && bs.getStartIndex() <= currentToken.getStartIndex() && bs.getStopIndex() >= currentToken.getStopIndex()) {
+                depth += indentLevelSize;
+            }
+        }
+        return depth;
+    }
+
+    private boolean isBracelessScopeIgnored(Scope bs) {
+        for (Scope s : ignoredBracelessScopes) {
+            if (bs == s) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isIndentationNeeded() {
+        return isPreviousTokenOneOfThem(LCB, SINGLE_LINE_COMMENT, MACRO)
+                || (isPreviousTokenOneOfThem(RCB) && !isCurrentTokenOneOfThem(SEMICOLON, KW_ELSE) && !inStructInitList)
+                || isPreviousTokenOneOfThem(SEMICOLON) && forHeaderBraceCount == 0
+                || isBracelessScopeSStart(currentToken);
+    }
+
+    private boolean isSpaceNeeded() {
+        return !isPreviousTokenOneOfThem(LRB, LSB, DOT, OP_LOGICAL_UNARY) && !isCurrentTokenOneOfThem(SEMICOLON, COMMA, RRB, RSB, DOT)
+                && (!isPreviousTokenOneOfThem(IDENTIFIER, TYPE, Q_LAYOUT, KW_IF, KW_WHILE, KW_FOR, KW_SWITCH) || !isCurrentTokenOneOfThem(LRB))
+                && (!isPreviousTokenOneOfThem(IDENTIFIER) || !isCurrentTokenOneOfThem(LSB))
+                && (!isPreviousTokenOneOfThem(OP_INC, OP_DEC) || !isCurrentTokenOneOfThem(IDENTIFIER))
+                && (!isCurrentTokenOneOfThem(OP_INC, OP_DEC) || (!isPreviousTokenOneOfThem(IDENTIFIER, RRB)));
     }
 
     private boolean isBracelessScopeSStart(Token t) {
         for (Scope bs : Scope.getBracelessScopes()) {
-            if (bs.getStartIndex() == t.getStartIndex()) {
+            if (bs.getStartIndex() == t.getStartIndex() && !isBracelessScopeIgnored(bs)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setResultTextAndCaretPosition() throws BadLocationException {
+        context.document().remove(0, context.document().getLength());
+        context.document().insertString(0, result, null);
+        Utility.setCaretPositionInAwtThread(context.document(), resultCaretPosition);
+    }
+
+    private boolean isCurrentTokenOneOfThem(int... types) {
+        return isTokenOneOfThem(currentTokenType, types);
+    }
+
+    private boolean isPreviousTokenOneOfThem(int... types) {
+        return isTokenOneOfThem(previousTokenType, types);
+    }
+
+    private boolean isTokenOneOfThem(int token, int... types) {
+        for (int type : types) {
+            if (type == token) {
                 return true;
             }
         }
