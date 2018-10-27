@@ -4,6 +4,7 @@ import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import java.util.*;
+import org.netbeans.spi.editor.hints.*;
 
 public class Scope {
 
@@ -11,6 +12,7 @@ public class Scope {
     private final List<Scope> children = new ArrayList<>();
 
     private static final List<Scope> BRACELESS_SCOPES = new ArrayList<>();
+    private static final List<ErrorDescription> ERRORS = new ArrayList<>();
 
     //TODO: lehet, hogy ezeket érdemes volna egy mapba rakni
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
@@ -24,6 +26,27 @@ public class Scope {
 
     private int startIndex;
     private int stopIndex;
+    
+    
+    public static void clearErrorss() {
+        ERRORS.clear();
+    }
+
+    public static ErrorDescription getError(int index) {
+        return ERRORS.get(index);
+    }
+
+    public static void addError(ErrorDescription error) {
+        ERRORS.add(error);
+    }
+
+    public static int getErrorCount() {
+        return ERRORS.size();
+    }
+
+    public static List<? extends ErrorDescription> getErrors() {
+        return Collections.unmodifiableList(ERRORS);
+    }
 
     public static void clearBracelessScopes() {
         BRACELESS_SCOPES.clear();
@@ -37,7 +60,7 @@ public class Scope {
         BRACELESS_SCOPES.add(scope);
     }
 
-    public static int getBracelessScopedCount() {
+    public static int getBracelessScopeCount() {
         return BRACELESS_SCOPES.size();
     }
 

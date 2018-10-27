@@ -20,7 +20,8 @@ public class GlslLanguageHierarchy extends LanguageHierarchy<GlslTokenId> {
         List<GlslTokenId> tokens = new ArrayList<>();
 
         tokens.add(new GlslTokenId("macro", TokenCategory.MACRO, AntlrGlslLexer.MACRO));
-        tokens.add(new GlslTokenId("reserved keyword", TokenCategory.ERROR, AntlrGlslLexer.RESERVED_KEYWORD));
+        tokens.add(new GlslTokenId("reserved keyword", TokenCategory.DEFAULT, AntlrGlslLexer.RESERVED_KEYWORD));
+        tokens.add(new GlslTokenId("illegal character", TokenCategory.DEFAULT, AntlrGlslLexer.ILLEGAL_CHARACTERS));
         tokens.add(new GlslTokenId("type", TokenCategory.TYPE, AntlrGlslLexer.TYPE));
         tokens.add(new GlslTokenId("identifier", TokenCategory.IDENTIFIER, AntlrGlslLexer.IDENTIFIER));
         //qualifiers

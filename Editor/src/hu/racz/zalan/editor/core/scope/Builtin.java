@@ -13,7 +13,11 @@ import org.xml.sax.*;
 
 public class Builtin {
 
-    private static final String XML_PATH = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\builtin.xml";
+    private static final String XML_FUNCTIONS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\functions.xml";
+    private static final String XML_KEYWORDS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\keywords.xml";
+    private static final String XML_TYPES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\types.xml";
+    private static final String XML_VARIABLES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\variables.xml";
+    private static final String XML_IMPLICIT_CONVERSIONS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\conversions.xml";
 
     private static final List<FunctionPrototype> FUNCTIONS = new ArrayList<>();
     private static final Map<String, VariableDeclaration> VARIABLES = new HashMap<>();
@@ -24,29 +28,37 @@ public class Builtin {
 
     static {
         try {
-            initialize();
-            loadBuiltinElements();
+            loadKeywords();
+            loadTypes();
+            loadVariables();
+            loadFunctions();
+            loadImplicitConversions();
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private static void loadDocument(String filePath) {
+        try {
+            loadDocumentUnsafe(filePath);
         } catch (IOException | ParserConfigurationException | DOMException | SAXException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private static void initialize() throws ParserConfigurationException, SAXException, IOException {
-        File inputFile = new File(XML_PATH);
+    private static void loadDocumentUnsafe(String filePath) throws ParserConfigurationException, SAXException, IOException {
+        File inputFile = new File(filePath);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(inputFile);
         doc.getDocumentElement().normalize();
     }
 
-    private static void loadBuiltinElements() {
-        loadKeywords();
-        loadTypes();
-        loadVariables();
-        loadFunctions();
-    }
-
+    //
+    //functions-----------------------------------------------------------------
+    //
     private static void loadFunctions() {
+        loadDocument(XML_FUNCTIONS);
         NodeList nList = doc.getElementsByTagName("function");
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element element = (Element) nList.item(temp);
@@ -65,7 +77,7 @@ public class Builtin {
 
     private static void setReturnType(Element element, FunctionPrototype function) {
         String typeName = element.getElementsByTagName("type").item(0).getTextContent();
-        TypeUsage type = typeName.equals("void") ? TypeUsage.VOID : new TypeUsage(typeName);
+        TypeUsage type = new TypeUsage(typeName);
         function.setReturnType(type);
     }
 
@@ -76,7 +88,11 @@ public class Builtin {
         function.setBuiltInParameters(params);
     }
 
+    //
+    //variables-----------------------------------------------------------------
+    //
     private static void loadVariables() {
+        loadDocument(XML_VARIABLES);
         NodeList nList = doc.getElementsByTagName("variable");
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element element = (Element) nList.item(temp);
@@ -87,23 +103,39 @@ public class Builtin {
 
     private static VariableDeclaration createVariableDeclaration(Element element) {
         String typeName = element.getElementsByTagName("type").item(0).getTextContent();
-        TypeUsage type = new TypeUsage(typeName);
+        boolean array = element.getElementsByTagName("array").getLength() != 0;
+        TypeUsage type = new TypeUsage(typeName, array, TypeUsage.ARRAY_SIZE_DONT_CARE);
         type.setDeclaration(getType(typeName));
         String name = element.getElementsByTagName("name").item(0).getTextContent();
-        boolean array = element.getElementsByTagName("array").getLength() != 0;
-        return new VariableDeclaration(type, name, true, array);
+        return new VariableDeclaration(type, name, true);
     }
 
+    //
+    //types---------------------------------------------------------------------
+    //
     private static void loadTypes() {
-        NodeList nList = doc.getElementsByTagName("type");
+        loadDocument(XML_TYPES);
+        loadTypes(TypeCategory.TRANSPARENT);
+        loadTypes(TypeCategory.FLOATING_POINT_OPAQUE);
+        loadTypes(TypeCategory.SIGNED_INTEGER_OPAQUE);
+        loadTypes(TypeCategory.UNSIGNED_INTEGER_OPAQUE);
+    }
+
+    private static void loadTypes(TypeCategory typeCategory) {
+        NodeList tnList = doc.getElementsByTagName(typeCategory.getXmlName());
+        NodeList nList = ((Element) tnList.item(0)).getElementsByTagName("type");
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element element = (Element) nList.item(temp);
             String name = element.getTextContent();
-            TYPES.put(name, new TypeDeclaration(name, true));
+            TYPES.put(name, new TypeDeclaration(name, true, typeCategory));
         }
     }
 
+    //
+    //keywords------------------------------------------------------------------
+    //
     private static void loadKeywords() {
+        loadDocument(XML_KEYWORDS);
         NodeList nList = doc.getElementsByTagName("keyword");
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element element = (Element) nList.item(temp);
@@ -111,6 +143,38 @@ public class Builtin {
         }
     }
 
+    //
+    //implicit conversions------------------------------------------------------
+    //
+    private static void loadImplicitConversions() {
+        loadDocument(XML_IMPLICIT_CONVERSIONS);
+        NodeList nList = doc.getElementsByTagName("conversion");
+        for (int temp = 0; temp < nList.getLength(); temp++) {
+            Element element = (Element) nList.item(temp);
+            TypeDeclaration from = getFromType(element);
+            setConversions(from, element);
+        }
+    }
+
+    private static TypeDeclaration getFromType(Element element) {
+        Element fromNode = (Element) element.getElementsByTagName("from").item(0);
+        String name = ((Element) fromNode.getElementsByTagName("name").item(0)).getTextContent();
+        return getType(name);
+    }
+
+    private static void setConversions(TypeDeclaration from, Element element) {
+        Element toNode = ((Element) element.getElementsByTagName("to").item(0));
+        NodeList nl = toNode.getElementsByTagName("name");
+        for (int i = 0; i < nl.getLength(); i++) {
+            String toName = ((Element) nl.item(i)).getTextContent();
+            TypeDeclaration to = getType(toName);
+            from.addImplicitConversion(to);
+        }
+    }
+
+    //
+    //misc----------------------------------------------------------------------
+    //
     public static List<FunctionPrototype> getFunctions() {
         return Collections.unmodifiableList(FUNCTIONS);
     }

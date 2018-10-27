@@ -5,7 +5,7 @@ import org.openide.util.ImageUtilities;
 
 public class Keyword extends Element implements CompletionElement {
 
-    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/keyword.png"));
+    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/keyword.png"));
 
     public Keyword(String name) {
         setName(name);

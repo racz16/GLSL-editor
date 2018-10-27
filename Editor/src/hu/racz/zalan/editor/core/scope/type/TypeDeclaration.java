@@ -2,31 +2,32 @@ package hu.racz.zalan.editor.core.scope.type;
 
 import hu.racz.zalan.editor.core.scope.CompletionElement;
 import hu.racz.zalan.editor.core.scope.Element;
+import hu.racz.zalan.editor.core.scope.variable.*;
 import java.util.*;
 import javax.swing.ImageIcon;
 import org.openide.util.ImageUtilities;
 
 public class TypeDeclaration extends Element implements CompletionElement {
 
-    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/bi_type.png"));
-    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/type.png"));
+    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/bi_type.png"));
+    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/type.png"));
 
     private boolean builtIn;
     private int structStartIndex;
     private int structStopIndex;
-
-    //TODO: a benne deklarált változókat is el lehetne itt tárolni
-    //pl. code completionhoz jól jöhet
-    //------------------------------------------------------
+    private TypeCategory typeCategory = TypeCategory.CUSTOM;
+    private final List<TypeDeclaration> implicitConversions = new ArrayList<>();
+    private final List<VariableDeclaration> members = new ArrayList<>();
     private final List<TypeUsage> usages = new ArrayList<>();
 
     public TypeDeclaration(String name) {
         setName(name);
     }
 
-    public TypeDeclaration(String name, boolean builtIn) {
+    public TypeDeclaration(String name, boolean builtIn, TypeCategory typeCategory) {
         setName(name);
         setBuiltIn(builtIn);
+        setTypeCategory(typeCategory);
     }
 
     public boolean isBuiltIn() {
@@ -35,6 +36,14 @@ public class TypeDeclaration extends Element implements CompletionElement {
 
     public void setBuiltIn(boolean builtIn) {
         this.builtIn = builtIn;
+    }
+
+    public TypeCategory getTypeCategory() {
+        return typeCategory;
+    }
+
+    public void setTypeCategory(TypeCategory typeCategory) {
+        this.typeCategory = typeCategory;
     }
 
     public int getStructStartIndex() {
@@ -70,6 +79,32 @@ public class TypeDeclaration extends Element implements CompletionElement {
 
     public List<TypeUsage> getUsages() {
         return Collections.unmodifiableList(usages);
+    }
+
+    //
+    //implicit conversions------------------------------------------------------
+    //
+    public void addImplicitConversion(TypeDeclaration td) {
+        implicitConversions.add(td);
+    }
+
+    public List<TypeDeclaration> getImplicitConversions() {
+        return Collections.unmodifiableList(implicitConversions);
+    }
+
+    public boolean isConveribleTo(TypeDeclaration td) {
+        return implicitConversions.contains(td);
+    }
+
+    //
+    //members-------------------------------------------------------------------
+    //
+    public void addMember(VariableDeclaration vd) {
+        members.add(vd);
+    }
+
+    public List<VariableDeclaration> getMembers() {
+        return Collections.unmodifiableList(members);
     }
 
     //

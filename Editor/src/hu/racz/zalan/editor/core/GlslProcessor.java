@@ -4,6 +4,7 @@ import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.errordisplay.*;
 import java.util.*;
+import javax.swing.text.*;
 import org.antlr.v4.runtime.*;
 
 public class GlslProcessor {
@@ -15,6 +16,16 @@ public class GlslProcessor {
     private static List<? extends Token> tokens;
     private static Scope rootScope;
     private static List<SyntaxError> errors;
+
+    private static Document document;
+
+    public static Document getDocument() {
+        return document;
+    }
+
+    public static void setDocument(Document doc) {
+        document = doc;
+    }
 
     public static AntlrGlslLexer getLexer() {
         return lexer;

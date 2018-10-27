@@ -8,26 +8,27 @@ import org.openide.util.ImageUtilities;
 
 public class VariableDeclaration extends Element implements CompletionElement {
 
-    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/variable.png"));
-    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/bi_variable.png"));
-    private static final ImageIcon GL_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/gl_variable.png"));
+    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/variable.png"));
+    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/bi_variable.png"));
+    private static final ImageIcon GL_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/gl_variable.png"));
 
     private boolean builtIn;
     private boolean global;
-    private boolean array;
     private TypeUsage type;
+
+    private final List<Qualifier> qualifiers = new ArrayList<>();
+    private final List<Qualifier> implicitQualifiers = new ArrayList<>();
 
     private int declarationStartIndex;
     private int declarationStopIndex;
 
-    //TODO: milyen módosítói vannak? pl. readonly, out stb., függvényparamétereknél még jól jöhet
     //TODO: lehetne valami szülő vagy ilyesmi, hogy milyen structban van benne
     //----------------------------------------------------------
     private final List<VariableUsage> usages = new ArrayList<>();
 
-    public VariableDeclaration(TypeUsage type, String name, boolean builtIn, boolean array) {
+    public VariableDeclaration(TypeUsage type, String name, boolean builtIn/*, boolean array*/) {
         this(type, name);
-        setArray(array);
+        //setArray(array);
         setBuiltIn(builtIn);
     }
 
@@ -76,14 +77,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
         this.global = global;
     }
 
-    public boolean isArray() {
-        return array;
-    }
-
-    public void setArray(boolean array) {
-        this.array = array;
-    }
-
     //
     //usages--------------------------------------------------------------------
     //
@@ -104,6 +97,25 @@ public class VariableDeclaration extends Element implements CompletionElement {
     }
 
     //
+    //qualifiers----------------------------------------------------------------
+    //
+    public void addQualifier(Qualifier qualifier) {
+        qualifiers.add(qualifier);
+    }
+
+    public List<Qualifier> getQualifiers() {
+        return Collections.unmodifiableList(qualifiers);
+    }
+
+    public void addImplicitQualifier(Qualifier qualifier) {
+        implicitQualifiers.add(qualifier);
+    }
+
+    public List<Qualifier> getImplicitQualifiers() {
+        return Collections.unmodifiableList(implicitQualifiers);
+    }
+
+    //
     //misc----------------------------------------------------------------------
     //
     @Override
@@ -118,7 +130,7 @@ public class VariableDeclaration extends Element implements CompletionElement {
 
     @Override
     public String getRightText() {
-        return type.getName() + (isArray() ? "[]" : "");
+        return type.toString();
     }
 
     @Override
@@ -134,6 +146,39 @@ public class VariableDeclaration extends Element implements CompletionElement {
     @Override
     public String getPasteText() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        VariableDeclaration vd = (VariableDeclaration) obj;
+        if (!super.equals(vd) || !getType().equals(vd.getType())) {
+            return false;
+        }
+        return qualifiersEquals(vd);
+    }
+
+    public boolean qualifiersEquals(VariableDeclaration vd) {
+        for (Qualifier q : getQualifiers()) {
+            if (!vd.getQualifiers().contains(q) && !vd.getImplicitQualifiers().contains(q)) {
+                return false;
+            }
+        }
+        for (Qualifier q : getImplicitQualifiers()) {
+            if (!vd.getQualifiers().contains(q) && !vd.getImplicitQualifiers().contains(q)) {
+                return false;
+            }
+        }
+        return getQualifiers().size() + getImplicitQualifiers().size() == vd.getQualifiers().size() + vd.getImplicitQualifiers().size();
+    }
+
+    @Override
+    public String toString() {
+        String ret = "";
+        for (Qualifier q : getQualifiers()) {
+            ret += q.getName() + " ";
+        }
+        ret += getType().getName() + " " + getName();
+        return ret;
     }
 
 }

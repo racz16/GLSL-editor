@@ -57,7 +57,6 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     private void initializeHighlight() {
         bag.clear();
         caretPosition = textComponent.getCaretPosition();
-        //System.out.println(caretPosition);
         initializeScopes();
     }
 

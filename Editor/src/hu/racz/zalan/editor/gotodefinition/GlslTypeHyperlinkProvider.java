@@ -27,7 +27,7 @@ public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (TypeUsage tu : scope.getTypeUsages()) {
-            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null) {
+            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
                 usage = tu;
                 return true;
             }

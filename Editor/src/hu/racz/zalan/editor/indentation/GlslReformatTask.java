@@ -40,7 +40,7 @@ public class GlslReformatTask implements ReformatTask {
 
     //else if state
     private boolean lastRegularElse;
-    private final List<Scope> ignoredBracelessScopes = new ArrayList();
+    private final List<Scope> ignoredBracelessScopes = new ArrayList<>();
 
     //user's text
     private static final int MAX_ALLOWED_BLANK_LINES = 1;

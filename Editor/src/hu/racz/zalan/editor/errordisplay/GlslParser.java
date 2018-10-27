@@ -33,6 +33,7 @@ public class GlslParser extends Parser {
         }
 
         this.snapshot = snpsht;
+        GlslProcessor.setDocument(snapshot.getSource().getDocument(false));
         //TODO: várni párszár millisec-et, hogy gyors gépelésnél ne járjuk be az egész fát minden karakterre
         //de mondjuk azért néha jó lenne azonnal
         //  - pl. ha még nem volt soha futtatva, nehogy valami nullptr exception legyen

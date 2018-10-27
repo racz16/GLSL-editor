@@ -17,11 +17,11 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStart(AntlrGlslParser.StartContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlrGlslParser#function_signature}.
+	 * Visit a parse tree produced by {@link AntlrGlslParser#function_header}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunction_signature(AntlrGlslParser.Function_signatureContext ctx);
+	T visitFunction_header(AntlrGlslParser.Function_headerContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#return_type}.
 	 * @param ctx the parse tree
@@ -46,6 +46,12 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunction_parameter(AntlrGlslParser.Function_parameterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlrGlslParser#parameter_qualifiers}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter_qualifiers(AntlrGlslParser.Parameter_qualifiersContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#parameter_qualifier}.
 	 * @param ctx the parse tree
@@ -215,29 +221,17 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlrGlslParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpression(AntlrGlslParser.ExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#expression_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExpression_list(AntlrGlslParser.Expression_listContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlrGlslParser#constant_expression}.
+	 * Visit a parse tree produced by {@link AntlrGlslParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
+	T visitExpression(AntlrGlslParser.ExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#fully_specified_type}.
 	 * @param ctx the parse tree
@@ -281,11 +275,11 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAuxiliary_storage_qualifier(AntlrGlslParser.Auxiliary_storage_qualifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlrGlslParser#memory_storage_qualifier}.
+	 * Visit a parse tree produced by {@link AntlrGlslParser#memory_qualifier}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMemory_storage_qualifier(AntlrGlslParser.Memory_storage_qualifierContext ctx);
+	T visitMemory_qualifier(AntlrGlslParser.Memory_qualifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlrGlslParser#layout_qualifier}.
 	 * @param ctx the parse tree

@@ -90,7 +90,7 @@ public abstract class FunctionBase extends Element {
 
     private boolean equalsParameters(FunctionBase function) {
         for (int i = 0; i < parameters.size(); i++) {
-            if (!parameters.get(i).getType().equals(function.parameters.get(i).getType())) {
+            if (!parameters.get(i).getType().equals(function.parameters.get(i).getType()) || !parameters.get(i).qualifiersEquals(function.parameters.get(i))) {
                 return false;
             }
         }
@@ -122,8 +122,7 @@ public abstract class FunctionBase extends Element {
 
     private String toStringParameter(int index) {
         String ret = "";
-        VariableDeclaration param = parameters.get(index);
-        ret += param.getType() + " " + param.getName();
+        ret += parameters.get(index);
         if (index != parameters.size() - 1) {
             ret += ", ";
         }

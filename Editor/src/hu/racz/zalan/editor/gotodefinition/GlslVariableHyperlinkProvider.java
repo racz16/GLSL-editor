@@ -27,7 +27,7 @@ public class GlslVariableHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (VariableUsage vu : scope.getVariableUsages()) {
-            if (vu.getNameStartIndex() <= caretPosition && vu.getNameStopIndex() >= caretPosition && vu.getDeclaration() != null) {
+            if (vu.getNameStartIndex() <= caretPosition && vu.getNameStopIndex() >= caretPosition && vu.getDeclaration() != null && !vu.getDeclaration().isBuiltIn()) {
                 usage = vu;
                 return true;
             }

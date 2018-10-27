@@ -18,15 +18,15 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 */
 	void exitStart(AntlrGlslParser.StartContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlrGlslParser#function_signature}.
+	 * Enter a parse tree produced by {@link AntlrGlslParser#function_header}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunction_signature(AntlrGlslParser.Function_signatureContext ctx);
+	void enterFunction_header(AntlrGlslParser.Function_headerContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlrGlslParser#function_signature}.
+	 * Exit a parse tree produced by {@link AntlrGlslParser#function_header}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunction_signature(AntlrGlslParser.Function_signatureContext ctx);
+	void exitFunction_header(AntlrGlslParser.Function_headerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#return_type}.
 	 * @param ctx the parse tree
@@ -67,6 +67,16 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_parameter(AntlrGlslParser.Function_parameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlrGlslParser#parameter_qualifiers}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter_qualifiers(AntlrGlslParser.Parameter_qualifiersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlrGlslParser#parameter_qualifiers}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter_qualifiers(AntlrGlslParser.Parameter_qualifiersContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#parameter_qualifier}.
 	 * @param ctx the parse tree
@@ -348,16 +358,6 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 */
 	void exitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlrGlslParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpression(AntlrGlslParser.ExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AntlrGlslParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpression(AntlrGlslParser.ExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#expression_list}.
 	 * @param ctx the parse tree
 	 */
@@ -368,25 +368,15 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 */
 	void exitExpression_list(AntlrGlslParser.Expression_listContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlrGlslParser#constant_expression}.
+	 * Enter a parse tree produced by {@link AntlrGlslParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstant_expression(AntlrGlslParser.Constant_expressionContext ctx);
+	void enterExpression(AntlrGlslParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlrGlslParser#constant_expression}.
+	 * Exit a parse tree produced by {@link AntlrGlslParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AntlrGlslParser#variable_usage_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx);
+	void exitExpression(AntlrGlslParser.ExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#fully_specified_type}.
 	 * @param ctx the parse tree
@@ -458,15 +448,15 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 	 */
 	void exitAuxiliary_storage_qualifier(AntlrGlslParser.Auxiliary_storage_qualifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlrGlslParser#memory_storage_qualifier}.
+	 * Enter a parse tree produced by {@link AntlrGlslParser#memory_qualifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterMemory_storage_qualifier(AntlrGlslParser.Memory_storage_qualifierContext ctx);
+	void enterMemory_qualifier(AntlrGlslParser.Memory_qualifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlrGlslParser#memory_storage_qualifier}.
+	 * Exit a parse tree produced by {@link AntlrGlslParser#memory_qualifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitMemory_storage_qualifier(AntlrGlslParser.Memory_storage_qualifierContext ctx);
+	void exitMemory_qualifier(AntlrGlslParser.Memory_qualifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlrGlslParser#layout_qualifier}.
 	 * @param ctx the parse tree

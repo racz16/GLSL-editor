@@ -11,8 +11,8 @@ public class FunctionPrototype extends FunctionBase implements CompletionElement
     private FunctionDefinition definition;
 
     //TODO: ide majd jönnek a haszálatok
-    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/function.png"));
-    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/bi_function.png"));
+    private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/function.png"));
+    private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/bi_function.png"));
 
     private boolean builtIn;
     private String builtInParameters;

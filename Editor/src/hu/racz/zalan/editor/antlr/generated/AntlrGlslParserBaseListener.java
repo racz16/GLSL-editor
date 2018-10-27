@@ -28,13 +28,13 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunction_signature(AntlrGlslParser.Function_signatureContext ctx) { }
+	@Override public void enterFunction_header(AntlrGlslParser.Function_headerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunction_signature(AntlrGlslParser.Function_signatureContext ctx) { }
+	@Override public void exitFunction_header(AntlrGlslParser.Function_headerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -83,6 +83,18 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_parameter(AntlrGlslParser.Function_parameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameter_qualifiers(AntlrGlslParser.Parameter_qualifiersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter_qualifiers(AntlrGlslParser.Parameter_qualifiersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -424,18 +436,6 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(AntlrGlslParser.ExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitExpression(AntlrGlslParser.ExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterExpression_list(AntlrGlslParser.Expression_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -448,25 +448,13 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstant_expression(AntlrGlslParser.Constant_expressionContext ctx) { }
+	@Override public void enterExpression(AntlrGlslParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConstant_expression(AntlrGlslParser.Constant_expressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVariable_usage_identifier(AntlrGlslParser.Variable_usage_identifierContext ctx) { }
+	@Override public void exitExpression(AntlrGlslParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -556,13 +544,13 @@ public class AntlrGlslParserBaseListener implements AntlrGlslParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMemory_storage_qualifier(AntlrGlslParser.Memory_storage_qualifierContext ctx) { }
+	@Override public void enterMemory_qualifier(AntlrGlslParser.Memory_qualifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMemory_storage_qualifier(AntlrGlslParser.Memory_storage_qualifierContext ctx) { }
+	@Override public void exitMemory_qualifier(AntlrGlslParser.Memory_qualifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

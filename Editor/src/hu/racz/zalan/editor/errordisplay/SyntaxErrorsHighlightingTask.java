@@ -42,7 +42,7 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
         Token ft = GlslProcessor.getTokens().get(0);
         if (ft.getType() != AntlrGlslLexer.MACRO || !ft.getText().startsWith("#version")) {
-            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, "The shader should starts with the version macro", document, new MyPosition(ft.getStartIndex()), new MyPosition(ft.getStopIndex()));
+            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, "The shader should starts with the version macro", document, new ErrorPosition(ft.getStartIndex()), new ErrorPosition(ft.getStopIndex()));
             errors.add(ed);
         }
 
@@ -50,7 +50,7 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
             FunctionDefinition def = rootScope.getFunctionDefinition(i);
             boolean valid = false;
             boolean valid2 = true;
-            if (def.getName().equals("main") && def.getParameterCount() == 0 && def.getReturnType() == TypeUsage.VOID) {
+            if (def.getName().equals("main") && def.getParameterCount() == 0 && def.getReturnType().isVoid()) {
                 valid = true;
             }
             for (int j = 0; j < rootScope.getFunctionPrototypeCount(); j++) {
@@ -68,33 +68,23 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
             if (!valid) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new CreateFunctionPrototype(def));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new MyPosition(def.getSignatureStartIndex()), new MyPosition(def.getSignatureStopIndex()));
+                //TODO: nem kötelező amúgy a prototípus
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new ErrorPosition(def.getSignatureStartIndex()), new ErrorPosition(def.getSignatureStopIndex()));
                 errors.add(ed);
             }
             if (!valid2) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new MyFix(def.getStartIndex(), def.getStopIndex()));
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new MyPosition(def.getSignatureStartIndex()), new MyPosition(def.getSignatureStopIndex()));
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new ErrorPosition(def.getSignatureStartIndex()), new ErrorPosition(def.getSignatureStopIndex()));
                 errors.add(ed);
             }
         }
 
+        for (ErrorDescription ed : Scope.getErrors()) {
+            errors.add(ed);
+        }
+
         HintsController.setErrors(document, "GLSL", errors);
-    }
-
-    public class MyPosition implements Position {
-
-        private final int position;
-
-        public MyPosition(int pos) {
-            position = pos;
-        }
-
-        @Override
-        public int getOffset() {
-            return position;
-        }
-
     }
 
     public class CreateFunctionPrototype implements Fix {

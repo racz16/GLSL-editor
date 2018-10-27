@@ -1,6 +1,11 @@
 package hu.racz.zalan.editor.indentation;
 
+import hu.racz.zalan.editor.antlr.generated.*;
+import hu.racz.zalan.editor.core.*;
+import hu.racz.zalan.editor.core.scope.*;
+import java.util.*;
 import javax.swing.text.*;
+import org.antlr.v4.runtime.*;
 import org.netbeans.modules.editor.indent.api.*;
 import org.netbeans.modules.editor.indent.spi.*;
 
@@ -35,6 +40,7 @@ public class GlslIndentTask implements IndentTask {
 
     @Override
     public void reindent() throws BadLocationException {
+        GlslProcessor.setText(context.document().getText(0, context.document().getLength()));
         initialize();
         determineNewBlock();
         computeDepth();
@@ -76,10 +82,21 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void correctDepth() {
+        //depth += computeBracelessScopeCorrection();
         depth -= spaceTabCountBeforeCursor;
         if (rightBraceAfterCursor) {
             depth -= spaceTabCountAfterCursor;
         }
+    }
+
+    private int computeBracelessScopeCorrection() {
+        int result = 0;
+        for (Scope bs : Scope.getBracelessScopes()) {
+            if (bs.getStartIndex() <= caretPosition + 1 && bs.getStopIndex() >= caretPosition) {
+                result += indentLevelSize;
+            }
+        }
+        return result + compute();
     }
 
     private void computeCharacterImpact(char character, int index) {
@@ -131,6 +148,55 @@ public class GlslIndentTask implements IndentTask {
         }
     }
 
+    private int compute() {
+        boolean foundRrb = false;
+        int rbCount = 0;
+        int ltibc = getLastTokenIndexBeforeCursor();
+        List<? extends Token> tokens = GlslProcessor.getTokens();
+
+        if (ltibc != -1) {
+            for (int i = ltibc; i > 1; i--) {
+                Token t = tokens.get(i);
+                if (!foundRrb) {
+                    if (t.getType() == AntlrGlslLexer.RRB) {
+                        foundRrb = true;
+                        rbCount++;
+                    } else if (t.getType() != AntlrGlslLexer.NEW_LINE && t.getType() != AntlrGlslLexer.TAB && t.getType() != AntlrGlslLexer.SPACE) {
+                        return 0;
+                    }
+                } else {
+                    if (t.getType() == AntlrGlslLexer.LRB) {
+                        rbCount--;
+                    } else if (t.getType() == AntlrGlslLexer.RRB) {
+                        rbCount++;
+                    } else if (rbCount == 0) {
+                        if (t.getType() == AntlrGlslLexer.KW_CASE || t.getType() == AntlrGlslLexer.KW_FOR || t.getType() == AntlrGlslLexer.KW_IF || t.getType() == AntlrGlslLexer.KW_WHILE) {
+                            return indentLevelSize;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int getLastTokenIndexBeforeCursor() {
+        List<? extends Token> tokens = GlslProcessor.getTokens();
+        int result = -1;
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).getStopIndex() + 1 <= caretPosition) {
+                result = i;
+            } else if (tokens.get(i).getStartIndex() + 1 >= caretPosition) {
+                return result;
+            } else {
+                return -1;
+            }
+        }
+        return result;
+    }
+
     private void computeSpaceTabImpactBeforeCursor(char character) {
         if (character != LINE_FEED && character != CARRIGE_RETURN) {
             computeSpaceTabImpactBeforeCursorUnsafe(character);
@@ -152,14 +218,8 @@ public class GlslIndentTask implements IndentTask {
         context.document().insertString(caretPosition, before, null);
         if (newBlock) {
             String after = System.lineSeparator() + IndentUtils.createIndentString(depth, expandTabs, tabSize);
-            context.document().insertString(context.startOffset() + 1, after + RCB, null);
-            //ez egy hack, mivel a context.setCaretOffset(...) nem működik
-            //ha az aftert közvetlen a kurzorhoz szúrnám be (ahogy a before-t), akkor eltolná a kurzort
-            //így a kurzor nem a blokk belsejében lenne, hanem egy sorral lentebb, a '}' mellett
-            //a megoldás az, hogy egy karakterrel később, a '}' után szúrum be az indentációt és egy plusz '}' karaktert
-            //majd a végén az eredeti, már fölösleges '}' karaktert törlöm
-            //ezzel elérem, hogy a kurzot a blokk közepén maradjon
-            context.document().remove(context.startOffset(), 1);
+            context.document().insertString(context.startOffset(), after, null);
+            Utility.setCaretPositionInAwtThread(context.document(), caretPosition + before.length());
         }
     }
 
