@@ -126,9 +126,23 @@ public class Builtin {
         NodeList nList = ((Element) tnList.item(0)).getElementsByTagName("type");
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element element = (Element) nList.item(temp);
-            String name = element.getTextContent();
-            TYPES.put(name, new TypeDeclaration(name, true, typeCategory));
+            addType(element, typeCategory);
         }
+    }
+
+    private static void addType(Element element, TypeCategory typeCategory) {
+        String name = element.getElementsByTagName("name").item(0).getTextContent();
+        TypeDeclaration td = new TypeDeclaration(name, true, typeCategory);
+        if (typeCategory == TypeCategory.TRANSPARENT) {
+            addTranparentSpecificTypeData(td, element);
+        }
+        TYPES.put(name, td);
+    }
+
+    private static void addTranparentSpecificTypeData(TypeDeclaration td, Element element) {
+        td.setWidth(Integer.parseInt(element.getElementsByTagName("width").item(0).getTextContent()));
+        td.setHeight(Integer.parseInt(element.getElementsByTagName("height").item(0).getTextContent()));
+        td.setTypeBase(TypeBase.valueOf(element.getElementsByTagName("base").item(0).getTextContent().toUpperCase()));
     }
 
     //

@@ -62,11 +62,13 @@ public class GlslReformatTask implements ReformatTask {
     public void reformat() throws BadLocationException {
         initialize();
         List<? extends Token> tokens = GlslProcessor.getTokens();
-        for (Token token : tokens) {
-            setToken(token);
-            formatToken();
+        if (tokens != null) {   //FIXME: ez csak ideiglenes megoldás, javítani kell
+            for (Token token : tokens) {
+                setToken(token);
+                formatToken();
+            }
+            setResultTextAndCaretPosition();
         }
-        setResultTextAndCaretPosition();
     }
 
     private void initialize() {

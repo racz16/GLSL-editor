@@ -40,39 +40,24 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
         Scope rootScope = GlslProcessor.getRootScope();
 
-        Token ft = GlslProcessor.getTokens().get(0);
-        if (ft.getType() != AntlrGlslLexer.MACRO || !ft.getText().startsWith("#version")) {
-            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, "The shader should starts with the version macro", document, new ErrorPosition(ft.getStartIndex()), new ErrorPosition(ft.getStopIndex()));
-            errors.add(ed);
+        if (GlslProcessor.getTokens() != null && !GlslProcessor.getTokens().isEmpty()) {    //FIXME: ez csak ideiglenes megoldás, javítani kell
+            Token ft = GlslProcessor.getTokens().get(0);
+            if (ft.getType() != AntlrGlslLexer.MACRO || !ft.getText().startsWith("#version")) {
+                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, "The shader should starts with the version macro", document, new ErrorPosition(ft.getStartIndex()), new ErrorPosition(ft.getStopIndex()));
+                errors.add(ed);
+            }
         }
 
         for (int i = 0; i < rootScope.getFunctionDefinitionCount(); i++) {
             FunctionDefinition def = rootScope.getFunctionDefinition(i);
-            boolean valid = false;
-            boolean valid2 = true;
-            if (def.getName().equals("main") && def.getParameterCount() == 0 && def.getReturnType().isVoid()) {
-                valid = true;
-            }
-            for (int j = 0; j < rootScope.getFunctionPrototypeCount(); j++) {
-                FunctionPrototype prot = rootScope.getFunctionPrototype(j);
-                if (prot.isPrototypeOf(def) && prot.getNameStopIndex() < def.getNameStartIndex()) {
-                    valid = true;
-                }
-            }
+            boolean valid = true;
             for (int j = 0; j < rootScope.getFunctionDefinitionCount(); j++) {
                 FunctionDefinition def2 = rootScope.getFunctionDefinition(j);
                 if (def != def2 && def.equalsSignature(def2) && def.getNameStopIndex() > def2.getNameStartIndex()) {
-                    valid2 = false;
+                    valid = false;
                 }
             }
             if (!valid) {
-                List<Fix> fixes = new ArrayList<>();
-                fixes.add(new CreateFunctionPrototype(def));
-                //TODO: nem kötelező amúgy a prototípus
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.WARNING, def.getName() + " function's prototype not exists", fixes, document, new ErrorPosition(def.getSignatureStartIndex()), new ErrorPosition(def.getSignatureStopIndex()));
-                errors.add(ed);
-            }
-            if (!valid2) {
                 List<Fix> fixes = new ArrayList<>();
                 fixes.add(new MyFix(def.getStartIndex(), def.getStopIndex()));
                 ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + def.getName() + "' function already has a body", fixes, document, new ErrorPosition(def.getSignatureStartIndex()), new ErrorPosition(def.getSignatureStopIndex()));

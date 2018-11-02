@@ -43,7 +43,7 @@ public class GlslCompletionProvider implements CompletionProvider {
     private void initializeCodeCompletion(CompletionResultSet completionResultSet, Document document, int caretPosition) throws BadLocationException {
         this.resultSet = completionResultSet;
         this.caretPosition = caretPosition;
-        //kódkiegészítés során leütött karaktereket a parser valamiéert nem érzékeli, úgyhogy manuálisan frissítem
+        //FIXME: kódkiegészítés során leütött karaktereket a parser valamiéert nem érzékeli, úgyhogy manuálisan frissítem
         if (GlslProcessor.getText().length() != document.getLength()) {
             GlslProcessor.setText(document.getText(0, document.getLength()));
         }
@@ -51,7 +51,7 @@ public class GlslCompletionProvider implements CompletionProvider {
 
     private void addCodeCompletionItems() throws BadLocationException, ParseException {
         Scope rootScope = GlslProcessor.getRootScope();
-        Scope caretScope = GlslProcessor.getCaretScope(caretPosition);
+        Scope caretScope = GlslProcessor.getCaretScope(caretPosition + 1);
         filter = computeFilter();
         addUserElements(rootScope, caretScope);
         addBuiltInElements();

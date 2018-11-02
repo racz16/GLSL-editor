@@ -46,8 +46,8 @@ public class FunctionHelper {
     private static void setFunctionDefinition(FunctionPrototype fp) {
         Scope s = Helper.getRootScope(currentScope);
         for (FunctionDefinition fd : s.getFunctionDefinitions()) {
-            if (fd.getStopIndex() <= fp.getStartIndex()) {
-                connectFunctionPrototypeWithDefinition(fp, fd);
+            connectFunctionPrototypeWithDefinition(fp, fd);
+            if (fp.getDefinition() != null) {
                 return;
             }
         }
@@ -56,8 +56,8 @@ public class FunctionHelper {
     private static void setFunctionPrototype(FunctionDefinition fd) {
         Scope s = Helper.getRootScope(currentScope);
         for (FunctionPrototype fp : s.getFunctionPrototypes()) {
-            if (fp.getStopIndex() <= fd.getStartIndex()) {
-                connectFunctionPrototypeWithDefinition(fp, fd);
+            connectFunctionPrototypeWithDefinition(fp, fd);
+            if (fd.getPrototype() != null) {
                 return;
             }
         }

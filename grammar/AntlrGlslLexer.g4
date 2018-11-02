@@ -26,6 +26,7 @@ RESERVED_KEYWORD : 'common' | 'partition' | 'active' | 'asm' | 'class' | 'union'
                     'superp' | 'input' | 'output' | 'hvec2' | 'hvec3' | 'hvec4' | 'fvec2' |
                     'fvec3' | 'fvec4' | 'sampler3DRect' | 'filter' | 'sizeof' | 'cast' |
                     'namespace' | 'using';
+ILLEGAL_CHARACTERS : (~[a-zA-Z_0-9.+-/*%<>[\](){}^|&~=!:;,? \t\r\n])+;
 
 /////
 //qualifiers--------------------------------------------------------------------
@@ -132,7 +133,7 @@ OP_INC : '++';
 OP_DEC : '--';
 OP_SHIFT : '<<' | '>>';
 OP_RELATIONAL : '<=' | '<' | '>' | '>=' | '==' | '!=';
-OP_BIT : '&' | '|' | '^';
+OP_BIT : '&' | '^' | '|';
 OP_BIT_UNARY : '~';
 OP_LOGICAL : '&&' | '||' | '^^';
 OP_LOGICAL_UNARY : '!';

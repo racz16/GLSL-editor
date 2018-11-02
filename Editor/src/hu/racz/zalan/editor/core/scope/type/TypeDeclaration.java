@@ -15,6 +15,9 @@ public class TypeDeclaration extends Element implements CompletionElement {
     private boolean builtIn;
     private int structStartIndex;
     private int structStopIndex;
+    private int width = -1;
+    private int height = -1;
+    private TypeBase typeBase;
     private TypeCategory typeCategory = TypeCategory.CUSTOM;
     private final List<TypeDeclaration> implicitConversions = new ArrayList<>();
     private final List<VariableDeclaration> members = new ArrayList<>();
@@ -105,6 +108,48 @@ public class TypeDeclaration extends Element implements CompletionElement {
 
     public List<VariableDeclaration> getMembers() {
         return Collections.unmodifiableList(members);
+    }
+
+    //
+    //dimensions----------------------------------------------------------------
+    //
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public boolean isScalar() {
+        return width == 1 && height == 1;
+    }
+
+    public boolean isVector() {
+        return width > 1 && height == 1;
+    }
+
+    public boolean isMatrix() {
+        return width > 1 && height > 1;
+    }
+
+    //
+    //type base-----------------------------------------------------------------
+    //
+    public TypeBase getTypeBase() {
+        return typeBase;
+    }
+
+    public void setTypeBase(TypeBase typeBase) {
+        this.typeBase = typeBase;
     }
 
     //

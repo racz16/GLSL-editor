@@ -10,7 +10,7 @@ import org.netbeans.lib.editor.hyperlink.spi.*;
 @MimeRegistration(mimeType = "text/x-glsl", service = HyperlinkProvider.class)
 public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
 
-    private FunctionDefinition function;
+    private FunctionPrototype function;
 
     @Override
     public boolean isHyperlinkPoint(Document document, int caretPosition) {
@@ -26,9 +26,9 @@ public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
     }
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
-        for (FunctionDefinition fd : scope.getFunctionDefinitions()) {
-            if (fd.getNameStartIndex() <= caretPosition && fd.getNameStopIndex() >= caretPosition && fd.getPrototype() != null) {
-                function = fd;
+        for (FunctionPrototype fp : scope.getFunctionPrototypes()) {
+            if (fp.getNameStartIndex() <= caretPosition && fp.getNameStopIndex() >= caretPosition && fp.getDefinition() != null) {
+                function = fp;
                 return true;
             }
         }
@@ -47,7 +47,7 @@ public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
     @Override
     public void performClickAction(Document document, int caretPosition) {
         if (verifyState(caretPosition)) {
-            Utility.setCaretPosition(document, function.getPrototype().getNameStartIndex());
+            Utility.setCaretPosition(document, function.getDefinition().getNameStartIndex());
         }
     }
 

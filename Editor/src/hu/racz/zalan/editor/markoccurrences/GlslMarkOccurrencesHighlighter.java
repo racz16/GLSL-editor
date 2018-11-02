@@ -172,7 +172,15 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private TypeDeclaration findTypeDeclarationAtCaret() {
-        for (TypeDeclaration td : caretScope.getTypeDeclarations()) {
+        if (caretScope.getParent() != null) {
+            return findTypeDeclarationAtCaret(caretScope.getParent());
+        } else {
+            return null;
+        }
+    }
+
+    private TypeDeclaration findTypeDeclarationAtCaret(Scope scope) {
+        for (TypeDeclaration td : scope.getTypeDeclarations()) {
             if (isElementAtCaret(td)) {
                 return td;
             }

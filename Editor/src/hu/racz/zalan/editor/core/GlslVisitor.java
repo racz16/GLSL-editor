@@ -3,7 +3,6 @@ package hu.racz.zalan.editor.core;
 import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.type.TypeDeclaration;
 import hu.racz.zalan.editor.core.scope.variable.VariableDeclaration;
-import hu.racz.zalan.editor.antlr.generated.AntlrGlslParser.Parameter_qualifierContext;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
@@ -46,6 +45,8 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
 
     @Override
     public TypeUsage visitInit_declaration_list(AntlrGlslParser.Init_declaration_listContext ctx) {
+        TypeUsage ret = super.visitInit_declaration_list(ctx);
+
         AntlrGlslParser.Single_declarationContext sdc = ctx.single_declaration();
         TypeUsage tu = null;
         if (sdc.type() != null) {
@@ -67,13 +68,16 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 }
                 scope = scope.getParent();
             }
-        }/* else {
+        } else {
             if (sdc.IDENTIFIER() != null) {
-                type = sdc.struct_specifier().IDENTIFIER().getText();
-            } else {
-                type = "";
+                String type = sdc.struct_specifier().IDENTIFIER().getText();
+                TypeDeclaration td = Helper.getTypeDeclaration(currentScope, type);
+                //TODO: array, indices
+                tu = new TypeUsage(type);
+                tu.setDeclaration(td);
+                td.addUsage(tu);
             }
-        }*/
+        }
         if (sdc.IDENTIFIER() != null) {
             String varName = sdc.IDENTIFIER().getText();
             VariableDeclaration var = new VariableDeclaration(tu/*new TypeUsage(type)*/, varName);
@@ -98,7 +102,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             }
         }
         //isFor = false;
-        TypeUsage ret = super.visitInit_declaration_list(ctx);
 
         return ret;
     }
@@ -165,8 +168,15 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         return ret;
     }
 
+    private boolean isStructValid(AntlrGlslParser.Struct_specifierContext ctx) {
+        return ctx.KW_STRUCT() != null && ctx.LCB() != null && ctx.RCB() != null && ctx.struct_declaration_list() != null;
+    }
+
     @Override
     public TypeUsage visitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx) {
+        if (!isStructValid(ctx)) {
+            return null;
+        }
         currentScope = Helper.createScope(currentScope, ctx);
         if (ctx.IDENTIFIER() != null) {
             TypeDeclaration t = new TypeDeclaration(ctx.IDENTIFIER().getText());
@@ -182,17 +192,21 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 TypeUsage tu = new TypeUsage(typeName);
                 TypeDeclaration td = Helper.getTypeDeclaration(currentScope, typeName);
                 tu.setDeclaration(td);
-                td.addUsage(tu);
+                if (td != null) {
+                    td.addUsage(tu);
+                }
                 currentScope.addTypeUsage(tu);
                 AntlrGlslParser.Struct_declarator_listContext sdlc = sdc.struct_declarator_list();
                 for (AntlrGlslParser.Struct_declaratorContext sdc2 : sdlc.struct_declarator()) {
-                    String name = sdc2.IDENTIFIER().getText();
-                    boolean array = sdc2.array_declaration() != null;
-                    VariableDeclaration vd = new VariableDeclaration(tu, name, false);
-                    vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
-                    vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
-                    currentScope.addVariableDeclaration(vd);
-                    t.addMember(vd);
+                    if (sdc2.IDENTIFIER() != null) {
+                        String name = sdc2.IDENTIFIER().getText();
+                        boolean array = sdc2.array_declaration() != null;
+                        VariableDeclaration vd = new VariableDeclaration(tu, name, false);
+                        vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
+                        vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
+                        currentScope.addVariableDeclaration(vd);
+                        t.addMember(vd);
+                    }
                 }
             }
         }
@@ -207,8 +221,13 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             return visitLiteral(ctx.literal());
         } else if (ctx.LRB() != null) {
             return visitExpression(ctx.expression(0));
-        } else if (ctx.function_call() != null) {
-            return null;
+        } else if (ctx.function_call() != null && ctx.DOT() == null) {
+            return super.visitFunction_call(ctx.function_call());
+        } else if (ctx.DOT() != null && ctx.function_call() != null) {
+            TypeUsage tu = visitExpression(ctx.expression(0));
+            if (!tu.isArray() || !ctx.function_call().type().getText().equals("length")) {//FIXME: ennél kicsit pontosabban le kéne írni a length()-et
+                //TODO: hiba dobása
+            }
         } else if (ctx.DOT() != null) {
             TypeUsage tu = visitExpression(ctx.expression(0));
             VariableUsage vu = createVariableUsage(ctx.IDENTIFIER(), tu);
@@ -222,6 +241,30 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 return null;
             }
             return vu.getDeclaration().getType();
+        } else if (ctx.expression().size() == 1 && (ctx.OP_INC() != null || ctx.OP_DEC() != null || ctx.OP_SUB() != null || ctx.OP_ADD() != null || ctx.OP_BIT_UNARY() != null)) {
+            TypeUsage tu = visitExpression(ctx.expression(0));
+            Helper.setDeclaration(currentScope, tu);
+            if (tu.getDeclaration() != null && (tu.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT || tu.getName().equals("bool") || tu.getName().equals("bvec2") || tu.getName().equals("bvec3") || tu.getName().equals("bvec4"))) {
+                Helper.addError(Severity.ERROR, "csúnya hiba", ctx.expression(0).getStart().getStartIndex(), ctx.expression(0).getStop().getStopIndex() + 1);
+                return null;
+            }
+            return tu;
+        } else if (ctx.OP_LOGICAL_UNARY() != null) {
+            TypeUsage tu = visitExpression(ctx.expression(0));
+            if (tu != null) {
+                Helper.setDeclaration(currentScope, tu);
+                if (!tu.getName().equals("bool")) {
+                    Helper.addError(Severity.ERROR, "csúnya hiba", ctx.expression(0).getStart().getStartIndex(), ctx.expression(0).getStop().getStopIndex() + 1);
+                    return null;
+                }
+            }
+            return tu;
+        } else if (ctx.expression().size() == 2) {
+            TypeUsage tu1 = visitExpression(ctx.expression(0));
+            TypeUsage tu2 = visitExpression(ctx.expression(1));
+            if (tu1.getDeclaration().isScalar() && tu2.getDeclaration().isScalar() && (ctx.OP_ADD() != null || ctx.OP_SUB() != null || ctx.OP_MUL() != null || ctx.OP_DIV() != null)) {
+
+            }
         }
 
         return super.visitExpression(ctx);
@@ -233,8 +276,8 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         vu.setNameStartIndex(tn.getSymbol().getStartIndex());
         vu.setNameStopIndex(tn.getSymbol().getStopIndex() + 1);
         if (ptu == null) {
-            for(VariableDeclaration vd : Builtin.getVariables().values()){
-                if(vd.getName().equals(vu.getName())){
+            for (VariableDeclaration vd : Builtin.getVariables().values()) {
+                if (vd.getName().equals(vu.getName())) {
                     vu.setDeclaration(vd);
                     vd.addUsage(vu);
                     break;
@@ -273,15 +316,13 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     @Override
     public TypeUsage visitSelection_statement(AntlrGlslParser.Selection_statementContext ctx) {
         TypeUsage tu = visitExpression(ctx.expression());
-        if (!tu.getName().equals("bool")) {
+        if (tu != null && !tu.getName().equals("bool")) {
             ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "boolean expression expected", GlslProcessor.getDocument(), new ErrorPosition(ctx.expression().getStart().getStartIndex()), new ErrorPosition(ctx.expression().getStop().getStopIndex() + 1));
             Scope.addError(ed);
         }
-
         for (AntlrGlslParser.StatementContext sc : ctx.statement()) {
             visitStatement(sc);
         }
-
         return null;
     }
 
@@ -379,7 +420,4 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         }
     }
 
-    //
-    //
-    //
 }

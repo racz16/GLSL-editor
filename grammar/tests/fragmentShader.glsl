@@ -113,10 +113,9 @@ void main(){
     //point and spotlights
     for(int i=0; i<maxLightSources; i++){
         if(lights[i].lightActive){
-            result += calculateLight(diffuseColor, specularColor, viewDirection, normalVector, fragmentPosition, lights[i]);
+            result+=calculateLight(diffuseColor, specularColor, viewDirection, normalVector, fragmentPosition, lights[i]);
         }
     }
-
     color = vec4(result, 1);
 }
 
