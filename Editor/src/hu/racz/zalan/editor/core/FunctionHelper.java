@@ -1,5 +1,6 @@
 package hu.racz.zalan.editor.core;
 
+import hu.racz.zalan.editor.core.scope.qualifier.QualifierUsage;
 import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
@@ -13,58 +14,95 @@ public class FunctionHelper {
 
     private static Scope currentScope;
 
+    private static FunctionPrototype fp;
+    private static FunctionDefinition fd;
+    private static FunctionBase fb;
+    private static Function f;
+
     public static FunctionPrototype createFunctionPrototype(AntlrGlslParser.Function_prototypeContext fpc, Scope scope) {
-        FunctionHelper.currentScope = scope;
-        FunctionPrototype fp = new FunctionPrototype();
-        setIndices(fp, fpc);
-        setFunctionData(fp, fpc.function_header());
-        setFunctionDefinition(fp);
+        initializeForPrototype(scope);
+        setIndices(fpc);
+        setFunctionForPrototype(fpc.function_header());
+        setFunctionDefinition();
         currentScope.getParent().addFunctionPrototype(fp);
         return fp;
     }
 
+    private static void initializeForPrototype(Scope scope) {
+        currentScope = scope;
+        fp = new FunctionPrototype();
+        fb = fp;
+    }
+
     public static FunctionDefinition createFunctionDefinition(AntlrGlslParser.Function_definitionContext fdc, Scope scope) {
-        FunctionHelper.currentScope = scope;
-        FunctionDefinition fp = new FunctionDefinition();
-        setIndices(fp, fdc);
-        setFunctionData(fp, fdc.function_header());
-        setFunctionPrototype(fp);
-        currentScope.getParent().addFunctionDefinition(fp);
-        return fp;
+        initializeForDefinition(scope);
+        setIndices(fdc);
+        setFunctionForDefinition(fdc.function_header());
+        setFunctionPrototype();
+        currentScope.getParent().addFunctionDefinition(fd);
+        return fd;
     }
 
-    private static void setFunctionData(FunctionBase fb, AntlrGlslParser.Function_headerContext fsc) {
-        setReturnType(fb, fsc);
-        setFunctionSignature(fb, fsc);
+    private static void initializeForDefinition(Scope scope) {
+        currentScope = scope;
+        fd = new FunctionDefinition();
+        fb = fd;
     }
 
-    private static void setIndices(FunctionBase fb, ParserRuleContext prc) {
+    private static void setFunctionForPrototype(AntlrGlslParser.Function_headerContext fhc) {
+        f = creteFunction(fhc);
+        fp.setFunction(f);
+        f.addPrototype(fp);
+    }
+
+    private static void setFunctionForDefinition(AntlrGlslParser.Function_headerContext fhc) {
+        f = creteFunction(fhc);
+        fd.setFunction(f);
+        f.setDefinition(fd);
+    }
+
+    private static Function creteFunction(AntlrGlslParser.Function_headerContext fhc) {
+        f = new Function();
+        setReturnType(f, fhc);
+        setFunctionSignature(fhc);
+        return f;
+    }
+
+    private static void setIndices(ParserRuleContext prc) {
         fb.setStartIndex(prc.start.getStartIndex());
         fb.setStopIndex(prc.stop.getStopIndex() + 1);
     }
 
-    private static void setFunctionDefinition(FunctionPrototype fp) {
+    private static void setFunctionDefinition() {
         Scope s = Helper.getRootScope(currentScope);
         for (FunctionDefinition fd : s.getFunctionDefinitions()) {
             connectFunctionPrototypeWithDefinition(fp, fd);
             if (fp.getDefinition() != null) {
+                f = fd.getFunction();
+                f.addPrototype(fp);
+                fp.setFunction(f);
                 return;
             }
         }
+        Scope.addFunction(f);
     }
 
-    private static void setFunctionPrototype(FunctionDefinition fd) {
+    private static void setFunctionPrototype() {
         Scope s = Helper.getRootScope(currentScope);
         for (FunctionPrototype fp : s.getFunctionPrototypes()) {
             connectFunctionPrototypeWithDefinition(fp, fd);
             if (fd.getPrototype() != null) {
+                f = fp.getFunction();
+                f.setDefinition(fd);
+                fd.setFunction(f);
                 return;
             }
         }
+        Scope.addFunction(f);
     }
 
     private static void connectFunctionPrototypeWithDefinition(FunctionPrototype fp, FunctionDefinition fd) {
-        if (fp.isPrototypeOf(fd)) {
+        if (fp.getFunction().equals(fd.getFunction())) {
             fp.setDefinition(fd);
             fd.setPrototype(fp);
         }
@@ -73,7 +111,7 @@ public class FunctionHelper {
     //
     //return type---------------------------------------------------------------
     //
-    private static void setReturnType(FunctionBase fb, AntlrGlslParser.Function_headerContext fhc) {
+    private static void setReturnType(Function fb, AntlrGlslParser.Function_headerContext fhc) {
         if (fhc.return_type().KW_VOID() == null) {
             setNotVoidReturnType(fb, fhc.return_type());
         } else {
@@ -81,7 +119,7 @@ public class FunctionHelper {
         }
     }
 
-    private static void setNotVoidReturnType(FunctionBase fb, AntlrGlslParser.Return_typeContext rtc) {
+    private static void setNotVoidReturnType(Function fb, AntlrGlslParser.Return_typeContext rtc) {
         TypeUsage returnType = createNotVoidReturnType(rtc);
         fb.setReturnType(returnType);
     }
@@ -89,7 +127,7 @@ public class FunctionHelper {
     private static TypeUsage createNotVoidReturnType(AntlrGlslParser.Return_typeContext rtc) {
         TypeUsage returnType = new TypeUsage(rtc.type().getText());
         setTypeUsageIndices(returnType, rtc.type());
-        setReturnTypeQualifier(returnType, rtc);
+        Helper.addPrecisionQualifier(returnType, rtc.precision_qualifier());
         setReturnTypeArray(returnType, rtc);
         Helper.setDeclaration(currentScope, returnType);
         return returnType;
@@ -105,22 +143,6 @@ public class FunctionHelper {
         }
     }
 
-    private static void setReturnTypeQualifier(TypeUsage returnType, AntlrGlslParser.Return_typeContext rtc) {
-        if (rtc.precision_qualifier() != null) {
-            setReturnTypeQualifierUnsafe(returnType, rtc);
-        }
-    }
-
-    private static void setReturnTypeQualifierUnsafe(TypeUsage returnType, AntlrGlslParser.Return_typeContext rtc) {
-        if (rtc.precision_qualifier().Q_LOWP() != null) {
-            returnType.setQualifier(Qualifier.getQualifier("lowp"));
-        } else if (rtc.precision_qualifier().Q_MEDIUMP() != null) {
-            returnType.setQualifier(Qualifier.getQualifier("mediump"));
-        } else if (rtc.precision_qualifier().Q_HIGHP() != null) {
-            returnType.setQualifier(Qualifier.getQualifier("highp"));
-        }
-    }
-
     private static void setReturnTypeArray(TypeUsage returnType, AntlrGlslParser.Return_typeContext rtc) {
         if (rtc.array_declaration() != null) {
             returnType.setArray(true);
@@ -130,7 +152,7 @@ public class FunctionHelper {
         }
     }
 
-    private static void setVoidReturnType(FunctionBase fb, AntlrGlslParser.Return_typeContext rtc) {
+    private static void setVoidReturnType(Function fb, AntlrGlslParser.Return_typeContext rtc) {
         TypeUsage returnType = createVoidReturnType(rtc);
         fb.setReturnType(returnType);
         addVoidQualifierError(rtc.precision_qualifier());
@@ -155,32 +177,33 @@ public class FunctionHelper {
     //
     //function header-----------------------------------------------------------
     //
-    private static void setFunctionSignature(FunctionBase fb, AntlrGlslParser.Function_headerContext fsc) {
+    private static void setFunctionSignature(AntlrGlslParser.Function_headerContext fsc) {
         fb.setName(fsc.IDENTIFIER().getText());
-        setFunctionSignatureIndices(fb, fsc);
+        f.setName(fsc.IDENTIFIER().getText());
+        setFunctionSignatureIndices(fsc);
         Helper.addIdentifierWarnings(fb.getName(), fb.getNameStartIndex(), fb.getNameStopIndex());
-        setParameters(fb, fsc);
+        setParameters(fsc);
     }
 
-    private static void setFunctionSignatureIndices(FunctionBase fb, AntlrGlslParser.Function_headerContext fhc) {
+    private static void setFunctionSignatureIndices(AntlrGlslParser.Function_headerContext fhc) {
         fb.setNameStartIndex(fhc.IDENTIFIER().getSymbol().getStartIndex());
         fb.setNameStopIndex(fhc.IDENTIFIER().getSymbol().getStopIndex() + 1);
         fb.setSignatureStartIndex(fhc.start.getStartIndex());
         fb.setSignatureStopIndex(fhc.stop.getStopIndex() + 1);
     }
 
-    private static void setParameters(FunctionBase fb, AntlrGlslParser.Function_headerContext fsc) {
+    private static void setParameters(AntlrGlslParser.Function_headerContext fsc) {
         if (fsc.function_parameter_list() != null) {
             List<AntlrGlslParser.Function_parameterContext> fpcs = fsc.function_parameter_list().function_parameter();
             for (AntlrGlslParser.Function_parameterContext fpc : fpcs) {
-                setParameter(fb, fpc);
+                setParameter(fpc);
             }
         }
     }
 
-    private static void setParameter(FunctionBase fb, AntlrGlslParser.Function_parameterContext fpc) {
+    private static void setParameter(AntlrGlslParser.Function_parameterContext fpc) {
         VariableDeclaration vd = createParameter(fpc);
-        fb.addParameter(vd);
+        f.addParameter(vd);
     }
 
     private static VariableDeclaration createParameter(AntlrGlslParser.Function_parameterContext fpc) {
@@ -225,41 +248,43 @@ public class FunctionHelper {
 
     private static void setParameterQualifiers(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
         if (fpc.parameter_qualifiers() != null) {
-            setParameterPrecisionQualifier(vd, fpc);
+            Helper.addPrecisionQualifier(vd.getType(), fpc.parameter_qualifiers().precision_qualifier());
             setParameterOtherQualifiers(vd, fpc);
         }
         setParameterImplicitQualifier(vd);
     }
 
-    private static void setParameterPrecisionQualifier(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
-        if (fpc.parameter_qualifiers().precision_qualifier() != null) {
-            Qualifier q = Qualifier.getQualifier(fpc.parameter_qualifiers().precision_qualifier().getText());
-            vd.addQualifier(q);
-        }
-    }
-
     private static void setParameterOtherQualifiers(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
         if (fpc.parameter_qualifiers().parameter_qualifier() != null) {
             for (AntlrGlslParser.Parameter_qualifierContext pq : fpc.parameter_qualifiers().parameter_qualifier()) {
-                Qualifier q = Qualifier.getQualifier(pq.getText());
-                createInconsistentFunctionParameterQualifiersError(vd, q, pq);
-                vd.addQualifier(q);
+                QualifierUsage qu = Helper.createQualifierUsage(pq.getText(), pq.getStart().getStartIndex(), pq.getStop().getStopIndex() + 1);
+                createInconsistentFunctionParameterQualifiersError(vd, qu, pq);
+                vd.getType().addQualifier(qu);
             }
         }
     }
 
-    private static void createInconsistentFunctionParameterQualifiersError(VariableDeclaration vd, Qualifier q, AntlrGlslParser.Parameter_qualifierContext pq) {
-        for (Qualifier fq : vd.getQualifiers()) {
-            if (!Qualifier.areCompatible(q, fq)) {
-                Helper.addError(Severity.ERROR, fq.getName() + ", " + q.getName() + " : inconsistent qualifiers", pq.getStart().getStartIndex(), pq.getStart().getStopIndex() + 1);
+    private static void createInconsistentFunctionParameterQualifiersError(VariableDeclaration vd, QualifierUsage q, AntlrGlslParser.Parameter_qualifierContext pq) {
+        for (QualifierUsage fq : vd.getType().getQualifiers()) {
+            if (!q.getQualifier().isCompatibleWith(fq.getQualifier())) {
+                Helper.addError(Severity.ERROR, fq.getQualifier().getName() + ", " + q.getQualifier().getName() + " : inconsistent qualifiers", pq.getStart().getStartIndex(), pq.getStart().getStopIndex() + 1);
             }
         }
     }
 
     private static void setParameterImplicitQualifier(VariableDeclaration p) {
-        if (!p.getQualifiers().contains(Qualifier.getQualifier("in")) && !p.getQualifiers().contains(Qualifier.getQualifier("out")) && !p.getQualifiers().contains(Qualifier.getQualifier("inout"))) {
-            p.addImplicitQualifier(Qualifier.getQualifier("in"));
+        if (isImplicitQualifierNeeds(p)) {
+            p.getType().addImplicitQualifier(Builtin.getQualifier("in"));
         }
+    }
+
+    private static boolean isImplicitQualifierNeeds(VariableDeclaration p) {
+        for (QualifierUsage qu : p.getType().getQualifiers()) {
+            if (!qu.getQualifier().equals(Builtin.getQualifier("in")) && !qu.getQualifier().equals(Builtin.getQualifier("out")) && !qu.getQualifier().equals(Builtin.getQualifier("inout"))) {
+                return true;
+            }
+        }
+        return p.getType().getQualifiers().isEmpty();
     }
 
 }

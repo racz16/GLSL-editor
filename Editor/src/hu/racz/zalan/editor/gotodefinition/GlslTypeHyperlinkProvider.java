@@ -6,8 +6,9 @@ import hu.racz.zalan.editor.core.scope.type.*;
 import javax.swing.text.*;
 import org.netbeans.api.editor.mimelookup.*;
 import org.netbeans.lib.editor.hyperlink.spi.*;
+import static hu.racz.zalan.editor.core.Constants.*;
 
-@MimeRegistration(mimeType = "text/x-glsl", service = HyperlinkProvider.class)
+@MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HyperlinkProvider.class)
 public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
 
     private TypeUsage usage;
@@ -27,7 +28,7 @@ public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
 
     private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
         for (TypeUsage tu : scope.getTypeUsages()) {
-            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
+            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null) {
                 usage = tu;
                 return true;
             }

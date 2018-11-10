@@ -3,8 +3,8 @@ package hu.racz.zalan.editor.core.scope;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
+import hu.racz.zalan.editor.errordisplay.*;
 import java.util.*;
-import org.netbeans.spi.editor.hints.*;
 
 public class Scope {
 
@@ -12,12 +12,13 @@ public class Scope {
     private final List<Scope> children = new ArrayList<>();
 
     private static final List<Scope> BRACELESS_SCOPES = new ArrayList<>();
-    private static final List<ErrorDescription> ERRORS = new ArrayList<>();
+    private static final List<UniqueSyntaxError> ERRORS = new ArrayList<>();
 
     //TODO: lehet, hogy ezeket érdemes volna egy mapba rakni
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
     private final List<VariableUsage> variableUsages = new ArrayList<>();
 
+    private static final List<Function> FUNCTIONS = new ArrayList<>();
     private final List<FunctionPrototype> functionPrototypes = new ArrayList<>();
     private final List<FunctionDefinition> functionDefinitions = new ArrayList<>();
 
@@ -26,25 +27,16 @@ public class Scope {
 
     private int startIndex;
     private int stopIndex;
-    
-    
+
     public static void clearErrorss() {
         ERRORS.clear();
     }
 
-    public static ErrorDescription getError(int index) {
-        return ERRORS.get(index);
-    }
-
-    public static void addError(ErrorDescription error) {
+    public static void addError(UniqueSyntaxError error) {
         ERRORS.add(error);
     }
 
-    public static int getErrorCount() {
-        return ERRORS.size();
-    }
-
-    public static List<? extends ErrorDescription> getErrors() {
+    public static List<? extends UniqueSyntaxError> getErrors() {
         return Collections.unmodifiableList(ERRORS);
     }
 
@@ -172,6 +164,18 @@ public class Scope {
 
     public List<? extends FunctionDefinition> getFunctionDefinitions() {
         return Collections.unmodifiableList(functionDefinitions);
+    }
+
+    public static void addFunction(Function func) {
+        FUNCTIONS.add(func);
+    }
+
+    public static List<Function> getFunctions() {
+        return Collections.unmodifiableList(FUNCTIONS);
+    }
+
+    public static void clearFunctions() {
+        FUNCTIONS.clear();
     }
 
     //

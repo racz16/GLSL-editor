@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qualifier-rules>
+    <qualifier-rule>
+        <qualifier>in</qualifier>
+        <qualifier>out</qualifier>
+        <qualifier>inout</qualifier>
+    </qualifier-rule>
+    <qualifier-rule>
+        <qualifier>lowp</qualifier>
+        <qualifier>mediump</qualifier>
+        <qualifier>highp</qualifier>
+    </qualifier-rule>
+    <qualifier-rule>
+        <qualifier>const</qualifier>
+        <qualifier>out</qualifier>
+    </qualifier-rule>
+    <qualifier-rule>
+        <qualifier>const</qualifier>
+        <qualifier>inout</qualifier>
+    </qualifier-rule>
+</qualifier-rules>

@@ -25,6 +25,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     public TypeUsage visitStart(AntlrGlslParser.StartContext ctx) {
         Scope.clearBracelessScopes();
         Scope.clearErrorss();
+        Scope.clearFunctions();
         addTokenErrors();
         currentScope = new Scope();
         return super.visitStart(ctx);
@@ -143,7 +144,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     public TypeUsage visitFunction_definition(AntlrGlslParser.Function_definitionContext ctx) {
         currentScope = Helper.createScope(currentScope, ctx);
         FunctionDefinition fd = FunctionHelper.createFunctionDefinition(ctx, currentScope);
-        currentFunctionReturnType = fd.getReturnType();
+        currentFunctionReturnType = fd.getFunction().getReturnType();
         TypeUsage ret = super.visitFunction_definition(ctx);
         currentScope = currentScope.getParent();
         return ret;
@@ -262,17 +263,16 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         } else if (ctx.expression().size() == 2) {
             TypeUsage tu1 = visitExpression(ctx.expression(0));
             TypeUsage tu2 = visitExpression(ctx.expression(1));
-            if (tu1.getDeclaration().isScalar() && tu2.getDeclaration().isScalar() && (ctx.OP_ADD() != null || ctx.OP_SUB() != null || ctx.OP_MUL() != null || ctx.OP_DIV() != null)) {
+            //if (tu1.getDeclaration().isScalar() && tu2.getDeclaration().isScalar() && (ctx.OP_ADD() != null || ctx.OP_SUB() != null || ctx.OP_MUL() != null || ctx.OP_DIV() != null)) {
 
-            }
+            //}
         }
 
         return super.visitExpression(ctx);
     }
 
     private VariableUsage createVariableUsage(TerminalNode tn, TypeUsage ptu) {
-        VariableUsage vu = new VariableUsage();
-        vu.setName(tn.getText());
+        VariableUsage vu = new VariableUsage(tn.getText());
         vu.setNameStartIndex(tn.getSymbol().getStartIndex());
         vu.setNameStopIndex(tn.getSymbol().getStopIndex() + 1);
         if (ptu == null) {
@@ -306,8 +306,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             }
         }
         if (vu.getDeclaration() == null) {
-            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, vu.getName() + " : undeclared identifier", GlslProcessor.getDocument(), new ErrorPosition(vu.getNameStartIndex()), new ErrorPosition(vu.getNameStopIndex()));
-            Scope.addError(ed);
+            Helper.addError(Severity.ERROR, vu.getName() + " : undeclared identifier", vu.getNameStartIndex(), vu.getNameStopIndex());
         }
         currentScope.addVariableUsage(vu);
         return vu;
@@ -317,8 +316,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     public TypeUsage visitSelection_statement(AntlrGlslParser.Selection_statementContext ctx) {
         TypeUsage tu = visitExpression(ctx.expression());
         if (tu != null && !tu.getName().equals("bool")) {
-            ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "boolean expression expected", GlslProcessor.getDocument(), new ErrorPosition(ctx.expression().getStart().getStartIndex()), new ErrorPosition(ctx.expression().getStop().getStopIndex() + 1));
-            Scope.addError(ed);
+            Helper.addError(Severity.ERROR, "boolean expression expected", ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
         }
         for (AntlrGlslParser.StatementContext sc : ctx.statement()) {
             visitStatement(sc);
@@ -352,11 +350,9 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     public TypeUsage visitJump_statement(AntlrGlslParser.Jump_statementContext ctx) {
         if (ctx.KW_RETURN() != null) {
             if (ctx.expression() != null && currentFunctionReturnType.isVoid()) {
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "return : void function cannot return a value", GlslProcessor.getDocument(), new ErrorPosition(ctx.expression().getStart().getStartIndex()), new ErrorPosition(ctx.expression().getStop().getStopIndex() + 1));
-                Scope.addError(ed);
+                Helper.addError(Severity.ERROR, "return : void function cannot return a value", ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
             } else if (ctx.expression() == null && !currentFunctionReturnType.isVoid()) {
-                ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "return : non-void function must return a value ", GlslProcessor.getDocument(), new ErrorPosition(ctx.KW_RETURN().getSymbol().getStartIndex()), new ErrorPosition(ctx.KW_RETURN().getSymbol().getStopIndex() + 1));
-                Scope.addError(ed);
+                Helper.addError(Severity.ERROR, "return : non-void function must return a value ", ctx.KW_RETURN().getSymbol().getStartIndex(), ctx.KW_RETURN().getSymbol().getStopIndex() + 1);
             }
         }
         return super.visitJump_statement(ctx);

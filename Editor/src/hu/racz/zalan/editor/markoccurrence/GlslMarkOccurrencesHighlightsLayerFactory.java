@@ -1,10 +1,11 @@
-package hu.racz.zalan.editor.markoccurrences;
+package hu.racz.zalan.editor.markoccurrence;
 
 import javax.swing.text.*;
 import org.netbeans.api.editor.mimelookup.*;
 import org.netbeans.spi.editor.highlighting.*;
+import static hu.racz.zalan.editor.core.Constants.*;
 
-@MimeRegistration(mimeType = "text/x-glsl", service = HighlightsLayerFactory.class)
+@MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HighlightsLayerFactory.class)
 public class GlslMarkOccurrencesHighlightsLayerFactory implements HighlightsLayerFactory {
 
     public static GlslMarkOccurrencesHighlighter getMarkOccurrencesHighlighter(Document doc) {

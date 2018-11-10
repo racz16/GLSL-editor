@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qualifiers>
+    <qualifier>precision</qualifier>
+    <qualifier>layout</qualifier>
+    <qualifier>precise</qualifier>
+    <qualifier>invariant</qualifier>
+    <qualifier>subroutine</qualifier>
+    <qualifier>smooth</qualifier>
+    <qualifier>flat</qualifier>
+    <qualifier>noperspective</qualifier>
+    <qualifier>const</qualifier>
+    <qualifier>inout</qualifier>
+    <qualifier>in</qualifier>
+    <qualifier>out</qualifier>
+    <qualifier>centroid</qualifier>
+    <qualifier>patch</qualifier>
+    <qualifier>sample</qualifier>
+    <qualifier>uniform</qualifier>
+    <qualifier>buffer</qualifier>
+    <qualifier>varying</qualifier>
+    <qualifier>attribute</qualifier>
+    <qualifier>coherent</qualifier>
+    <qualifier>volatile</qualifier>
+    <qualifier>restrict</qualifier>
+    <qualifier>readonly</qualifier>
+    <qualifier>writeonly</qualifier>
+    <qualifier>shared</qualifier>
+    <qualifier>highp</qualifier>
+    <qualifier>mediump</qualifier>
+    <qualifier>lowp</qualifier>
+</qualifiers>

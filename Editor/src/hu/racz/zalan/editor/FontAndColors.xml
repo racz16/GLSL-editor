@@ -7,7 +7,6 @@
     <fontcolor name="default" default="default">
         <font size="16"/>
     </fontcolor>
-    <fontcolor name="error" default="error"/>
     <fontcolor name="operator" default="operator"/>
     <fontcolor name="identifier" default="identifier"/>
     <fontcolor name="number" default="number"/>

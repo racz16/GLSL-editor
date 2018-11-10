@@ -52,14 +52,6 @@ public class Utility {
         ThreadReturner r = new ThreadReturner() {
             @Override
             public void run() {
-                //System.out.println(org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().getCaretPosition());
-
-                /*System.out.println(context.caretOffset());
-                System.out.println(context.startOffset());
-                System.out.println(context.endOffset());
-                System.out.println(getCaretPosition(context.document()));
-                System.out.println(getTextComponent(context.document()).getCaretPosition());
-                System.out.println(getTextComponent(context.document()).getCaret().getDot());*/
                 setValue(context.caretOffset());
             }
         };

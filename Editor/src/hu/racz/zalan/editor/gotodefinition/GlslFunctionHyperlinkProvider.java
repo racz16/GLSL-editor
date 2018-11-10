@@ -6,8 +6,9 @@ import hu.racz.zalan.editor.core.scope.function.*;
 import javax.swing.text.*;
 import org.netbeans.api.editor.mimelookup.*;
 import org.netbeans.lib.editor.hyperlink.spi.*;
+import static hu.racz.zalan.editor.core.Constants.*;
 
-@MimeRegistration(mimeType = "text/x-glsl", service = HyperlinkProvider.class)
+@MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HyperlinkProvider.class)
 public class GlslFunctionHyperlinkProvider implements HyperlinkProvider {
 
     private FunctionPrototype function;

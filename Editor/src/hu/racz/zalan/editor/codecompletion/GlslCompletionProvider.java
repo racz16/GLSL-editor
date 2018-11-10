@@ -2,9 +2,11 @@ package hu.racz.zalan.editor.codecompletion;
 
 import hu.racz.zalan.editor.core.scope.Builtin;
 import hu.racz.zalan.editor.core.*;
+import static hu.racz.zalan.editor.core.Constants.*;
 import hu.racz.zalan.editor.core.scope.*;
-import hu.racz.zalan.editor.core.scope.Element;
 import hu.racz.zalan.editor.core.scope.function.*;
+import hu.racz.zalan.editor.core.scope.type.*;
+import hu.racz.zalan.editor.core.scope.variable.*;
 import java.util.*;
 import javax.swing.text.*;
 import org.netbeans.api.editor.mimelookup.*;
@@ -13,24 +15,12 @@ import org.netbeans.spi.editor.completion.*;
 import org.netbeans.spi.editor.completion.support.*;
 import org.openide.util.*;
 
-@MimeRegistration(mimeType = "text/x-glsl", service = CompletionProvider.class)
+@MimeRegistration(mimeType = GLSL_MIME_TYPE, service = CompletionProvider.class)
 public class GlslCompletionProvider implements CompletionProvider {
 
     private CompletionResultSet resultSet;
     private int caretPosition;
     private String filter;
-
-    private static final char CARRIGE_RETURN = '\r';
-    private static final char LINE_FEED = '\n';
-    private static final char TAB = '\t';
-    private static final char SPACE = ' ';
-    private static final char LCB = '{';
-    private static final char RCB = '}';
-    private static final char LSB = '[';
-    private static final char LRB = '(';
-    private static final char COMMA = ',';
-    private static final char COLON = ':';
-    private static final char SEMICOLON = ';';
 
     @Override
     public CompletionTask createTask(int queryType, JTextComponent jtc) {
@@ -43,77 +33,113 @@ public class GlslCompletionProvider implements CompletionProvider {
     private void initializeCodeCompletion(CompletionResultSet completionResultSet, Document document, int caretPosition) throws BadLocationException {
         this.resultSet = completionResultSet;
         this.caretPosition = caretPosition;
-        //FIXME: kódkiegészítés során leütött karaktereket a parser valamiéert nem érzékeli, úgyhogy manuálisan frissítem
-        if (GlslProcessor.getText().length() != document.getLength()) {
-            GlslProcessor.setText(document.getText(0, document.getLength()));
-        }
+        GlslProcessor.setText(document.getText(0, document.getLength()));
     }
 
     private void addCodeCompletionItems() throws BadLocationException, ParseException {
-        Scope rootScope = GlslProcessor.getRootScope();
         Scope caretScope = GlslProcessor.getCaretScope(caretPosition + 1);
         filter = computeFilter();
-        addUserElements(rootScope, caretScope);
+        addUserElements(caretScope);
         addBuiltInElements();
     }
 
-    private void addUserElements(Scope rootScope, Scope caretScope) {
-        addElementListIfDeclared(rootScope.getTypeDeclarations());  //TODO: nem csak a root-ban lehet típust deklarálni
+    private void addElement(CompletionElement element) {
+        if (element.getLeftText().startsWith(filter)) {
+            resultSet.addItem(new GlslCompletionItem(element, filter.length(), caretPosition));
+        }
+    }
+
+    //
+    //add user elements---------------------------------------------------------
+    //
+    private void addUserElements(Scope caretScope) {
+        addUserTypesFromScopes(caretScope);
         addUserVariablesFromScopes(caretScope);
         addUserFunctions();
     }
 
     private void addUserVariablesFromScopes(Scope scope) {
         while (scope != null) {
-            addElementListIfDeclared(scope.getVariableDeclarations());
+            addVariableDeclarationListIfDeclared(scope.getVariableDeclarations());
             scope = scope.getParent();
         }
     }
 
-    private void addUserFunctions() {
-        Scope rootScope = GlslProcessor.getRootScope();
-        for (FunctionPrototype function : rootScope.getFunctionPrototypes()) {
-            if (function.getNameStopIndex() < caretPosition) {
-                addElement(function);
-            }
-        }
-    }
-
-    private void addElementListIfDeclared(List<? extends Element> elements) {
-        for (Element element : elements) {
+    private void addVariableDeclarationListIfDeclared(List<? extends VariableDeclaration> elements) {
+        for (VariableDeclaration element : elements) {
             if (element.getNameStopIndex() < caretPosition) {
                 addElement(element);
             }
         }
     }
 
+    private void addUserTypesFromScopes(Scope scope) {
+        while (scope != null) {
+            addTypeDeclarationListIfDeclared(scope.getTypeDeclarations());
+            scope = scope.getParent();
+        }
+    }
+
+    private void addTypeDeclarationListIfDeclared(List<? extends TypeDeclaration> elements) {
+        for (TypeDeclaration element : elements) {
+            if (element.getNameStopIndex() < caretPosition) {
+                addElement(element);
+            }
+        }
+    }
+
+    private void addUserFunctions() {
+        for (Function function : Scope.getFunctions()) {
+            if (functionsHasDefinitionOrPrototypeBefore(function, caretPosition)) {
+                addElement(function);
+            }
+        }
+    }
+
+    private boolean functionsHasDefinitionOrPrototypeBefore(Function func, int position) {
+        if (func.getDefinition() != null && func.getDefinition().getNameStopIndex() < position) {
+            return true;
+        }
+        return functionHasPrototypeBefore(func, position);
+    }
+
+    private boolean functionHasPrototypeBefore(Function func, int position) {
+        for (FunctionPrototype fp : func.getPrototypes()) {
+            if (fp.getStopIndex() < position) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //
+    //add builtin elements------------------------------------------------------
+    //
     private void addBuiltInElements() {
         if (!filter.isEmpty()) {
             addElementList(Builtin.getKeywords());
+            addElementMap(Builtin.getQualfiers());
             addElementMap(Builtin.getTypes());
             addElementMap(Builtin.getVariables());
             addElementList(Builtin.getFunctions());
         }
     }
 
-    private void addElementList(List<? extends Element> elements) {
-        for (Element element : elements) {
+    private void addElementList(List<? extends CompletionElement> elements) {
+        for (CompletionElement element : elements) {
             addElement(element);
         }
     }
 
-    private void addElementMap(Map<String, ? extends Element> elements) {
-        for (Element element : elements.values()) {
+    private void addElementMap(Map<String, ? extends CompletionElement> elements) {
+        for (CompletionElement element : elements.values()) {
             addElement(element);
         }
     }
 
-    private void addElement(Element element) {
-        if (element.getName().startsWith(filter)) {
-            resultSet.addItem(new GlslCompletionItem((CompletionElement) element, filter.length(), caretPosition));
-        }
-    }
-
+    //
+    //filter--------------------------------------------------------------------
+    //
     private String computeFilter() throws BadLocationException {
         if (caretPosition == 0) {
             return "";
@@ -134,12 +160,15 @@ public class GlslCompletionProvider implements CompletionProvider {
     }
 
     private boolean isIdentifierSeparator(char character) {
-        return character == SPACE || character == CARRIGE_RETURN || character == LINE_FEED
+        return character == SPACE || character == CR || character == LF
                 || character == TAB || character == LCB || character == LRB
                 || character == LSB || character == COMMA || character == SEMICOLON
                 || character == RCB || character == COLON;
     }
 
+    //
+    //misc----------------------------------------------------------------------
+    //
     @Override
     public int getAutoQueryTypes(JTextComponent jtc, String string) {
         return 0;

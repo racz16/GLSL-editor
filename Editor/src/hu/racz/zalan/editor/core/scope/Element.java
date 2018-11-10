@@ -6,6 +6,13 @@ public abstract class Element {
     private int nameStopIndex = 0;
     private String name = "";
 
+    public Element() {
+    }
+
+    public Element(String name) {
+        setName(name);
+    }
+
     public int getNameStartIndex() {
         return nameStartIndex;
     }

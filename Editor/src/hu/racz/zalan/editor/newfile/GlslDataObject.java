@@ -5,78 +5,79 @@ import org.openide.awt.*;
 import org.openide.filesystems.*;
 import org.openide.loaders.*;
 import org.openide.util.NbBundle.Messages;
+import static hu.racz.zalan.editor.core.Constants.*;
 
 @Messages({
     "LBL_Glsl_LOADER=Files of Glsl"
 })
 @MIMEResolver.ExtensionRegistration(
         displayName = "#LBL_Glsl_LOADER",
-        mimeType = "text/x-glsl",
+        mimeType = GLSL_MIME_TYPE,
         extension = {"glsl", "GLSL"}
 )
 @DataObject.Registration(
-        mimeType = "text/x-glsl",
+        mimeType = GLSL_MIME_TYPE,
         iconBase = "hu/racz/zalan/editor/newfile/res/logo.png",
         displayName = "#LBL_Glsl_LOADER",
         position = 300
 )
 @ActionReferences({
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.OpenAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "OpenAction"),
             position = 100,
             separatorAfter = 200
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "Edit", id = "org.openide.actions.CutAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_EDIT, id = OPENIDE_ACTIONS + "CutAction"),
             position = 300
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "Edit", id = "org.openide.actions.CopyAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_EDIT, id = OPENIDE_ACTIONS + "CopyAction"),
             position = 400,
             separatorAfter = 500
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "Edit", id = "org.openide.actions.DeleteAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_EDIT, id = OPENIDE_ACTIONS + "DeleteAction"),
             position = 600
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.RenameAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "RenameAction"),
             position = 700,
             separatorAfter = 800
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.SaveAsTemplateAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "SaveAsTemplateAction"),
             position = 900,
             separatorAfter = 1000
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.FileSystemAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "FileSystemAction"),
             position = 1100,
             separatorAfter = 1200
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.ToolsAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "ToolsAction"),
             position = 1300
     )
     ,
     @ActionReference(
-            path = "Loaders/text/x-glsl/Actions",
-            id = @ActionID(category = "System", id = "org.openide.actions.PropertiesAction"),
+            path = LOADERS_ACTIONS,
+            id = @ActionID(category = CATEGORY_SYSTEM, id = OPENIDE_ACTIONS + "PropertiesAction"),
             position = 1400
     )
 })
@@ -84,7 +85,7 @@ public class GlslDataObject extends MultiDataObject {
 
     public GlslDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
-        registerEditor("text/x-glsl", false);
+        registerEditor(GLSL_MIME_TYPE, false);
     }
 
     @Override

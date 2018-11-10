@@ -1,4 +1,4 @@
-package hu.racz.zalan.editor.markoccurrences;
+package hu.racz.zalan.editor.markoccurrence;
 
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
@@ -16,7 +16,7 @@ import org.openide.util.*;
 public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
 
     private static final AttributeSet HIGHLIGHT_COLOR = AttributesUtilities.createImmutable(StyleConstants.Background, new Color(236, 235, 163));
-    private final static int REFRESH_DELAY = 100;
+    private final static int REFRESH_DELAY = 500;
 
     private final OffsetsBag bag;
     private final Document document;
@@ -70,51 +70,53 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private Scope getRootScope() throws BadLocationException {
-        Scope ret = GlslProcessor.getRootScope();
-        if (rootScope == null) {
-            GlslProcessor.setText(document.getText(0, document.getLength()));
-            ret = GlslProcessor.getRootScope();
-        }
-        return ret;
+        GlslProcessor.setText(document.getText(0, document.getLength()));
+        return GlslProcessor.getRootScope();
     }
 
     //
     //functions-----------------------------------------------------------------
     //
     private void addFunctionOccurrences() {
-        FunctionPrototype prototype = findFunctionPrototype();
-        addFunctionOccurrences(prototype);
+        Function func = findFunction();
+        addFunctionOccurrences(func);
     }
 
-    private FunctionPrototype findFunctionPrototype() {
-        FunctionPrototype fp = funcFunctionPrototypeAtCaret();
-        return fp == null ? findFunctionDefinitionSPrototypeAtCaret() : fp;
+    private Function findFunction() {
+        Function func = findFunctionPrototypeSFunctionAtCaret();
+        return func == null ? findFunctionDefinitionSFunctionAtCaret() : func;
     }
 
-    private FunctionPrototype funcFunctionPrototypeAtCaret() {
+    private Function findFunctionPrototypeSFunctionAtCaret() {
         for (FunctionPrototype fp : rootScope.getFunctionPrototypes()) {
             if (isElementAtCaret(fp)) {
-                return fp;
+                return fp.getFunction();
             }
         }
         return null;
     }
 
-    private FunctionPrototype findFunctionDefinitionSPrototypeAtCaret() {
+    private Function findFunctionDefinitionSFunctionAtCaret() {
         for (FunctionDefinition fd : rootScope.getFunctionDefinitions()) {
             if (isElementAtCaret(fd)) {
-                return fd.getPrototype();
+                return fd.getFunction();
             }
         }
         return null;
     }
 
-    private void addFunctionOccurrences(FunctionPrototype prototype) {
-        if (prototype != null) {
-            addElementToBag(prototype);
-            if (prototype.getDefinition() != null) {
-                addElementToBag(prototype.getDefinition());
+    private void addFunctionOccurrences(Function func) {
+        if (func != null) {
+            if (func.getDefinition() != null) {
+                addElementToBag(func.getDefinition());
             }
+            addFunctionPrototypeOccurrences(func);
+        }
+    }
+
+    private void addFunctionPrototypeOccurrences(Function f) {
+        for (FunctionPrototype fp : f.getPrototypes()) {
+            addElementToBag(fp);
         }
     }
 
@@ -213,15 +215,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
         return element.getNameStartIndex() <= caretPosition && element.getNameStopIndex() >= caretPosition;
     }
 
-    private boolean isElementAtCaret(FunctionBase element) {
-        return element.getNameStartIndex() <= caretPosition && element.getNameStopIndex() >= caretPosition;
-    }
-
     private void addElementToBag(Element element) {
-        bag.addHighlight(element.getNameStartIndex(), element.getNameStopIndex(), HIGHLIGHT_COLOR);
-    }
-
-    private void addElementToBag(FunctionBase element) {
         bag.addHighlight(element.getNameStartIndex(), element.getNameStopIndex(), HIGHLIGHT_COLOR);
     }
 

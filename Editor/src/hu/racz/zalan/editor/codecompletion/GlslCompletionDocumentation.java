@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.*;
 import javax.swing.*;
 import org.netbeans.spi.editor.completion.*;
 import org.openide.util.*;
@@ -38,26 +39,17 @@ public class GlslCompletionDocumentation implements CompletionDocumentation {
     private String loadDocumentation() {
         StringBuilder result;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(documentationUrl.openStream()))) {
-            result = readDocumentation(br);
+            result = new StringBuilder(br.lines().collect(Collectors.joining()));
         } catch (IOException ex) {
             return "Not found";
         }
         return transformDocumentationToNetbeansCompatible(result);
     }
 
-    private StringBuilder readDocumentation(BufferedReader br) throws IOException {
-        StringBuilder result = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            result.append(line);
-        }
-        return result;
-    }
-
-    private String transformDocumentationToNetbeansCompatible(StringBuilder doc) {
-        StringBuilder documentation = selectHtmlBody(doc);
-        replaceNetbeansIncompatibleCharacters(documentation);
-        return documentation.toString();
+    private String transformDocumentationToNetbeansCompatible(StringBuilder documentation) {
+        StringBuilder doc = selectHtmlBody(documentation);
+        replaceNetbeansIncompatibleCharacters(doc);
+        return doc.toString();
     }
 
     private StringBuilder selectHtmlBody(StringBuilder documentation) {

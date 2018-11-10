@@ -16,9 +16,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
     private boolean global;
     private TypeUsage type;
 
-    private final List<Qualifier> qualifiers = new ArrayList<>();
-    private final List<Qualifier> implicitQualifiers = new ArrayList<>();
-
     private int declarationStartIndex;
     private int declarationStopIndex;
 
@@ -33,8 +30,8 @@ public class VariableDeclaration extends Element implements CompletionElement {
     }
 
     public VariableDeclaration(TypeUsage type, String name) {
+        super(name);
         setType(type);
-        setName(name);
     }
 
     public TypeUsage getType() {
@@ -97,25 +94,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
     }
 
     //
-    //qualifiers----------------------------------------------------------------
-    //
-    public void addQualifier(Qualifier qualifier) {
-        qualifiers.add(qualifier);
-    }
-
-    public List<Qualifier> getQualifiers() {
-        return Collections.unmodifiableList(qualifiers);
-    }
-
-    public void addImplicitQualifier(Qualifier qualifier) {
-        implicitQualifiers.add(qualifier);
-    }
-
-    public List<Qualifier> getImplicitQualifiers() {
-        return Collections.unmodifiableList(implicitQualifiers);
-    }
-
-    //
     //misc----------------------------------------------------------------------
     //
     @Override
@@ -151,34 +129,12 @@ public class VariableDeclaration extends Element implements CompletionElement {
     @Override
     public boolean equals(Object obj) {
         VariableDeclaration vd = (VariableDeclaration) obj;
-        if (!super.equals(vd) || !getType().equals(vd.getType())) {
-            return false;
-        }
-        return qualifiersEquals(vd);
-    }
-
-    public boolean qualifiersEquals(VariableDeclaration vd) {
-        for (Qualifier q : getQualifiers()) {
-            if (!vd.getQualifiers().contains(q) && !vd.getImplicitQualifiers().contains(q)) {
-                return false;
-            }
-        }
-        for (Qualifier q : getImplicitQualifiers()) {
-            if (!vd.getQualifiers().contains(q) && !vd.getImplicitQualifiers().contains(q)) {
-                return false;
-            }
-        }
-        return getQualifiers().size() + getImplicitQualifiers().size() == vd.getQualifiers().size() + vd.getImplicitQualifiers().size();
+        return getName().equals(vd.getName()) && getType().equals(vd.getType());
     }
 
     @Override
     public String toString() {
-        String ret = "";
-        for (Qualifier q : getQualifiers()) {
-            ret += q.getName() + " ";
-        }
-        ret += getType().getName() + " " + getName();
-        return ret;
+        return getType() + " " + getName();
     }
 
 }

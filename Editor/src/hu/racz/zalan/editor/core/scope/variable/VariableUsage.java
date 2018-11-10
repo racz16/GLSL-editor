@@ -6,6 +6,10 @@ public class VariableUsage extends Element {
 
     private VariableDeclaration declaration;
 
+    public VariableUsage(String name) {
+        super(name);
+    }
+
     public VariableDeclaration getDeclaration() {
         return declaration;
     }

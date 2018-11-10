@@ -1,6 +1,7 @@
 package hu.racz.zalan.editor.syntaxhighlighting;
 
 import hu.racz.zalan.editor.antlr.generated.*;
+import static hu.racz.zalan.editor.core.Constants.GLSL_MIME_TYPE;
 import java.util.*;
 import org.netbeans.spi.lexer.*;
 
@@ -127,7 +128,7 @@ public class GlslLanguageHierarchy extends LanguageHierarchy<GlslTokenId> {
 
     @Override
     protected String mimeType() {
-        return "text/x-glsl";
+        return GLSL_MIME_TYPE;
     }
 
 }

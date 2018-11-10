@@ -5,15 +5,15 @@ import org.antlr.v4.runtime.*;
 
 public class GlslErrorListener extends BaseErrorListener {
 
-    private final List<SyntaxError> syntaxErrors = new ArrayList<>();
+    private final List<GeneratedSyntaxError> syntaxErrors = new ArrayList<>();
 
-    public List<SyntaxError> getSyntaxErrors() {
+    public List<GeneratedSyntaxError> getSyntaxErrors() {
         return Collections.unmodifiableList(syntaxErrors);
     }
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        syntaxErrors.add(new SyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
+        syntaxErrors.add(new GeneratedSyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
     }
 
 }

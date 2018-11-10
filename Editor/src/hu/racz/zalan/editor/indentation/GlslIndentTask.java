@@ -1,13 +1,11 @@
 package hu.racz.zalan.editor.indentation;
 
-import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
-import java.util.*;
 import javax.swing.text.*;
-import org.antlr.v4.runtime.*;
 import org.netbeans.modules.editor.indent.api.*;
 import org.netbeans.modules.editor.indent.spi.*;
+import static hu.racz.zalan.editor.core.Constants.*;
 
 public class GlslIndentTask implements IndentTask {
 
@@ -27,20 +25,12 @@ public class GlslIndentTask implements IndentTask {
     private int tabSize;
     private boolean expandTabs;
 
-    private static final char CARRIGE_RETURN = '\r';
-    private static final char LINE_FEED = '\n';
-    private static final char TAB = '\t';
-    private static final char SPACE = ' ';
-    private static final char LCB = '{';
-    private static final char RCB = '}';
-
     public GlslIndentTask(Context context) {
         this.context = context;
     }
 
     @Override
     public void reindent() throws BadLocationException {
-        GlslProcessor.setText(context.document().getText(0, context.document().getLength()));
         initialize();
         determineNewBlock();
         computeDepth();
@@ -60,10 +50,10 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private boolean lastCharactersLeftCurlyBraceNewLine() {
-        if (isCharacterInPosition(caretPosition - 1, LINE_FEED) && isCharacterInPosition(caretPosition - 2, LCB)) {
+        if (isCharacterInPosition(caretPosition - 1, LF) && isCharacterInPosition(caretPosition - 2, LCB)) {
             return true;
         }
-        if (isCharacterInPosition(caretPosition - 1, LINE_FEED) && isCharacterInPosition(caretPosition - 2, CARRIGE_RETURN) && isCharacterInPosition(caretPosition - 3, LCB)) {
+        if (isCharacterInPosition(caretPosition - 1, LF) && isCharacterInPosition(caretPosition - 2, CR) && isCharacterInPosition(caretPosition - 3, LCB)) {
             return true;
         }
         return false;
@@ -82,7 +72,7 @@ public class GlslIndentTask implements IndentTask {
     }
 
     private void correctDepth() {
-        //depth += computeBracelessScopeCorrection();
+        depth += computeBracelessScopeCorrection();
         depth -= spaceTabCountBeforeCursor;
         if (rightBraceAfterCursor) {
             depth -= spaceTabCountAfterCursor;
@@ -96,7 +86,7 @@ public class GlslIndentTask implements IndentTask {
                 result += indentLevelSize;
             }
         }
-        return result + compute();
+        return result;
     }
 
     private void computeCharacterImpact(char character, int index) {
@@ -148,57 +138,8 @@ public class GlslIndentTask implements IndentTask {
         }
     }
 
-    private int compute() {
-        boolean foundRrb = false;
-        int rbCount = 0;
-        int ltibc = getLastTokenIndexBeforeCursor();
-        List<? extends Token> tokens = GlslProcessor.getTokens();
-
-        if (ltibc != -1) {
-            for (int i = ltibc; i > 1; i--) {
-                Token t = tokens.get(i);
-                if (!foundRrb) {
-                    if (t.getType() == AntlrGlslLexer.RRB) {
-                        foundRrb = true;
-                        rbCount++;
-                    } else if (t.getType() != AntlrGlslLexer.NEW_LINE && t.getType() != AntlrGlslLexer.TAB && t.getType() != AntlrGlslLexer.SPACE) {
-                        return 0;
-                    }
-                } else {
-                    if (t.getType() == AntlrGlslLexer.LRB) {
-                        rbCount--;
-                    } else if (t.getType() == AntlrGlslLexer.RRB) {
-                        rbCount++;
-                    } else if (rbCount == 0) {
-                        if (t.getType() == AntlrGlslLexer.KW_CASE || t.getType() == AntlrGlslLexer.KW_FOR || t.getType() == AntlrGlslLexer.KW_IF || t.getType() == AntlrGlslLexer.KW_WHILE) {
-                            return indentLevelSize;
-                        } else {
-                            return 0;
-                        }
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    private int getLastTokenIndexBeforeCursor() {
-        List<? extends Token> tokens = GlslProcessor.getTokens();
-        int result = -1;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).getStopIndex() + 1 <= caretPosition) {
-                result = i;
-            } else if (tokens.get(i).getStartIndex() + 1 >= caretPosition) {
-                return result;
-            } else {
-                return -1;
-            }
-        }
-        return result;
-    }
-
     private void computeSpaceTabImpactBeforeCursor(char character) {
-        if (character != LINE_FEED && character != CARRIGE_RETURN) {
+        if (character != LF && character != CR) {
             computeSpaceTabImpactBeforeCursorUnsafe(character);
         }
     }

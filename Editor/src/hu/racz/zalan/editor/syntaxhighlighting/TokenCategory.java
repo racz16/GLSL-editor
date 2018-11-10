@@ -3,7 +3,6 @@ package hu.racz.zalan.editor.syntaxhighlighting;
 public enum TokenCategory {
     MACRO,
     KEYWORD,
-    ERROR,
     QUALIFIER,
     TYPE,
     NUMBER,

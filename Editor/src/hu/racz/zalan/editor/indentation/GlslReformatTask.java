@@ -10,11 +10,9 @@ import javax.swing.text.BadLocationException;
 import org.antlr.v4.runtime.Token;
 import org.netbeans.modules.editor.indent.api.*;
 import org.netbeans.modules.editor.indent.spi.*;
+import static hu.racz.zalan.editor.core.Constants.LF;
 
 public class GlslReformatTask implements ReformatTask {
-
-    //characters
-    private static final char LINE_FEED = '\n';
 
     //document
     private final Context context;
@@ -62,20 +60,18 @@ public class GlslReformatTask implements ReformatTask {
     public void reformat() throws BadLocationException {
         initialize();
         List<? extends Token> tokens = GlslProcessor.getTokens();
-        if (tokens != null) {   //FIXME: ez csak ideiglenes megoldás, javítani kell
-            for (Token token : tokens) {
-                setToken(token);
-                formatToken();
-            }
-            setResultTextAndCaretPosition();
+        for (Token token : tokens) {
+            setToken(token);
+            formatToken();
         }
+        setResultTextAndCaretPosition();
     }
 
     private void initialize() {
         indentLevelSize = IndentUtils.indentLevelSize(context.document());
         tabSize = IndentUtils.tabSize(context.document());
         expandTabs = IndentUtils.isExpandTabs(context.document());
-        caretPosition = GlslParser.CaretListener2.CARET_POSITION;
+        caretPosition = GlslParser.getCaretListener().getCaretPosition();
     }
 
     private void setToken(Token token) {
@@ -145,7 +141,7 @@ public class GlslReformatTask implements ReformatTask {
     }
 
     private String computeUserText() {
-        return substringFromNthLastIndexOf(userSpaceTabNewLine, LINE_FEED, MAX_ALLOWED_BLANK_LINES + 1);
+        return substringFromNthLastIndexOf(userSpaceTabNewLine, LF, MAX_ALLOWED_BLANK_LINES + 1);
 
     }
 
@@ -250,9 +246,9 @@ public class GlslReformatTask implements ReformatTask {
     private String computeIndentationNewLines() {
         String indentationNewLines = "";
         for (int j = 0; j < userNewLineCount - 1; j++) {
-            indentationNewLines += LINE_FEED;
+            indentationNewLines += LF;
         }
-        indentationNewLines += LINE_FEED;
+        indentationNewLines += LF;
         return indentationNewLines;
     }
 
@@ -278,7 +274,7 @@ public class GlslReformatTask implements ReformatTask {
     private boolean isIndentationNeeded() {
         return isPreviousTokenOneOfThem(LCB, SINGLE_LINE_COMMENT, MACRO)
                 || (isPreviousTokenOneOfThem(RCB) && !isCurrentTokenOneOfThem(SEMICOLON, KW_ELSE) && !inStructInitList)
-                || isPreviousTokenOneOfThem(SEMICOLON) && forHeaderBraceCount == 0
+                || isPreviousTokenOneOfThem(SEMICOLON) && !inForHeader
                 || isBracelessScopeSStart(currentToken);
     }
 

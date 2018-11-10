@@ -14,34 +14,6 @@
     <keyword>return</keyword>
     <keyword>struct</keyword>
     <keyword>void</keyword>
-    <keyword>precision</keyword>
-    <keyword>layout</keyword>
-    <keyword>precise</keyword>
-    <keyword>invariant</keyword>
-    <keyword>subroutine</keyword>
-    <keyword>smooth</keyword>
-    <keyword>flat</keyword>
-    <keyword>noperspective</keyword>
-    <keyword>const</keyword>
-    <keyword>inout</keyword>
-    <keyword>in</keyword>
-    <keyword>out</keyword>
-    <keyword>centroid</keyword>
-    <keyword>patch</keyword>
-    <keyword>sample</keyword>
-    <keyword>uniform</keyword>
-    <keyword>buffer</keyword>
-    <keyword>varying</keyword>
-    <keyword>attribute</keyword>
-    <keyword>coherent</keyword>
-    <keyword>volatile</keyword>
-    <keyword>restrict</keyword>
-    <keyword>readonly</keyword>
-    <keyword>writeonly</keyword>
-    <keyword>shared</keyword>
-    <keyword>highp</keyword>
-    <keyword>mediump</keyword>
-    <keyword>lowp</keyword>
     <keyword>true</keyword>
     <keyword>false</keyword>
 </keywords>

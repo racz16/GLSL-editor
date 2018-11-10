@@ -2,7 +2,7 @@ package hu.racz.zalan.editor.errordisplay;
 
 import org.antlr.v4.runtime.*;
 
-public class SyntaxError {
+public class GeneratedSyntaxError {
 
     private final Recognizer<?, ?> recognizer;
     private final Object offendingSymbol;
@@ -11,7 +11,7 @@ public class SyntaxError {
     private final String message;
     private final RecognitionException exception;
 
-    public SyntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+    public GeneratedSyntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
         this.recognizer = recognizer;
         this.offendingSymbol = offendingSymbol;
         this.line = line;

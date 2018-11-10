@@ -24,11 +24,11 @@ public class TypeDeclaration extends Element implements CompletionElement {
     private final List<TypeUsage> usages = new ArrayList<>();
 
     public TypeDeclaration(String name) {
-        setName(name);
+        super(name);
     }
 
     public TypeDeclaration(String name, boolean builtIn, TypeCategory typeCategory) {
-        setName(name);
+        this(name);
         setBuiltIn(builtIn);
         setTypeCategory(typeCategory);
     }

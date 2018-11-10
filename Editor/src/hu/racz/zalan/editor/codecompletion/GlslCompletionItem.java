@@ -80,7 +80,7 @@ public class GlslCompletionItem implements CompletionItem {
 
     @Override
     public CharSequence getSortText() {
-        return element.getPasteText();
+        return element.getLeftText();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GlslCompletionItem implements CompletionItem {
     private class GlslAsyncCompletionItemQuery extends AsyncCompletionQuery {
 
         @Override
-        protected void query(CompletionResultSet completionResultSet, Document document, int i) {
+        protected void query(CompletionResultSet completionResultSet, Document document, int caretOffset) {
             completionResultSet.setDocumentation(new GlslCompletionDocumentation(element.getDocumentationName()));
             completionResultSet.finish();
         }
