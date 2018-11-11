@@ -274,7 +274,7 @@ public class GlslReformatTask implements ReformatTask {
     private boolean isIndentationNeeded() {
         return isPreviousTokenOneOfThem(LCB, SINGLE_LINE_COMMENT, MACRO)
                 || (isPreviousTokenOneOfThem(RCB) && !isCurrentTokenOneOfThem(SEMICOLON, KW_ELSE) && !inStructInitList)
-                || isPreviousTokenOneOfThem(SEMICOLON) && !inForHeader
+                || isPreviousTokenOneOfThem(SEMICOLON) && !isCurrentTokenOneOfThem(RRB) && !inForHeader
                 || isBracelessScopeSStart(currentToken);
     }
 

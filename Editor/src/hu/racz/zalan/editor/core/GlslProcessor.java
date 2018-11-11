@@ -4,7 +4,6 @@ import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.errordisplay.*;
 import java.util.*;
-import javax.swing.text.*;
 import org.antlr.v4.runtime.*;
 
 public class GlslProcessor {
@@ -69,8 +68,7 @@ public class GlslProcessor {
     }
 
     private static synchronized Scope getScope(Scope scope, int caretOffset) {
-        for (int i = 0; i < scope.getChildCount(); i++) {
-            Scope child = scope.getChild(i);
+        for (Scope child : scope.getScopes()) {
             if (child.getStartIndex() <= caretOffset && child.getStopIndex() >= caretOffset) {
                 return getScope(child, caretOffset);
             }

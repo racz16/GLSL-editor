@@ -7,7 +7,6 @@ import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
-import hu.racz.zalan.editor.errordisplay.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.netbeans.spi.editor.hints.*;
@@ -23,23 +22,33 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
 
     @Override
     public TypeUsage visitStart(AntlrGlslParser.StartContext ctx) {
+        clear();
+        tokenOperations();
+        currentScope = new Scope();
+        return super.visitStart(ctx);
+    }
+
+    private void clear() {
         Scope.clearBracelessScopes();
         Scope.clearErrorss();
         Scope.clearFunctions();
-        addTokenErrors();
-        currentScope = new Scope();
-        return super.visitStart(ctx);
+        Scope.clearFunctionDefinitions();
+        Scope.clearFunctionPrototypes();
+        Scope.clearFoldingBlocks();
     }
 
     //
     //token errors--------------------------------------------------------------
     //
-    private void addTokenErrors() {
+    private void tokenOperations() {
         for (Token token : GlslProcessor.getTokens()) {
             if (token.getType() == AntlrGlslLexer.RESERVED_KEYWORD) {
                 Helper.addError(Severity.ERROR, token.getText() + " : reserved word", token.getStartIndex(), token.getStopIndex() + 1);
             } else if (token.getType() == AntlrGlslLexer.ILLEGAL_CHARACTERS) {
                 Helper.addError(Severity.ERROR, "illegal character(s) " + token.getText(), token.getStartIndex(), token.getStopIndex() + 1);
+            } else if (token.getType() == AntlrGlslLexer.MULTI_LINE_COMMENT) {
+                FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.COMMENT, token.getStartIndex(), token.getStopIndex() + 1);
+                Scope.addFoldingBlock(fb);
             }
         }
     }
@@ -211,6 +220,9 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 }
             }
         }
+        FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+        Scope.addFoldingBlock(fb);
+
         super.visitStruct_specifier(ctx);
         currentScope = currentScope.getParent();
         return null;
@@ -386,6 +398,9 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                     currentScope.addVariableDeclaration(vd);
                 }
             }
+
+            FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+            Scope.addFoldingBlock(fb);
         }
 
         return super.visitDeclaration_statement(ctx);

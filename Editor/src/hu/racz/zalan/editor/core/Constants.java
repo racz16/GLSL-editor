@@ -5,6 +5,7 @@ public class Constants {
     //
     //netbeans------------------------------------------------------------------
     //
+    public static final String GLSL = "GLSL";
     public static final String GLSL_MIME_TYPE = "text/x-glsl";
     public static final String LOADERS_ACTIONS = "Loaders/" + GLSL_MIME_TYPE + "/Actions";
     public static final String OPENIDE_ACTIONS = "org.openide.actions.";

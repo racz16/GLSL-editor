@@ -1,55 +1,28 @@
 package hu.racz.zalan.editor.gotodefinition;
 
-import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.type.*;
-import javax.swing.text.*;
 import org.netbeans.api.editor.mimelookup.*;
 import org.netbeans.lib.editor.hyperlink.spi.*;
 import static hu.racz.zalan.editor.core.Constants.*;
+import java.util.*;
 
 @MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HyperlinkProvider.class)
-public class GlslTypeHyperlinkProvider implements HyperlinkProvider {
-
-    private TypeUsage usage;
+public class GlslTypeHyperlinkProvider extends GlslHyperlinkProviderBase<TypeUsage> {
 
     @Override
-    public boolean isHyperlinkPoint(Document document, int caretPosition) {
-        return verifyState(caretPosition);
-    }
-
-    public boolean verifyState(int caretPosition) {
-        Scope scope = GlslProcessor.getCaretScope(caretPosition);
-        if (scope == null) {
-            return false;
-        }
-        return verifyStateUnsafe(scope, caretPosition);
-    }
-
-    private boolean verifyStateUnsafe(Scope scope, int caretPosition) {
-        for (TypeUsage tu : scope.getTypeUsages()) {
-            if (tu.getNameStartIndex() <= caretPosition && tu.getNameStopIndex() >= caretPosition && tu.getDeclaration() != null) {
-                usage = tu;
-                return true;
-            }
-        }
-        return false;
+    protected List<? extends TypeUsage> getUsages(Scope scope) {
+        return scope.getTypeUsages();
     }
 
     @Override
-    public int[] getHyperlinkSpan(Document document, int caretPosition) {
-        if (verifyState(caretPosition)) {
-            return new int[]{usage.getNameStartIndex(), usage.getNameStopIndex()};
-        } else {
-            return null;
-        }
+    protected boolean hasModel(TypeUsage usage) {
+        return usage.getDeclaration() != null;
     }
 
     @Override
-    public void performClickAction(Document document, int caretPosition) {
-        if (verifyState(caretPosition)) {
-            Utility.setCaretPosition(document, usage.getDeclaration().getNameStartIndex());
-        }
+    protected int getTargetPosition() {
+        return usage.getDeclaration().getNameStartIndex();
     }
 
 }

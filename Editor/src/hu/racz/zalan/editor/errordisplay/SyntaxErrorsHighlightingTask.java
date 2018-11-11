@@ -2,6 +2,7 @@ package hu.racz.zalan.editor.errordisplay;
 
 import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.*;
+import static hu.racz.zalan.editor.core.Constants.GLSL;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.errordisplay.fix.*;
@@ -21,6 +22,7 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
     public void run(GlslParser.GlslEditorParserResult result, SchedulerEvent event) {
         try {
             document = result.getSnapshot().getSource().getDocument(false);
+            errors.clear();
             addErrorsToNetbeansEditor();
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
@@ -32,7 +34,7 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
         addVisitorErrors();
         addVersionMacroError();
         addDuplicatedFunctionDefinitionErrors();
-        HintsController.setErrors(document, "GLSL", errors);
+        HintsController.setErrors(document, GLSL, errors);
     }
 
     private void addVersionMacroError() {
@@ -46,9 +48,8 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
     }
 
     private void addDuplicatedFunctionDefinitionErrors() {
-        Scope rootScope = GlslProcessor.getRootScope();
-        for (FunctionDefinition fd : rootScope.getFunctionDefinitions()) {
-            if (isFunctionDuplicated(rootScope, fd)) {
+        for (FunctionDefinition fd : Scope.getFunctionDefinitions()) {
+            if (isFunctionDuplicated(fd)) {
                 addDuplicatedFunctionDefinitionError(fd);
             }
         }
@@ -56,14 +57,13 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
     private void addDuplicatedFunctionDefinitionError(FunctionDefinition fd) {
         List<Fix> fixes = new ArrayList<>();
-        fixes.add(new RemoveFunctionFix(document, fd.getStartIndex(), fd.getStopIndex()));
+        fixes.add(new RemoveElementFix(document, fd.getStartIndex(), fd.getStopIndex(), "Remove this function"));
         ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, "'" + fd.getName() + "' function already has a body", fixes, document, new ErrorPosition(fd.getSignatureStartIndex()), new ErrorPosition(fd.getSignatureStopIndex()));
         errors.add(ed);
     }
 
-    private boolean isFunctionDuplicated(Scope rootScope, FunctionDefinition fd) {
-        for (int j = 0; j < rootScope.getFunctionDefinitionCount(); j++) {
-            FunctionDefinition def2 = rootScope.getFunctionDefinition(j);
+    private boolean isFunctionDuplicated(FunctionDefinition fd) {
+        for (FunctionDefinition def2 : Scope.getFunctionDefinitions()) {
             if (fd != def2 && fd.getFunction().equalsSignature(def2.getFunction()) && fd.getNameStopIndex() > def2.getNameStartIndex()) {
                 return true;
             }

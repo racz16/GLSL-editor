@@ -1,4 +1,4 @@
-package hu.racz.zalan.editor.newfile;
+package hu.racz.zalan.editor.file;
 
 import hu.racz.zalan.editor.syntaxhighlighting.*;
 import org.netbeans.api.lexer.*;

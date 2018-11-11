@@ -2,6 +2,9 @@ package hu.racz.zalan.editor.core;
 
 import java.awt.*;
 import java.lang.ref.*;
+import java.lang.reflect.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 import java.util.regex.*;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -27,7 +30,10 @@ public class Utility {
     }
 
     public static void setCaretPosition(Document document, int position) {
-        getTextComponent(document).setCaretPosition(position);
+        JTextComponent tc = getTextComponent(document);
+        if (tc != null) {
+            tc.setCaretPosition(position);
+        }
     }
 
     public static JTextComponent getTextComponent(Document document) {
@@ -49,26 +55,25 @@ public class Utility {
     }
 
     public static int getCaretPositionInAwtThread(final Context context) {
-        ThreadReturner r = new ThreadReturner() {
+        ThreadReturner<Integer> r = new ThreadReturner<Integer>() {
             @Override
             public void run() {
                 setValue(context.caretOffset());
             }
         };
         EventQueue.invokeLater(r);
-
         return r.getValue();
     }
 
-    private static abstract class ThreadReturner implements Runnable {
+    private static abstract class ThreadReturner<T> implements Runnable {
 
-        private int value;
+        private T value;
 
-        public void setValue(int value) {
+        public void setValue(T value) {
             this.value = value;
         }
 
-        public int getValue() {
+        public T getValue() {
             return value;
         }
 

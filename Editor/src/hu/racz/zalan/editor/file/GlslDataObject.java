@@ -1,4 +1,4 @@
-package hu.racz.zalan.editor.newfile;
+package hu.racz.zalan.editor.file;
 
 import java.io.*;
 import org.openide.awt.*;
@@ -13,11 +13,11 @@ import static hu.racz.zalan.editor.core.Constants.*;
 @MIMEResolver.ExtensionRegistration(
         displayName = "#LBL_Glsl_LOADER",
         mimeType = GLSL_MIME_TYPE,
-        extension = {"glsl", "GLSL"}
+        extension = {"glsl", GLSL}
 )
 @DataObject.Registration(
         mimeType = GLSL_MIME_TYPE,
-        iconBase = "hu/racz/zalan/editor/newfile/res/logo.png",
+        iconBase = "hu/racz/zalan/editor/file/res/logo.png",
         displayName = "#LBL_Glsl_LOADER",
         position = 300
 )

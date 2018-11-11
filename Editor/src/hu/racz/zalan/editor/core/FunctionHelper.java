@@ -24,7 +24,7 @@ public class FunctionHelper {
         setIndices(fpc);
         setFunctionForPrototype(fpc.function_header());
         setFunctionDefinition();
-        currentScope.getParent().addFunctionPrototype(fp);
+        Scope.addFunctionPrototype(fp);
         return fp;
     }
 
@@ -39,8 +39,14 @@ public class FunctionHelper {
         setIndices(fdc);
         setFunctionForDefinition(fdc.function_header());
         setFunctionPrototype();
-        currentScope.getParent().addFunctionDefinition(fd);
+        addFoldingBlock();
+        Scope.addFunctionDefinition(fd);
         return fd;
+    }
+
+    private static void addFoldingBlock() {
+        FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, fd.getSignatureStopIndex(), fd.getStopIndex());
+        Scope.addFoldingBlock(fb);
     }
 
     private static void initializeForDefinition(Scope scope) {
@@ -75,7 +81,7 @@ public class FunctionHelper {
 
     private static void setFunctionDefinition() {
         Scope s = Helper.getRootScope(currentScope);
-        for (FunctionDefinition fd : s.getFunctionDefinitions()) {
+        for (FunctionDefinition fd : Scope.getFunctionDefinitions()) {
             connectFunctionPrototypeWithDefinition(fp, fd);
             if (fp.getDefinition() != null) {
                 f = fd.getFunction();
@@ -89,7 +95,7 @@ public class FunctionHelper {
 
     private static void setFunctionPrototype() {
         Scope s = Helper.getRootScope(currentScope);
-        for (FunctionPrototype fp : s.getFunctionPrototypes()) {
+        for (FunctionPrototype fp : Scope.getFunctionPrototypes()) {
             connectFunctionPrototypeWithDefinition(fp, fd);
             if (fd.getPrototype() != null) {
                 f = fp.getFunction();

@@ -2,7 +2,9 @@ package hu.racz.zalan.editor.errordisplay;
 
 import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.*;
+import java.util.*;
 import javax.swing.event.*;
+import org.netbeans.modules.csl.spi.*;
 import org.netbeans.modules.parsing.api.*;
 import org.netbeans.modules.parsing.spi.*;
 import org.netbeans.modules.parsing.spi.Parser;
@@ -41,7 +43,7 @@ public class GlslParser extends Parser {
 
     }
 
-    public static class GlslEditorParserResult extends Result {
+    public static class GlslEditorParserResult extends ParserResult {
 
         GlslEditorParserResult(Snapshot snapshot) {
             super(snapshot);
@@ -55,6 +57,29 @@ public class GlslParser extends Parser {
         protected void invalidate() {
 
         }
+
+        @Override
+        public List<? extends org.netbeans.modules.csl.api.Error> getDiagnostics() {
+            return new ArrayList<>();
+        }
+    }
+
+    public class EditorCaretListener implements CaretListener {
+
+        private int caretPosition;
+
+        private EditorCaretListener() {
+        }
+
+        @Override
+        public void caretUpdate(CaretEvent e) {
+            caretPosition = e.getDot();
+        }
+
+        public int getCaretPosition() {
+            return caretPosition;
+        }
+
     }
 
 }

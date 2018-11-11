@@ -25,7 +25,6 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     private RequestProcessor.Task lastRefreshTask;
 
     private int caretPosition;
-    private Scope rootScope;
     private Scope caretScope;
 
     public GlslMarkOccurrencesHighlighter(Document document) {
@@ -62,16 +61,11 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
 
     private void initializeScopes() {
         try {
-            rootScope = getRootScope();
+            GlslProcessor.setText(document.getText(0, document.getLength()));
             caretScope = GlslProcessor.getCaretScope(caretPosition);
         } catch (BadLocationException ex) {
             Exceptions.printStackTrace(ex);
         }
-    }
-
-    private Scope getRootScope() throws BadLocationException {
-        GlslProcessor.setText(document.getText(0, document.getLength()));
-        return GlslProcessor.getRootScope();
     }
 
     //
@@ -88,7 +82,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private Function findFunctionPrototypeSFunctionAtCaret() {
-        for (FunctionPrototype fp : rootScope.getFunctionPrototypes()) {
+        for (FunctionPrototype fp : Scope.getFunctionPrototypes()) {
             if (isElementAtCaret(fp)) {
                 return fp.getFunction();
             }
@@ -97,7 +91,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private Function findFunctionDefinitionSFunctionAtCaret() {
-        for (FunctionDefinition fd : rootScope.getFunctionDefinitions()) {
+        for (FunctionDefinition fd : Scope.getFunctionDefinitions()) {
             if (isElementAtCaret(fd)) {
                 return fd.getFunction();
             }

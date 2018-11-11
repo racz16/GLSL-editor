@@ -11,20 +11,24 @@ public class Scope {
     private Scope parent;
     private final List<Scope> children = new ArrayList<>();
 
+    private static final List<FoldingBlock> FOLDING_BLOCKS = new ArrayList<>();
     private static final List<Scope> BRACELESS_SCOPES = new ArrayList<>();
     private static final List<UniqueSyntaxError> ERRORS = new ArrayList<>();
 
-    //TODO: lehet, hogy ezeket érdemes volna egy mapba rakni
+    //functions
+    private static final List<Function> FUNCTIONS = new ArrayList<>();
+    private static final List<FunctionPrototype> FUNCTION_PROTOTYPES = new ArrayList<>();
+    private static final List<FunctionDefinition> FUNCTION_DEFINITIONS = new ArrayList<>();
+
+    //variables
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
     private final List<VariableUsage> variableUsages = new ArrayList<>();
 
-    private static final List<Function> FUNCTIONS = new ArrayList<>();
-    private final List<FunctionPrototype> functionPrototypes = new ArrayList<>();
-    private final List<FunctionDefinition> functionDefinitions = new ArrayList<>();
-
+    //types
     private final List<TypeDeclaration> typeDeclarations = new ArrayList<>();
     private final List<TypeUsage> typeusages = new ArrayList<>();
 
+    //indices
     private int startIndex;
     private int stopIndex;
 
@@ -44,20 +48,24 @@ public class Scope {
         BRACELESS_SCOPES.clear();
     }
 
-    public static Scope getBracelessScope(int index) {
-        return BRACELESS_SCOPES.get(index);
-    }
-
     public static void addBracelessScope(Scope scope) {
         BRACELESS_SCOPES.add(scope);
     }
 
-    public static int getBracelessScopeCount() {
-        return BRACELESS_SCOPES.size();
-    }
-
     public static List<? extends Scope> getBracelessScopes() {
         return Collections.unmodifiableList(BRACELESS_SCOPES);
+    }
+
+    public static void clearFoldingBlocks() {
+        FOLDING_BLOCKS.clear();
+    }
+
+    public static void addFoldingBlock(FoldingBlock fb) {
+        FOLDING_BLOCKS.add(fb);
+    }
+
+    public static List<? extends FoldingBlock> getFoldingBlocks() {
+        return Collections.unmodifiableList(FOLDING_BLOCKS);
     }
 
     //
@@ -74,16 +82,8 @@ public class Scope {
     //
     //children------------------------------------------------------------------
     //
-    public Scope getChild(int index) {
-        return children.get(index);
-    }
-
     public void addChild(Scope scope) {
         children.add(scope);
-    }
-
-    public int getChildCount() {
-        return children.size();
     }
 
     public List<? extends Scope> getScopes() {
@@ -93,16 +93,8 @@ public class Scope {
     //
     //variable declarations-----------------------------------------------------
     //
-    public VariableDeclaration getVariableDeclaration(int index) {
-        return variableDeclarations.get(index);
-    }
-
     public void addVariableDeclaration(VariableDeclaration var) {
         variableDeclarations.add(var);
-    }
-
-    public int getVariableDeclarationCount() {
-        return variableDeclarations.size();
     }
 
     public List<? extends VariableDeclaration> getVariableDeclarations() {
@@ -112,16 +104,8 @@ public class Scope {
     //
     //variable usages-----------------------------------------------------------
     //
-    public VariableUsage getVariableUsage(int index) {
-        return variableUsages.get(index);
-    }
-
     public void addVariableUsage(VariableUsage var) {
         variableUsages.add(var);
-    }
-
-    public int getVariableUsageCount() {
-        return variableUsages.size();
     }
 
     public List<? extends VariableUsage> getVariableUsages() {
@@ -129,41 +113,30 @@ public class Scope {
     }
 
     //
-    //function prototypes-------------------------------------------------------
+    //functions-----------------------------------------------------------------
     //
-    public FunctionPrototype getFunctionPrototype(int index) {
-        return functionPrototypes.get(index);
+    public static void addFunctionPrototype(FunctionPrototype func) {
+        FUNCTION_PROTOTYPES.add(func);
     }
 
-    public void addFunctionPrototype(FunctionPrototype func) {
-        functionPrototypes.add(func);
+    public static List<? extends FunctionPrototype> getFunctionPrototypes() {
+        return Collections.unmodifiableList(FUNCTION_PROTOTYPES);
     }
 
-    public int getFunctionPrototypeCount() {
-        return functionPrototypes.size();
+    public static void clearFunctionPrototypes() {
+        FUNCTION_PROTOTYPES.clear();
     }
 
-    public List<? extends FunctionPrototype> getFunctionPrototypes() {
-        return Collections.unmodifiableList(functionPrototypes);
+    public static void addFunctionDefinition(FunctionDefinition func) {
+        FUNCTION_DEFINITIONS.add(func);
     }
 
-    //
-    //function definitions------------------------------------------------------
-    //
-    public FunctionDefinition getFunctionDefinition(int index) {
-        return functionDefinitions.get(index);
+    public static List<? extends FunctionDefinition> getFunctionDefinitions() {
+        return Collections.unmodifiableList(FUNCTION_DEFINITIONS);
     }
 
-    public void addFunctionDefinition(FunctionDefinition func) {
-        functionDefinitions.add(func);
-    }
-
-    public int getFunctionDefinitionCount() {
-        return functionDefinitions.size();
-    }
-
-    public List<? extends FunctionDefinition> getFunctionDefinitions() {
-        return Collections.unmodifiableList(functionDefinitions);
+    public static void clearFunctionDefinitions() {
+        FUNCTION_DEFINITIONS.clear();
     }
 
     public static void addFunction(Function func) {
@@ -181,16 +154,8 @@ public class Scope {
     //
     //type declarations---------------------------------------------------------
     //
-    public TypeDeclaration getTypeDeclaration(int index) {
-        return typeDeclarations.get(index);
-    }
-
     public void addTypeDeclaration(TypeDeclaration type) {
         typeDeclarations.add(type);
-    }
-
-    public int getTypeDeclarationCount() {
-        return typeDeclarations.size();
     }
 
     public List<? extends TypeDeclaration> getTypeDeclarations() {
@@ -200,16 +165,8 @@ public class Scope {
     //
     //type usages---------------------------------------------------------------
     //
-    public TypeUsage getTypeUsage(int index) {
-        return typeusages.get(index);
-    }
-
     public void addTypeUsage(TypeUsage type) {
         typeusages.add(type);
-    }
-
-    public int getTypeUsageCount() {
-        return typeusages.size();
     }
 
     public List<? extends TypeUsage> getTypeUsages() {
