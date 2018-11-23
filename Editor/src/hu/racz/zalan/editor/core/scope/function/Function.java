@@ -14,14 +14,15 @@ public class Function implements CompletionElement {
     private static final ImageIcon ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/function.png"));
     private static final ImageIcon BI_ICON = new ImageIcon(ImageUtilities.loadImage("hu/racz/zalan/editor/core/scope/res/img/bi_function.png"));
 
-    //TODO: ide majd jönnek a haszálatok
     private TypeUsage returnType;
     private String name;
     private final List<VariableDeclaration> parameters = new ArrayList<>();
     private boolean builtIn;
+    private boolean constructor;
     private String builtInParameters;
 
     private final List<FunctionPrototype> prototypes = new ArrayList<>();
+    private final List<FunctionCall> calls = new ArrayList<>();
     private FunctionDefinition definition;
 
     //
@@ -33,6 +34,14 @@ public class Function implements CompletionElement {
 
     public void setBuiltIn(boolean builtIn) {
         this.builtIn = builtIn;
+    }
+
+    public boolean isConstructor() {
+        return constructor;
+    }
+
+    public void setConstructor(boolean constructor) {
+        this.constructor = constructor;
     }
 
     public String getBuiltInParameters() {
@@ -77,7 +86,7 @@ public class Function implements CompletionElement {
     }
 
     //
-    //definition, protoypes-----------------------------------------------------
+    //definition, protoypes, calls----------------------------------------------
     //
     public FunctionDefinition getDefinition() {
         return definition;
@@ -93,6 +102,14 @@ public class Function implements CompletionElement {
 
     public List<FunctionPrototype> getPrototypes() {
         return Collections.unmodifiableList(prototypes);
+    }
+
+    public void addCall(FunctionCall prototype) {
+        this.calls.add(prototype);
+    }
+
+    public List<FunctionCall> getCalls() {
+        return Collections.unmodifiableList(calls);
     }
 
     //
@@ -163,7 +180,7 @@ public class Function implements CompletionElement {
     }
 
     public String toStringSignature(boolean showParameters) {
-        if (!isBuiltIn()) {
+        if (!isBuiltIn() || builtInParameters == null) {
             return toStringSignatureBuiltin(showParameters);
         } else {
             return getName() + "(" + (showParameters ? getBuiltInParameters() : "") + ")";

@@ -1,4 +1,4 @@
-package hu.racz.zalan.editor.core;
+package hu.racz.zalan.editor.core.helper;
 
 import hu.racz.zalan.editor.core.scope.qualifier.QualifierUsage;
 import hu.racz.zalan.editor.antlr.generated.*;
@@ -6,6 +6,8 @@ import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
+import hu.racz.zalan.editor.errordisplay.*;
+import hu.racz.zalan.editor.errordisplay.fix.*;
 import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.netbeans.spi.editor.hints.*;
@@ -40,8 +42,24 @@ public class FunctionHelper {
         setFunctionForDefinition(fdc.function_header());
         setFunctionPrototype();
         addFoldingBlock();
+        addDuplicatedFunctionDefinitionError();
         Scope.addFunctionDefinition(fd);
         return fd;
+    }
+
+    public static void addDuplicatedFunctionDefinitionError() {
+        if (isFunctionDuplicated(fd)) {
+            ErrorHelper.addError(Severity.ERROR, "'" + fd.getName() + "' function already has a body", fd.getSignatureStartIndex(), fd.getSignatureStopIndex());
+        }
+    }
+
+    private static boolean isFunctionDuplicated(FunctionDefinition fd) {
+        for (FunctionDefinition fd2 : Scope.getFunctionDefinitions()) {
+            if (fd != fd2 && fd.getFunction().equalsSignature(fd2.getFunction()) && fd.getNameStopIndex() > fd2.getNameStartIndex()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void addFoldingBlock() {
@@ -150,7 +168,7 @@ public class FunctionHelper {
     }
 
     private static void setReturnTypeArray(TypeUsage returnType, AntlrGlslParser.Return_typeContext rtc) {
-        if (rtc.array_declaration() != null) {
+        if (rtc.array_subscript() != null) {
             returnType.setArray(true);
             returnType.setArraySize(TypeUsage.ARRAY_SIZE_DONT_CARE);
             //TODO: tömb méretét általában meg kell tudni határozni fordítási időben
@@ -176,7 +194,7 @@ public class FunctionHelper {
             String message = "void : Only floating point, integer or opaque type declaration can have the type preceded by a precision qualifier. Unacceptable type";
             int start = pqc.getStart().getStartIndex();
             int stop = pqc.getStop().getStopIndex() + 1;
-            Helper.addError(Severity.ERROR, message, start, stop);
+            ErrorHelper.addError(Severity.ERROR, message, start, stop);
         }
     }
 
@@ -187,7 +205,7 @@ public class FunctionHelper {
         fb.setName(fsc.IDENTIFIER().getText());
         f.setName(fsc.IDENTIFIER().getText());
         setFunctionSignatureIndices(fsc);
-        Helper.addIdentifierWarnings(fb.getName(), fb.getNameStartIndex(), fb.getNameStopIndex());
+        ErrorHelper.addIdentifierWarnings(fb.getName(), fb.getNameStartIndex(), fb.getNameStopIndex());
         setParameters(fsc);
     }
 
@@ -213,11 +231,11 @@ public class FunctionHelper {
     }
 
     private static VariableDeclaration createParameter(AntlrGlslParser.Function_parameterContext fpc) {
-        String name = fpc.IDENTIFIER() != null ? fpc.IDENTIFIER().getText() : "";
+        String name = fpc.identifier_optarray() != null ? fpc.identifier_optarray().IDENTIFIER().getText() : "";
         TypeUsage tu = createTypeUsage(fpc);
         VariableDeclaration vd = new VariableDeclaration(tu, name);
         setParameterIndices(vd, fpc);
-        Helper.addIdentifierWarnings(name, vd.getNameStartIndex(), vd.getNameStopIndex());
+        ErrorHelper.addIdentifierWarnings(name, vd.getNameStartIndex(), vd.getNameStopIndex());
         setParameterQualifiers(vd, fpc);
 
         currentScope.addVariableDeclaration(vd);
@@ -238,15 +256,15 @@ public class FunctionHelper {
     }
 
     private static void setArray(TypeUsage tu, AntlrGlslParser.Function_parameterContext fpc) {
-        if (fpc.array_declaration() != null) {
+        if (fpc.array_subscript() != null) {
             tu.setArray(true);//TODO: tömb mérete
         }
     }
 
     private static void setParameterIndices(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
-        if (fpc.IDENTIFIER() != null) {
-            vd.setNameStartIndex(fpc.IDENTIFIER().getSymbol().getStartIndex());
-            vd.setNameStopIndex(fpc.IDENTIFIER().getSymbol().getStopIndex() + 1);
+        if (fpc.identifier_optarray() != null) {
+            vd.setNameStartIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
+            vd.setNameStopIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
         }
         vd.setDeclarationStartIndex(fpc.getStart().getStartIndex());
         vd.setDeclarationStopIndex(fpc.getStop().getStopIndex() + 1);
@@ -273,7 +291,7 @@ public class FunctionHelper {
     private static void createInconsistentFunctionParameterQualifiersError(VariableDeclaration vd, QualifierUsage q, AntlrGlslParser.Parameter_qualifierContext pq) {
         for (QualifierUsage fq : vd.getType().getQualifiers()) {
             if (!q.getQualifier().isCompatibleWith(fq.getQualifier())) {
-                Helper.addError(Severity.ERROR, fq.getQualifier().getName() + ", " + q.getQualifier().getName() + " : inconsistent qualifiers", pq.getStart().getStartIndex(), pq.getStart().getStopIndex() + 1);
+                ErrorHelper.addError(Severity.ERROR, fq.getQualifier().getName() + ", " + q.getQualifier().getName() + " : inconsistent qualifiers", pq.getStart().getStartIndex(), pq.getStart().getStopIndex() + 1);
             }
         }
     }

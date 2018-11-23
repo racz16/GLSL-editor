@@ -8,7 +8,7 @@ import static hu.racz.zalan.editor.core.Constants.*;
 import java.util.*;
 
 @MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HyperlinkProvider.class)
-public class GlslFunctionHyperlinkProvider extends GlslHyperlinkProviderBase<FunctionPrototype> {
+public class GlslFunctionPrototypeHyperlinkProvider extends GlslHyperlinkProviderBase<FunctionPrototype> {
 
     @Override
     protected List<? extends FunctionPrototype> getUsages(Scope scope) {

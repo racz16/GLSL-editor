@@ -2,8 +2,6 @@ package hu.racz.zalan.editor.folding;
 
 import hu.racz.zalan.editor.core.*;
 import hu.racz.zalan.editor.core.scope.*;
-import hu.racz.zalan.editor.core.scope.Element;
-import hu.racz.zalan.editor.core.scope.function.*;
 import java.util.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
@@ -21,25 +19,22 @@ public class GlslFoldManager implements FoldManager {
 
     @Override
     public void initFolds(FoldHierarchyTransaction transaction) {
-        update(transaction, org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().getDocument());
+        updateFolds(transaction, org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().getDocument());
     }
 
-    private void update(FoldHierarchyTransaction transaction, Document doc) {
+    private void updateFolds(FoldHierarchyTransaction transaction, Document doc) {
         try {
-            if (doc != null) {
-                updateUnsafe(transaction, doc);
-            }
+            updateModel(doc);
+            removePreviousFolds(transaction);
+            addFolds(transaction);
         } catch (BadLocationException ex) {
+            //az options menüben lévő kódrészlet megnyitásakor nem lehet 
+            //elkérni a document objektumot, így ha a megnyitott fájl 
+            //hosszabb, mint az options menüben lévő, akkor túl fog indexelni
         }
     }
 
-    private void updateUnsafe(FoldHierarchyTransaction transaction, Document doc) throws BadLocationException {
-        refresh(doc);
-        removePreviousFolds(transaction);
-        addFolds(transaction);
-    }
-
-    private void refresh(Document doc) throws BadLocationException {
+    private void updateModel(Document doc) throws BadLocationException {
         if (doc != null) {
             String s = doc.getText(0, doc.getLength());
             GlslProcessor.setText(s);
@@ -67,23 +62,25 @@ public class GlslFoldManager implements FoldManager {
     private void addFolds(FoldHierarchyTransaction transaction) throws BadLocationException {
         for (FoldingBlock fb : Scope.getFoldingBlocks()) {
             FoldingBlock.FoldingType ft = fb.getFoldingType();
-            operation.addToHierarchy(ft.getFoldType(), fb.getStartIndex(), fb.getStopIndex(), ft.isCollapsed(), ft.getFoldTemplate(), ft.getTextLabel(), null, transaction);
+            if (fb.getStartIndex() <= fb.getStopIndex()) {
+                operation.addToHierarchy(ft.getFoldType(), fb.getStartIndex(), fb.getStopIndex(), ft.isCollapsed(), ft.getFoldTemplate(), ft.getTextLabel(), null, transaction);
+            }
         }
     }
 
     @Override
     public void insertUpdate(DocumentEvent de, FoldHierarchyTransaction fht) {
-        update(fht, de.getDocument());
+        updateFolds(fht, de.getDocument());
     }
 
     @Override
     public void removeUpdate(DocumentEvent de, FoldHierarchyTransaction fht) {
-        update(fht, de.getDocument());
+        updateFolds(fht, de.getDocument());
     }
 
     @Override
     public void changedUpdate(DocumentEvent de, FoldHierarchyTransaction fht) {
-        update(fht, de.getDocument());
+        updateFolds(fht, de.getDocument());
     }
 
     @Override

@@ -68,6 +68,20 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
     void exitFunction_subroutine_qualifier(AntlrGlslParser.Function_subroutine_qualifierContext ctx);
 
     /**
+     * Enter a parse tree produced by {@link AntlrGlslParser#type_name_list}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterType_name_list(AntlrGlslParser.Type_name_listContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link AntlrGlslParser#type_name_list}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitType_name_list(AntlrGlslParser.Type_name_listContext ctx);
+
+    /**
      * Enter a parse tree produced by
      * {@link AntlrGlslParser#function_parameter_list}.
      *
@@ -190,20 +204,6 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitFunction_call_parameter_list(AntlrGlslParser.Function_call_parameter_listContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#statement_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterStatement_list(AntlrGlslParser.Statement_listContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#statement_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitStatement_list(AntlrGlslParser.Statement_listContext ctx);
 
     /**
      * Enter a parse tree produced by {@link AntlrGlslParser#statement}.
@@ -429,19 +429,19 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 
     /**
      * Enter a parse tree produced by
-     * {@link AntlrGlslParser#init_declaration_list}.
+     * {@link AntlrGlslParser#variable_declaration}.
      *
      * @param ctx the parse tree
      */
-    void enterInit_declaration_list(AntlrGlslParser.Init_declaration_listContext ctx);
+    void enterVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx);
 
     /**
      * Exit a parse tree produced by
-     * {@link AntlrGlslParser#init_declaration_list}.
+     * {@link AntlrGlslParser#variable_declaration}.
      *
      * @param ctx the parse tree
      */
-    void exitInit_declaration_list(AntlrGlslParser.Init_declaration_listContext ctx);
+    void exitVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx);
 
     /**
      * Enter a parse tree produced by
@@ -460,19 +460,32 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 
     /**
      * Enter a parse tree produced by
-     * {@link AntlrGlslParser#struct_declaration_list}.
+     * {@link AntlrGlslParser#member_declaration}.
      *
      * @param ctx the parse tree
      */
-    void enterStruct_declaration_list(AntlrGlslParser.Struct_declaration_listContext ctx);
+    void enterMember_declaration(AntlrGlslParser.Member_declarationContext ctx);
 
     /**
-     * Exit a parse tree produced by
-     * {@link AntlrGlslParser#struct_declaration_list}.
+     * Exit a parse tree produced by {@link AntlrGlslParser#member_declaration}.
      *
      * @param ctx the parse tree
      */
-    void exitStruct_declaration_list(AntlrGlslParser.Struct_declaration_listContext ctx);
+    void exitMember_declaration(AntlrGlslParser.Member_declarationContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link AntlrGlslParser#member_declarator}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterMember_declarator(AntlrGlslParser.Member_declaratorContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link AntlrGlslParser#member_declarator}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitMember_declarator(AntlrGlslParser.Member_declaratorContext ctx);
 
     /**
      * Enter a parse tree produced by
@@ -491,61 +504,19 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
 
     /**
      * Enter a parse tree produced by
-     * {@link AntlrGlslParser#struct_declarator_list}.
+     * {@link AntlrGlslParser#identifier_optarray}.
      *
      * @param ctx the parse tree
      */
-    void enterStruct_declarator_list(AntlrGlslParser.Struct_declarator_listContext ctx);
+    void enterIdentifier_optarray(AntlrGlslParser.Identifier_optarrayContext ctx);
 
     /**
      * Exit a parse tree produced by
-     * {@link AntlrGlslParser#struct_declarator_list}.
+     * {@link AntlrGlslParser#identifier_optarray}.
      *
      * @param ctx the parse tree
      */
-    void exitStruct_declarator_list(AntlrGlslParser.Struct_declarator_listContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#struct_declarator}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterStruct_declarator(AntlrGlslParser.Struct_declaratorContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#struct_declarator}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitStruct_declarator(AntlrGlslParser.Struct_declaratorContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#struct_specifier}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#struct_specifier}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#expression_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterExpression_list(AntlrGlslParser.Expression_listContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#expression_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitExpression_list(AntlrGlslParser.Expression_listContext ctx);
+    void exitIdentifier_optarray(AntlrGlslParser.Identifier_optarrayContext ctx);
 
     /**
      * Enter a parse tree produced by {@link AntlrGlslParser#expression}.
@@ -562,36 +533,18 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
     void exitExpression(AntlrGlslParser.ExpressionContext ctx);
 
     /**
-     * Enter a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_type}.
+     * Enter a parse tree produced by {@link AntlrGlslParser#expression_list}.
      *
      * @param ctx the parse tree
      */
-    void enterFully_specified_type(AntlrGlslParser.Fully_specified_typeContext ctx);
+    void enterExpression_list(AntlrGlslParser.Expression_listContext ctx);
 
     /**
-     * Exit a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_type}.
+     * Exit a parse tree produced by {@link AntlrGlslParser#expression_list}.
      *
      * @param ctx the parse tree
      */
-    void exitFully_specified_type(AntlrGlslParser.Fully_specified_typeContext ctx);
-
-    /**
-     * Enter a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_struct}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterFully_specified_struct(AntlrGlslParser.Fully_specified_structContext ctx);
-
-    /**
-     * Exit a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_struct}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitFully_specified_struct(AntlrGlslParser.Fully_specified_structContext ctx);
+    void exitExpression_list(AntlrGlslParser.Expression_listContext ctx);
 
     /**
      * Enter a parse tree produced by {@link AntlrGlslParser#type}.
@@ -608,6 +561,20 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
     void exitType(AntlrGlslParser.TypeContext ctx);
 
     /**
+     * Enter a parse tree produced by {@link AntlrGlslParser#array_subscript}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterArray_subscript(AntlrGlslParser.Array_subscriptContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link AntlrGlslParser#array_subscript}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitArray_subscript(AntlrGlslParser.Array_subscriptContext ctx);
+
+    /**
      * Enter a parse tree produced by {@link AntlrGlslParser#type_qualifier}.
      *
      * @param ctx the parse tree
@@ -620,20 +587,6 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitType_qualifier(AntlrGlslParser.Type_qualifierContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#type_name_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterType_name_list(AntlrGlslParser.Type_name_listContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#type_name_list}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitType_name_list(AntlrGlslParser.Type_name_listContext ctx);
 
     /**
      * Enter a parse tree produced by {@link AntlrGlslParser#storage_qualifier}.
@@ -772,20 +725,6 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
     void exitLiteral(AntlrGlslParser.LiteralContext ctx);
 
     /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#bool_literal}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterBool_literal(AntlrGlslParser.Bool_literalContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#bool_literal}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitBool_literal(AntlrGlslParser.Bool_literalContext ctx);
-
-    /**
      * Enter a parse tree produced by {@link AntlrGlslParser#number_literal}.
      *
      * @param ctx the parse tree
@@ -798,32 +737,4 @@ public interface AntlrGlslParserListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitNumber_literal(AntlrGlslParser.Number_literalContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#array_usage}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterArray_usage(AntlrGlslParser.Array_usageContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#array_usage}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitArray_usage(AntlrGlslParser.Array_usageContext ctx);
-
-    /**
-     * Enter a parse tree produced by {@link AntlrGlslParser#array_declaration}.
-     *
-     * @param ctx the parse tree
-     */
-    void enterArray_declaration(AntlrGlslParser.Array_declarationContext ctx);
-
-    /**
-     * Exit a parse tree produced by {@link AntlrGlslParser#array_declaration}.
-     *
-     * @param ctx the parse tree
-     */
-    void exitArray_declaration(AntlrGlslParser.Array_declarationContext ctx);
 }

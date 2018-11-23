@@ -1,5 +1,6 @@
 package hu.racz.zalan.editor.core.scope;
 
+import hu.racz.zalan.editor.core.helper.*;
 import hu.racz.zalan.editor.core.scope.qualifier.Qualifier;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
@@ -21,6 +22,7 @@ public class Builtin {
     private static final String XML_TYPES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\types.xml";
     private static final String XML_VARIABLES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\variables.xml";
     private static final String XML_IMPLICIT_CONVERSIONS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\conversions.xml";
+    private static final String XML_CONSTRUCTORS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\constructors.xml";
 
     private static final List<Function> FUNCTIONS = new ArrayList<>();
     private static final Map<String, VariableDeclaration> VARIABLES = new HashMap<>();
@@ -40,6 +42,7 @@ public class Builtin {
             loadFunctions();
             loadImplicitConversions();
             loadQualifierRules();
+            loadConstructors();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -59,6 +62,40 @@ public class Builtin {
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(inputFile);
         doc.getDocumentElement().normalize();
+    }
+
+    //
+    //
+    //
+    private static void loadConstructors() {
+        loadDocument(XML_CONSTRUCTORS);
+        NodeList nList = doc.getElementsByTagName("constructor");
+        for (int temp = 0; temp < nList.getLength(); temp++) {
+            Element element = (Element) nList.item(temp);
+            Function function = createConstructor(element);
+            FUNCTIONS.add(function);
+        }
+    }
+
+    private static Function createConstructor(Element element) {
+        Function function = new Function();
+        setReturnType(element, function);
+        function.setName(function.getReturnType().getName());
+        setParameters(element, function);
+        function.setBuiltIn(true);
+        function.setConstructor(true);
+        return function;
+    }
+
+    private static void setParameters(Element element, Function function) {
+        NodeList parameters = element.getElementsByTagName("parameter");
+        for (int i = 0; i < parameters.getLength(); i++) {
+            String param = parameters.item(i).getTextContent();
+            TypeUsage tu = new TypeUsage(param);
+            tu.setDeclaration(Helper.getTypeDeclaration(null, param));
+            VariableDeclaration vd = new VariableDeclaration(tu, "p" + i, true);
+            function.addParameter(vd);
+        }
     }
 
     //
@@ -85,14 +122,27 @@ public class Builtin {
     private static void setReturnType(Element element, Function function) {
         String typeName = element.getElementsByTagName("type").item(0).getTextContent();
         TypeUsage type = new TypeUsage(typeName);
+        type.setDeclaration(Helper.getTypeDeclaration(null, typeName));
         function.setReturnType(type);
     }
 
     private static void setSignature(Element element, Function function) {
         String name = element.getElementsByTagName("name").item(0).getTextContent();
-        String params = element.getElementsByTagName("parameters").item(0).getTextContent();
         function.setName(name);
-        function.setBuiltInParameters(params);
+        NodeList params = element.getElementsByTagName("parameter");
+        for (int i = 0; i < params.getLength(); i++) {
+            String[] split = params.item(i).getTextContent().split(" ");
+            if (split.length != 2) {
+                System.out.println(params.item(i).getTextContent());
+            }
+            String pType = split[0];
+            String pName = split[1];
+            TypeUsage tu = new TypeUsage(pType);
+            tu.setDeclaration(Helper.getTypeDeclaration(null, pType));
+            VariableDeclaration vd = new VariableDeclaration(tu, pName, true);
+            function.addParameter(vd);
+        }
+        //function.setBuiltInParameters(params);
     }
 
     //

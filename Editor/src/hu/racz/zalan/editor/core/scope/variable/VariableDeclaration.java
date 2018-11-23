@@ -19,7 +19,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
     private int declarationStartIndex;
     private int declarationStopIndex;
 
-    //TODO: lehetne valami szülő vagy ilyesmi, hogy milyen structban van benne
     //----------------------------------------------------------
     private final List<VariableUsage> usages = new ArrayList<>();
 

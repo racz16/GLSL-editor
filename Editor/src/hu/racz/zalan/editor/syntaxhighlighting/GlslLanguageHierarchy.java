@@ -83,9 +83,14 @@ public class GlslLanguageHierarchy extends LanguageHierarchy<GlslTokenId> {
         tokens.add(new GlslTokenId("--", TokenCategory.OPERATOR, AntlrGlslLexer.OP_DEC));
         tokens.add(new GlslTokenId("shift operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_SHIFT));
         tokens.add(new GlslTokenId("relational operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_RELATIONAL));
-        tokens.add(new GlslTokenId("bit operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_BIT));
+        tokens.add(new GlslTokenId("equalit operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_EQUALITY));
+        tokens.add(new GlslTokenId("bitwise and", TokenCategory.OPERATOR, AntlrGlslLexer.OP_BIT_AND));
+        tokens.add(new GlslTokenId("bitwise xor", TokenCategory.OPERATOR, AntlrGlslLexer.OP_BIT_XOR));
+        tokens.add(new GlslTokenId("bitwise or", TokenCategory.OPERATOR, AntlrGlslLexer.OP_BIT_OR));
         tokens.add(new GlslTokenId("~", TokenCategory.OPERATOR, AntlrGlslLexer.OP_BIT_UNARY));
-        tokens.add(new GlslTokenId("logical operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_LOGICAL));
+        tokens.add(new GlslTokenId("logical and", TokenCategory.OPERATOR, AntlrGlslLexer.OP_LOGICAL_AND));
+        tokens.add(new GlslTokenId("logical xor", TokenCategory.OPERATOR, AntlrGlslLexer.OP_LOGICAL_XOR));
+        tokens.add(new GlslTokenId("logical or", TokenCategory.OPERATOR, AntlrGlslLexer.OP_LOGICAL_OR));
         tokens.add(new GlslTokenId("!", TokenCategory.OPERATOR, AntlrGlslLexer.OP_LOGICAL_UNARY));
         tokens.add(new GlslTokenId("modify operator", TokenCategory.OPERATOR, AntlrGlslLexer.OP_MODIFY));
         tokens.add(new GlslTokenId("=", TokenCategory.OPERATOR, AntlrGlslLexer.OP_ASSIGN));

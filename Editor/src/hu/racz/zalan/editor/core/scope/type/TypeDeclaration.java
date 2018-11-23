@@ -96,7 +96,8 @@ public class TypeDeclaration extends Element implements CompletionElement {
     }
 
     public boolean isConveribleTo(TypeDeclaration td) {
-        return implicitConversions.contains(td);
+        //TODO: de tömbökre nem működik
+        return getName().equals(td.getName()) || implicitConversions.contains(td);
     }
 
     //

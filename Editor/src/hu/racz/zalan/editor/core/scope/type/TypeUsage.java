@@ -14,6 +14,7 @@ public class TypeUsage extends Element {
     private final List<QualifierUsage> qualifiers = new ArrayList<>();
     private final List<Qualifier> implicitQualifiers = new ArrayList<>();
     private boolean array;
+    private int arrayDepth;
     private int arraySize;
 
     public static final TypeUsage ERROR_TYPE = new TypeUsage("");
@@ -46,6 +47,14 @@ public class TypeUsage extends Element {
 
     public void setArray(boolean array) {
         this.array = array;
+    }
+
+    public int getArrayDepth() {
+        return arrayDepth;
+    }
+
+    public void setArrayDepth(int arrayDepth) {
+        this.arrayDepth = arrayDepth;
     }
 
     public int getArraySize() {

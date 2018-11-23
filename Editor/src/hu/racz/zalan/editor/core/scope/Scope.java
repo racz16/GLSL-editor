@@ -14,11 +14,13 @@ public class Scope {
     private static final List<FoldingBlock> FOLDING_BLOCKS = new ArrayList<>();
     private static final List<Scope> BRACELESS_SCOPES = new ArrayList<>();
     private static final List<UniqueSyntaxError> ERRORS = new ArrayList<>();
+    private static final List<String> MACRO_DEFINITIONS = new ArrayList<>();
 
     //functions
     private static final List<Function> FUNCTIONS = new ArrayList<>();
     private static final List<FunctionPrototype> FUNCTION_PROTOTYPES = new ArrayList<>();
     private static final List<FunctionDefinition> FUNCTION_DEFINITIONS = new ArrayList<>();
+    private final List<FunctionCall> functionCalls = new ArrayList<>();
 
     //variables
     private final List<VariableDeclaration> variableDeclarations = new ArrayList<>();
@@ -66,6 +68,18 @@ public class Scope {
 
     public static List<? extends FoldingBlock> getFoldingBlocks() {
         return Collections.unmodifiableList(FOLDING_BLOCKS);
+    }
+
+    public static void clearMacroDefinitions() {
+        MACRO_DEFINITIONS.clear();
+    }
+
+    public static void addMacroDefinition(String macroDefinition) {
+        MACRO_DEFINITIONS.add(macroDefinition);
+    }
+
+    public static List<String> getMacroDefinitions() {
+        return Collections.unmodifiableList(MACRO_DEFINITIONS);
     }
 
     //
@@ -149,6 +163,14 @@ public class Scope {
 
     public static void clearFunctions() {
         FUNCTIONS.clear();
+    }
+
+    public void addFunctionCall(FunctionCall fc) {
+        functionCalls.add(fc);
+    }
+
+    public List<FunctionCall> getFunctionCalls() {
+        return Collections.unmodifiableList(functionCalls);
     }
 
     //

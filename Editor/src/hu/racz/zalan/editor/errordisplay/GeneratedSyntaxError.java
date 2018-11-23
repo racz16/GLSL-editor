@@ -1,6 +1,9 @@
 package hu.racz.zalan.editor.errordisplay;
 
+import hu.racz.zalan.editor.core.helper.*;
+import javax.swing.text.*;
 import org.antlr.v4.runtime.*;
+import org.netbeans.spi.editor.hints.*;
 
 public class GeneratedSyntaxError {
 
@@ -42,5 +45,9 @@ public class GeneratedSyntaxError {
 
     public RecognitionException getException() {
         return exception;
+    }
+
+    public ErrorDescription createError(Document doc) {
+        return ErrorDescriptionFactory.createErrorDescription(Severity.ERROR, message, doc, line);
     }
 }

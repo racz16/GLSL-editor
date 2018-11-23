@@ -46,6 +46,14 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
     T visitFunction_subroutine_qualifier(AntlrGlslParser.Function_subroutine_qualifierContext ctx);
 
     /**
+     * Visit a parse tree produced by {@link AntlrGlslParser#type_name_list}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitType_name_list(AntlrGlslParser.Type_name_listContext ctx);
+
+    /**
      * Visit a parse tree produced by
      * {@link AntlrGlslParser#function_parameter_list}.
      *
@@ -115,14 +123,6 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
      * @return the visitor result
      */
     T visitFunction_call_parameter_list(AntlrGlslParser.Function_call_parameter_listContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#statement_list}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitStatement_list(AntlrGlslParser.Statement_listContext ctx);
 
     /**
      * Visit a parse tree produced by {@link AntlrGlslParser#statement}.
@@ -253,12 +253,12 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 
     /**
      * Visit a parse tree produced by
-     * {@link AntlrGlslParser#init_declaration_list}.
+     * {@link AntlrGlslParser#variable_declaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
-    T visitInit_declaration_list(AntlrGlslParser.Init_declaration_listContext ctx);
+    T visitVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx);
 
     /**
      * Visit a parse tree produced by
@@ -271,12 +271,20 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 
     /**
      * Visit a parse tree produced by
-     * {@link AntlrGlslParser#struct_declaration_list}.
+     * {@link AntlrGlslParser#member_declaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
-    T visitStruct_declaration_list(AntlrGlslParser.Struct_declaration_listContext ctx);
+    T visitMember_declaration(AntlrGlslParser.Member_declarationContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link AntlrGlslParser#member_declarator}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitMember_declarator(AntlrGlslParser.Member_declaratorContext ctx);
 
     /**
      * Visit a parse tree produced by
@@ -289,36 +297,12 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
 
     /**
      * Visit a parse tree produced by
-     * {@link AntlrGlslParser#struct_declarator_list}.
+     * {@link AntlrGlslParser#identifier_optarray}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
-    T visitStruct_declarator_list(AntlrGlslParser.Struct_declarator_listContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#struct_declarator}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitStruct_declarator(AntlrGlslParser.Struct_declaratorContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#struct_specifier}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#expression_list}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitExpression_list(AntlrGlslParser.Expression_listContext ctx);
+    T visitIdentifier_optarray(AntlrGlslParser.Identifier_optarrayContext ctx);
 
     /**
      * Visit a parse tree produced by {@link AntlrGlslParser#expression}.
@@ -329,22 +313,12 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
     T visitExpression(AntlrGlslParser.ExpressionContext ctx);
 
     /**
-     * Visit a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_type}.
+     * Visit a parse tree produced by {@link AntlrGlslParser#expression_list}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
-    T visitFully_specified_type(AntlrGlslParser.Fully_specified_typeContext ctx);
-
-    /**
-     * Visit a parse tree produced by
-     * {@link AntlrGlslParser#fully_specified_struct}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitFully_specified_struct(AntlrGlslParser.Fully_specified_structContext ctx);
+    T visitExpression_list(AntlrGlslParser.Expression_listContext ctx);
 
     /**
      * Visit a parse tree produced by {@link AntlrGlslParser#type}.
@@ -355,20 +329,20 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
     T visitType(AntlrGlslParser.TypeContext ctx);
 
     /**
+     * Visit a parse tree produced by {@link AntlrGlslParser#array_subscript}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitArray_subscript(AntlrGlslParser.Array_subscriptContext ctx);
+
+    /**
      * Visit a parse tree produced by {@link AntlrGlslParser#type_qualifier}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
     T visitType_qualifier(AntlrGlslParser.Type_qualifierContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#type_name_list}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitType_name_list(AntlrGlslParser.Type_name_listContext ctx);
 
     /**
      * Visit a parse tree produced by {@link AntlrGlslParser#storage_qualifier}.
@@ -448,34 +422,10 @@ public interface AntlrGlslParserVisitor<T> extends ParseTreeVisitor<T> {
     T visitLiteral(AntlrGlslParser.LiteralContext ctx);
 
     /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#bool_literal}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitBool_literal(AntlrGlslParser.Bool_literalContext ctx);
-
-    /**
      * Visit a parse tree produced by {@link AntlrGlslParser#number_literal}.
      *
      * @param ctx the parse tree
      * @return the visitor result
      */
     T visitNumber_literal(AntlrGlslParser.Number_literalContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#array_usage}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitArray_usage(AntlrGlslParser.Array_usageContext ctx);
-
-    /**
-     * Visit a parse tree produced by {@link AntlrGlslParser#array_declaration}.
-     *
-     * @param ctx the parse tree
-     * @return the visitor result
-     */
-    T visitArray_declaration(AntlrGlslParser.Array_declarationContext ctx);
 }

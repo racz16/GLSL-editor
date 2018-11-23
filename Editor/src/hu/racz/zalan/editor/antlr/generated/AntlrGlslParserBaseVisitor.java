@@ -69,6 +69,18 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
+    public T visitType_name_list(AntlrGlslParser.Type_name_listContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
     public T visitFunction_parameter_list(AntlrGlslParser.Function_parameter_listContext ctx) {
         return visitChildren(ctx);
     }
@@ -154,18 +166,6 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      */
     @Override
     public T visitFunction_call_parameter_list(AntlrGlslParser.Function_call_parameter_listContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitStatement_list(AntlrGlslParser.Statement_listContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -357,7 +357,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitInit_declaration_list(AntlrGlslParser.Init_declaration_listContext ctx) {
+    public T visitVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -381,7 +381,19 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitStruct_declaration_list(AntlrGlslParser.Struct_declaration_listContext ctx) {
+    public T visitMember_declaration(AntlrGlslParser.Member_declarationContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitMember_declarator(AntlrGlslParser.Member_declaratorContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -405,43 +417,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitStruct_declarator_list(AntlrGlslParser.Struct_declarator_listContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitStruct_declarator(AntlrGlslParser.Struct_declaratorContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitStruct_specifier(AntlrGlslParser.Struct_specifierContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitExpression_list(AntlrGlslParser.Expression_listContext ctx) {
+    public T visitIdentifier_optarray(AntlrGlslParser.Identifier_optarrayContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -465,19 +441,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitFully_specified_type(AntlrGlslParser.Fully_specified_typeContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitFully_specified_struct(AntlrGlslParser.Fully_specified_structContext ctx) {
+    public T visitExpression_list(AntlrGlslParser.Expression_listContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -501,7 +465,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitType_qualifier(AntlrGlslParser.Type_qualifierContext ctx) {
+    public T visitArray_subscript(AntlrGlslParser.Array_subscriptContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -513,7 +477,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitType_name_list(AntlrGlslParser.Type_name_listContext ctx) {
+    public T visitType_qualifier(AntlrGlslParser.Type_qualifierContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -633,43 +597,7 @@ public class AntlrGlslParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
-    public T visitBool_literal(AntlrGlslParser.Bool_literalContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
     public T visitNumber_literal(AntlrGlslParser.Number_literalContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitArray_usage(AntlrGlslParser.Array_usageContext ctx) {
-        return visitChildren(ctx);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override
-    public T visitArray_declaration(AntlrGlslParser.Array_declarationContext ctx) {
         return visitChildren(ctx);
     }
 }
