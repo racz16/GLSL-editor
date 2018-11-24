@@ -13,8 +13,4 @@ public class FunctionPrototype extends FunctionBase {
     public void setDefinition(FunctionDefinition definition) {
         this.definition = definition;
     }
-
-    /*public boolean isPrototypeOf(FunctionDefinition fd) {
-        return equalsSignature(fd) && getReturnType().equals(fd.getReturnType());
-    }*/
 }

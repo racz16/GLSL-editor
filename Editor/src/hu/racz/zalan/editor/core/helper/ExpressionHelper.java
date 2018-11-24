@@ -492,7 +492,6 @@ public class ExpressionHelper {
                     int depth = tu1.getArrayDepth();
                     TypeUsage tu = new TypeUsage(tu1.getName());
                     tu.setDeclaration(tu1.getDeclaration());
-                    tu.setArray(depth - 1 > 0);
                     tu.setArrayDepth(depth - 1);
                     return array > 1 ? array(ctx, tu, array - 1) : tu;
                 } else if (tu1.getDeclaration().isVector()) {

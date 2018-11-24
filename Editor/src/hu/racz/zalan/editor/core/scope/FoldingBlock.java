@@ -1,12 +1,12 @@
 package hu.racz.zalan.editor.core.scope;
 
-import org.netbeans.api.editor.fold.*;
+import hu.racz.zalan.editor.folding.*;
 
 public class FoldingBlock {
 
-    private final FoldingType foldingType;
-    private final int startIndex;
-    private final int stopIndex;
+    private FoldingType foldingType;
+    private int startIndex;
+    private int stopIndex;
 
     public FoldingBlock(FoldingType foldingType, int startIndex, int stopIndex) {
         this.foldingType = foldingType;
@@ -18,46 +18,24 @@ public class FoldingBlock {
         return foldingType;
     }
 
+    public void setFoldingType(FoldingType foldingType) {
+        this.foldingType = foldingType;
+    }
+
     public int getStartIndex() {
         return startIndex;
+    }
+
+    public void setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
     }
 
     public int getStopIndex() {
         return stopIndex;
     }
 
-    public enum FoldingType {
-        BLOCK(false, FoldTemplate.DEFAULT_BLOCK, null, FoldType.CODE_BLOCK),
-        COMMENT(true, FoldTemplate.DEFAULT, "comment", FoldType.COMMENT);
-
-        private final Boolean collapsed;
-        private final FoldTemplate foldTemplate;
-        private final String textLabel;
-        private final FoldType foldType;
-
-        private FoldingType(boolean collapsed, FoldTemplate foldTemplate, String textLabel, FoldType foldType) {
-            this.collapsed = collapsed;
-            this.foldTemplate = foldTemplate;
-            this.textLabel = textLabel;
-            this.foldType = foldType;
-        }
-
-        public Boolean isCollapsed() {
-            return collapsed;
-        }
-
-        public FoldTemplate getFoldTemplate() {
-            return foldTemplate;
-        }
-
-        public String getTextLabel() {
-            return textLabel;
-        }
-
-        public FoldType getFoldType() {
-            return foldType;
-        }
-
+    public void setStopIndex(int stopIndex) {
+        this.stopIndex = stopIndex;
     }
 
 }

@@ -54,44 +54,6 @@ public class Utility {
         return null;
     }
 
-    public static int getCaretPositionInAwtThread(final Context context) {
-        ThreadReturner<Integer> r = new ThreadReturner<Integer>() {
-            @Override
-            public void run() {
-                setValue(context.caretOffset());
-            }
-        };
-        EventQueue.invokeLater(r);
-        return r.getValue();
-    }
-
-    private static abstract class ThreadReturner<T> implements Runnable {
-
-        private T value;
-
-        public void setValue(T value) {
-            this.value = value;
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-    }
-
-    public static void setCaretPositionInAwtThread(final Context context, final int position) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    context.setCaretOffset(position);
-                } catch (BadLocationException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-        });
-    }
-
     public static void setCaretPositionInAwtThread(final Document document, final int position) {
         EventQueue.invokeLater(new Runnable() {
             @Override

@@ -37,8 +37,8 @@ public class FunctionCall extends Element {
 
     @Override
     public boolean equals(Object obj) {
-        FunctionBase fb = (FunctionBase) obj;
-        return function.equals(fb.getFunction());
+        FunctionBase fc = (FunctionBase) obj;
+        return function.equals(fc.getFunction());
     }
 
     @Override

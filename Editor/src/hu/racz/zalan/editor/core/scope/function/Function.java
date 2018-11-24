@@ -19,7 +19,6 @@ public class Function implements CompletionElement {
     private final List<VariableDeclaration> parameters = new ArrayList<>();
     private boolean builtIn;
     private boolean constructor;
-    private String builtInParameters;
 
     private final List<FunctionPrototype> prototypes = new ArrayList<>();
     private final List<FunctionCall> calls = new ArrayList<>();
@@ -42,14 +41,6 @@ public class Function implements CompletionElement {
 
     public void setConstructor(boolean constructor) {
         this.constructor = constructor;
-    }
-
-    public String getBuiltInParameters() {
-        return builtInParameters;
-    }
-
-    public void setBuiltInParameters(String builtInParameters) {
-        this.builtInParameters = builtInParameters;
     }
 
     //
@@ -132,7 +123,7 @@ public class Function implements CompletionElement {
 
     @Override
     public String getRightText() {
-        return getReturnType().getName();
+        return getReturnType().toString();
     }
 
     @Override
@@ -148,6 +139,12 @@ public class Function implements CompletionElement {
     //
     //misc----------------------------------------------------------------------
     //
+    @Override
+    public boolean equals(Object obj) {
+        Function fb = (Function) obj;
+        return equalsSignature(fb) && returnType.equals(fb.getReturnType());
+    }
+
     public boolean equalsSignature(Function f) {
         if (!getName().equals(f.getName()) || parameters.size() != f.parameters.size()) {
             return false;
@@ -164,27 +161,13 @@ public class Function implements CompletionElement {
         return true;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Function fb = (Function) obj;
-        return equalsSignature(fb) && returnType.equals(fb.getReturnType());
-    }
-
-    public String toStringSignatureBuiltin(boolean showParameters) {
+    public String toStringSignature(boolean showParameters) {
         String ret = getName() + "(";
         if (showParameters) {
             ret += toStringParameterList();
         }
         ret += ")";
         return ret;
-    }
-
-    public String toStringSignature(boolean showParameters) {
-        if (!isBuiltIn() || builtInParameters == null) {
-            return toStringSignatureBuiltin(showParameters);
-        } else {
-            return getName() + "(" + (showParameters ? getBuiltInParameters() : "") + ")";
-        }
     }
 
     public String toStringParameterList() {

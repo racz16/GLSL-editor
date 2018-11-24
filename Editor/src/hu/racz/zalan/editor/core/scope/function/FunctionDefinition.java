@@ -11,8 +11,4 @@ public class FunctionDefinition extends FunctionBase {
     public void setPrototype(FunctionPrototype prototype) {
         this.prototype = prototype;
     }
-
-    /*public boolean isDefintionOf(FunctionPrototype fp) {
-        return fp.isPrototypeOf(this);
-    }*/
 }

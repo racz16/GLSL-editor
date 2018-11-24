@@ -68,14 +68,6 @@ public class TypeDeclaration extends Element implements CompletionElement {
     //
     //usages--------------------------------------------------------------------
     //
-    public int getUsageCount() {
-        return usages.size();
-    }
-
-    public TypeUsage getUsage(int i) {
-        return usages.get(i);
-    }
-
     public void addUsage(TypeUsage vu) {
         usages.add(vu);
     }

@@ -4,6 +4,7 @@ import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import hu.racz.zalan.editor.errordisplay.*;
+import hu.racz.zalan.editor.errordisplay.fix.*;
 import org.netbeans.spi.editor.hints.*;
 
 public class ErrorHelper {
@@ -25,6 +26,14 @@ public class ErrorHelper {
     public static void addError(Severity severity, String message, int start, int stop) {
         //ErrorDescription ed = ErrorDescriptionFactory.createErrorDescription(severity, message, org.netbeans.api.editor.EditorRegistry.lastFocusedComponent ().getDocument(), new ErrorPosition(start), new ErrorPosition(stop));
         UniqueSyntaxError ed = new UniqueSyntaxError(severity, message, start, stop);
+        Scope.addError(ed);
+    }
+
+    public static void addError(Severity severity, String message, int start, int stop, GlslErrorFix... fixes) {
+        UniqueSyntaxError ed = new UniqueSyntaxError(severity, message, start, stop);
+        for (GlslErrorFix fix : fixes) {
+            ed.addFix(fix);
+        }
         Scope.addError(ed);
     }
 

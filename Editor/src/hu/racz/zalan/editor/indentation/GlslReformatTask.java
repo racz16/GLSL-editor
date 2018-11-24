@@ -58,13 +58,19 @@ public class GlslReformatTask implements ReformatTask {
 
     @Override
     public void reformat() throws BadLocationException {
-        initialize();
+        if (GlslParser.getCaretListener() != null && GlslProcessor.getTokens() != null) {
+            initialize();
+            reformatText();
+            setResultTextAndCaretPosition();
+        }
+    }
+
+    private void reformatText() {
         List<? extends Token> tokens = GlslProcessor.getTokens();
         for (Token token : tokens) {
             setToken(token);
             formatToken();
         }
-        setResultTextAndCaretPosition();
     }
 
     private void initialize() {

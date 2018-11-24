@@ -1,31 +1,38 @@
 package hu.racz.zalan.editor.errordisplay.fix;
 
-import javax.swing.text.*;
 import org.netbeans.spi.editor.hints.*;
 
-public class RemoveElementFix implements Fix {
+public class RemoveElementFix extends GlslErrorFix {
 
-    private final int start;
-    private final int end;
-    private final String text;
-    private final Document document;
+    private int startIndex;
+    private int stopIndex;
 
-    public RemoveElementFix(Document document, int start, int end, String text) {
-        this.document = document;
-        this.start = start;
-        this.end = end;
-        this.text = text;
-    }
-
-    @Override
-    public String getText() {
-        return text;
+    public RemoveElementFix(int startIndex, int stopIndex, String text) {
+        setStartIndex(startIndex);
+        setStopIndex(stopIndex);
+        setText(text);
     }
 
     @Override
     public ChangeInfo implement() throws Exception {
-        document.remove(start, end - start);
+        getDocument().remove(startIndex, stopIndex - startIndex);
         return null;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
+    }
+
+    public int getStopIndex() {
+        return stopIndex;
+    }
+
+    public void setStopIndex(int stopIndex) {
+        this.stopIndex = stopIndex;
     }
 
 }

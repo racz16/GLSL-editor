@@ -39,7 +39,6 @@ public class SyntaxErrorsHighlightingTask extends ParserResultTask<GlslParser.Gl
 
     private void addVisitorErrors() {
         for (UniqueSyntaxError ed : Scope.getErrors()) {
-            //TODO: add fixes
             errors.add(ed.createError(document));
         }
     }

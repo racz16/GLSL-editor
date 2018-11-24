@@ -61,7 +61,7 @@ public class GlslFoldManager implements FoldManager {
 
     private void addFolds(FoldHierarchyTransaction transaction) throws BadLocationException {
         for (FoldingBlock fb : Scope.getFoldingBlocks()) {
-            FoldingBlock.FoldingType ft = fb.getFoldingType();
+            FoldingType ft = fb.getFoldingType();
             if (fb.getStartIndex() <= fb.getStopIndex()) {
                 operation.addToHierarchy(ft.getFoldType(), fb.getStartIndex(), fb.getStopIndex(), ft.isCollapsed(), ft.getFoldTemplate(), ft.getTextLabel(), null, transaction);
             }

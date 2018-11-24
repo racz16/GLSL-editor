@@ -7,15 +7,10 @@ import java.util.*;
 
 public class TypeUsage extends Element {
 
-    public static final int ARRAY_SIZE_UNDEFINED = -1;
-    public static final int ARRAY_SIZE_DONT_CARE = 0;
-
     private TypeDeclaration declaration;
     private final List<QualifierUsage> qualifiers = new ArrayList<>();
     private final List<Qualifier> implicitQualifiers = new ArrayList<>();
-    private boolean array;
     private int arrayDepth;
-    private int arraySize;
 
     public static final TypeUsage ERROR_TYPE = new TypeUsage("");
 
@@ -23,10 +18,9 @@ public class TypeUsage extends Element {
         super(name);
     }
 
-    public TypeUsage(String name, boolean array, int arraySize) {
+    public TypeUsage(String name, int arrayDepth) {
         this(name);
-        setArray(array);
-        setArraySize(arraySize);
+        setArrayDepth(arrayDepth);
     }
 
     public TypeDeclaration getDeclaration() {
@@ -42,11 +36,7 @@ public class TypeUsage extends Element {
     }
 
     public boolean isArray() {
-        return array;
-    }
-
-    public void setArray(boolean array) {
-        this.array = array;
+        return arrayDepth > 0;
     }
 
     public int getArrayDepth() {
@@ -55,14 +45,6 @@ public class TypeUsage extends Element {
 
     public void setArrayDepth(int arrayDepth) {
         this.arrayDepth = arrayDepth;
-    }
-
-    public int getArraySize() {
-        return arraySize;
-    }
-
-    public void setArraySize(int arraySize) {
-        this.arraySize = arraySize;
     }
 
     //
@@ -87,8 +69,8 @@ public class TypeUsage extends Element {
     @Override
     public boolean equals(Object obj) {
         TypeUsage tu = (TypeUsage) obj;
-        return getName().equals(tu.getName()) && isArray() == tu.isArray()
-                && getArraySize() == tu.getArraySize() && qualifiersEquals(tu)
+        return getArrayDepth() == tu.getArrayDepth()
+                && qualifiersEquals(tu)
                 && getDeclaration().equals(tu.getDeclaration());
     }
 
@@ -125,7 +107,15 @@ public class TypeUsage extends Element {
 
     @Override
     public String toString() {
-        return getName() + (array ? "[]" : "");
+        return getName() + toStringArray();
+    }
+
+    private String toStringArray() {
+        String ret = "";
+        for (int i = 0; i < arrayDepth; i++) {
+            ret += "[]";
+        }
+        return ret;
     }
 
 }

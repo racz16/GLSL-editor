@@ -18,4 +18,10 @@ public class VariableUsage extends Element {
         this.declaration = declaration;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        VariableUsage vu = (VariableUsage) obj;
+        return getDeclaration().equals(vu.getDeclaration());
+    }
+
 }

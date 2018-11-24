@@ -15,16 +15,12 @@ public class VariableDeclaration extends Element implements CompletionElement {
     private boolean builtIn;
     private boolean global;
     private TypeUsage type;
-
+    private final List<VariableUsage> usages = new ArrayList<>();
     private int declarationStartIndex;
     private int declarationStopIndex;
 
-    //----------------------------------------------------------
-    private final List<VariableUsage> usages = new ArrayList<>();
-
-    public VariableDeclaration(TypeUsage type, String name, boolean builtIn/*, boolean array*/) {
+    public VariableDeclaration(TypeUsage type, String name, boolean builtIn) {
         this(type, name);
-        //setArray(array);
         setBuiltIn(builtIn);
     }
 
@@ -76,14 +72,6 @@ public class VariableDeclaration extends Element implements CompletionElement {
     //
     //usages--------------------------------------------------------------------
     //
-    public int getUsageCount() {
-        return usages.size();
-    }
-
-    public VariableUsage getUsage(int i) {
-        return usages.get(i);
-    }
-
     public void addUsage(VariableUsage vu) {
         usages.add(vu);
     }

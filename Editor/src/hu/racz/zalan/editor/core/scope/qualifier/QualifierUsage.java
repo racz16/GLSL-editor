@@ -21,12 +21,7 @@ public class QualifierUsage extends Element {
     @Override
     public boolean equals(Object obj) {
         QualifierUsage qu = (QualifierUsage) obj;
-        return getQualifier().equals(qu.getQualifier());
-    }
-
-    @Override
-    public String toString() {
-        return getQualifier().toString();
+        return getName().equals(qu.getName());
     }
 
 }

@@ -213,56 +213,56 @@
         </type>
         <type>
             <name>dmat2x2</name>
-            <width>1</width>
-            <height>1</height>
+            <width>2</width>
+            <height>2</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat2x3</name>
             <width>1</width>
-            <height>1</height>
+            <height>3</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat2x4</name>
-            <width>1</width>
-            <height>1</height>
+            <width>2</width>
+            <height>4</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat3x2</name>
-            <width>1</width>
-            <height>1</height>
+            <width>3</width>
+            <height>2</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat3x3</name>
-            <width>1</width>
-            <height>1</height>
+            <width>3</width>
+            <height>3</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat3x4</name>
-            <width>1</width>
-            <height>1</height>
+            <width>3</width>
+            <height>4</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat4x2</name>
-            <width>1</width>
-            <height>1</height>
+            <width>4</width>
+            <height>2</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat4x3</name>
-            <width>1</width>
-            <height>1</height>
+            <width>4</width>
+            <height>3</height>
             <base>double</base>
         </type>
         <type>
             <name>dmat4x4</name>
-            <width>1</width>
-            <height>1</height>
+            <width>4</width>
+            <height>4</height>
             <base>double</base>
         </type>
     </transparent>

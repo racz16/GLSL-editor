@@ -64,8 +64,15 @@ public class Builtin {
         doc.getDocumentElement().normalize();
     }
 
+    private static void setReturnType(Element element, Function function) {
+        String typeName = element.getElementsByTagName("type").item(0).getTextContent();
+        TypeUsage type = new TypeUsage(typeName);
+        type.setDeclaration(Helper.getTypeDeclaration(null, typeName));
+        function.setReturnType(type);
+    }
+
     //
-    //
+    //constructors--------------------------------------------------------------
     //
     private static void loadConstructors() {
         loadDocument(XML_CONSTRUCTORS);
@@ -81,20 +88,19 @@ public class Builtin {
         Function function = new Function();
         setReturnType(element, function);
         function.setName(function.getReturnType().getName());
-        setParameters(element, function);
+        setConstructorParameters(element, function);
         function.setBuiltIn(true);
         function.setConstructor(true);
         return function;
     }
 
-    private static void setParameters(Element element, Function function) {
+    private static void setConstructorParameters(Element element, Function function) {
         NodeList parameters = element.getElementsByTagName("parameter");
         for (int i = 0; i < parameters.getLength(); i++) {
             String param = parameters.item(i).getTextContent();
             TypeUsage tu = new TypeUsage(param);
             tu.setDeclaration(Helper.getTypeDeclaration(null, param));
-            VariableDeclaration vd = new VariableDeclaration(tu, "p" + i, true);
-            function.addParameter(vd);
+            function.addParameter(new VariableDeclaration(tu, "p" + i, true));
         }
     }
 
@@ -119,30 +125,23 @@ public class Builtin {
         return function;
     }
 
-    private static void setReturnType(Element element, Function function) {
-        String typeName = element.getElementsByTagName("type").item(0).getTextContent();
-        TypeUsage type = new TypeUsage(typeName);
-        type.setDeclaration(Helper.getTypeDeclaration(null, typeName));
-        function.setReturnType(type);
-    }
-
     private static void setSignature(Element element, Function function) {
         String name = element.getElementsByTagName("name").item(0).getTextContent();
         function.setName(name);
         NodeList params = element.getElementsByTagName("parameter");
         for (int i = 0; i < params.getLength(); i++) {
-            String[] split = params.item(i).getTextContent().split(" ");
-            if (split.length != 2) {
-                System.out.println(params.item(i).getTextContent());
-            }
-            String pType = split[0];
-            String pName = split[1];
-            TypeUsage tu = new TypeUsage(pType);
-            tu.setDeclaration(Helper.getTypeDeclaration(null, pType));
-            VariableDeclaration vd = new VariableDeclaration(tu, pName, true);
-            function.addParameter(vd);
+            setFunctionParameter(function, (Element) params.item(i));
         }
-        //function.setBuiltInParameters(params);
+    }
+
+    private static void setFunctionParameter(Function function, Element element) {
+        String[] split = element.getTextContent().split(" ");
+        String pType = split[0];
+        String pName = split[1];
+        TypeUsage tu = new TypeUsage(pType);
+        tu.setDeclaration(Helper.getTypeDeclaration(null, pType));
+        VariableDeclaration vd = new VariableDeclaration(tu, pName, true);
+        function.addParameter(vd);
     }
 
     //
@@ -161,7 +160,7 @@ public class Builtin {
     private static VariableDeclaration createVariableDeclaration(Element element) {
         String typeName = element.getElementsByTagName("type").item(0).getTextContent();
         boolean array = element.getElementsByTagName("array").getLength() != 0;
-        TypeUsage type = new TypeUsage(typeName, array, TypeUsage.ARRAY_SIZE_DONT_CARE);
+        TypeUsage type = new TypeUsage(typeName, array ? 1 : 0);
         type.setDeclaration(getType(typeName));
         String name = element.getElementsByTagName("name").item(0).getTextContent();
         return new VariableDeclaration(type, name, true);
@@ -247,7 +246,7 @@ public class Builtin {
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Element q = (Element) nList.item(temp);
             String name = q.getTextContent();
-            Qualifier qu = getQualfiers().get(name);
+            Qualifier qu = getQualifier(name);
             rule.add(qu);
         }
     }

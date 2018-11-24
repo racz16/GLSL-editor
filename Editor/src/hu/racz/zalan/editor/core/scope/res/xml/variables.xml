@@ -55,17 +55,17 @@
     <variable>
         <type>float</type>
         <name>gl_ClipDistance</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>float</type>
         <name>gl_CullDistance</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>gl_PerVertex</type>
         <name>gl_in</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>int</type>
@@ -98,12 +98,12 @@
     <variable>
         <type>float</type>
         <name>gl_TessLevelOuter</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>float</type>
         <name>gl_TessLevelInner</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>vec4</type>
@@ -128,7 +128,7 @@
     <variable>
         <type>int</type>
         <name>gl_SampleMaskIn</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>bool</type>
@@ -141,7 +141,7 @@
     <variable>
         <type>int</type>
         <name>gl_SampleMask</name>
-        <array>true</array>
+        <array>1</array>
     </variable>
     <variable>
         <type>gl_DepthRangeParameters</type>

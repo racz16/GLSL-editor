@@ -1,5 +1,7 @@
 package hu.racz.zalan.editor.errordisplay;
 
+import hu.racz.zalan.editor.errordisplay.fix.*;
+import java.util.*;
 import javax.swing.text.*;
 import org.netbeans.spi.editor.hints.*;
 
@@ -9,6 +11,7 @@ public class UniqueSyntaxError {
     private String message;
     private int startIndex;
     private int stopIndex;
+    private final List<GlslErrorFix> fixes = new ArrayList<>();
 
     public UniqueSyntaxError(Severity severity, String message, int startIndex, int stopIndex) {
         setSeverity(severity);
@@ -49,8 +52,30 @@ public class UniqueSyntaxError {
         this.stopIndex = stopIndex;
     }
 
+    public void addFix(GlslErrorFix fix) {
+        fixes.add(fix);
+    }
+
+    public List<GlslErrorFix> getFixes() {
+        return Collections.unmodifiableList(fixes);
+    }
+
     public ErrorDescription createError(Document doc) {
-        return ErrorDescriptionFactory.createErrorDescription(severity, message, doc, new ErrorPosition(startIndex), new ErrorPosition(stopIndex));
+        if (fixes.isEmpty()) {
+            return ErrorDescriptionFactory.createErrorDescription(severity, message, doc, new ErrorPosition(startIndex), new ErrorPosition(stopIndex));
+        } else {
+            List<Fix> fixes = createFixes(doc);
+            return ErrorDescriptionFactory.createErrorDescription(severity, message, fixes, doc, new ErrorPosition(startIndex), new ErrorPosition(stopIndex));
+        }
+    }
+
+    private List<Fix> createFixes(Document doc) {
+        List<Fix> ret = new ArrayList<>();
+        for (GlslErrorFix fix : this.fixes) {
+            fix.setDocument(doc);
+            ret.add(fix);
+        }
+        return ret;
     }
 
 }

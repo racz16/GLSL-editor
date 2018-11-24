@@ -34,8 +34,14 @@ public class Scope {
     private int startIndex;
     private int stopIndex;
 
-    public static void clearErrorss() {
+    public static void reset() {
         ERRORS.clear();
+        BRACELESS_SCOPES.clear();
+        FOLDING_BLOCKS.clear();
+        MACRO_DEFINITIONS.clear();
+        FUNCTION_PROTOTYPES.clear();
+        FUNCTION_DEFINITIONS.clear();
+        FUNCTIONS.clear();
     }
 
     public static void addError(UniqueSyntaxError error) {
@@ -46,10 +52,6 @@ public class Scope {
         return Collections.unmodifiableList(ERRORS);
     }
 
-    public static void clearBracelessScopes() {
-        BRACELESS_SCOPES.clear();
-    }
-
     public static void addBracelessScope(Scope scope) {
         BRACELESS_SCOPES.add(scope);
     }
@@ -58,20 +60,12 @@ public class Scope {
         return Collections.unmodifiableList(BRACELESS_SCOPES);
     }
 
-    public static void clearFoldingBlocks() {
-        FOLDING_BLOCKS.clear();
-    }
-
     public static void addFoldingBlock(FoldingBlock fb) {
         FOLDING_BLOCKS.add(fb);
     }
 
     public static List<? extends FoldingBlock> getFoldingBlocks() {
         return Collections.unmodifiableList(FOLDING_BLOCKS);
-    }
-
-    public static void clearMacroDefinitions() {
-        MACRO_DEFINITIONS.clear();
     }
 
     public static void addMacroDefinition(String macroDefinition) {
@@ -105,7 +99,7 @@ public class Scope {
     }
 
     //
-    //variable declarations-----------------------------------------------------
+    //variables-----------------------------------------------------------------
     //
     public void addVariableDeclaration(VariableDeclaration var) {
         variableDeclarations.add(var);
@@ -115,9 +109,6 @@ public class Scope {
         return Collections.unmodifiableList(variableDeclarations);
     }
 
-    //
-    //variable usages-----------------------------------------------------------
-    //
     public void addVariableUsage(VariableUsage var) {
         variableUsages.add(var);
     }
@@ -137,10 +128,6 @@ public class Scope {
         return Collections.unmodifiableList(FUNCTION_PROTOTYPES);
     }
 
-    public static void clearFunctionPrototypes() {
-        FUNCTION_PROTOTYPES.clear();
-    }
-
     public static void addFunctionDefinition(FunctionDefinition func) {
         FUNCTION_DEFINITIONS.add(func);
     }
@@ -149,20 +136,12 @@ public class Scope {
         return Collections.unmodifiableList(FUNCTION_DEFINITIONS);
     }
 
-    public static void clearFunctionDefinitions() {
-        FUNCTION_DEFINITIONS.clear();
-    }
-
     public static void addFunction(Function func) {
         FUNCTIONS.add(func);
     }
 
     public static List<Function> getFunctions() {
         return Collections.unmodifiableList(FUNCTIONS);
-    }
-
-    public static void clearFunctions() {
-        FUNCTIONS.clear();
     }
 
     public void addFunctionCall(FunctionCall fc) {
@@ -174,7 +153,7 @@ public class Scope {
     }
 
     //
-    //type declarations---------------------------------------------------------
+    //types---------------------------------------------------------------------
     //
     public void addTypeDeclaration(TypeDeclaration type) {
         typeDeclarations.add(type);
@@ -184,9 +163,6 @@ public class Scope {
         return Collections.unmodifiableList(typeDeclarations);
     }
 
-    //
-    //type usages---------------------------------------------------------------
-    //
     public void addTypeUsage(TypeUsage type) {
         typeusages.add(type);
     }

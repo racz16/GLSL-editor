@@ -6,8 +6,8 @@ import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
-import hu.racz.zalan.editor.errordisplay.*;
 import hu.racz.zalan.editor.errordisplay.fix.*;
+import hu.racz.zalan.editor.folding.*;
 import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.netbeans.spi.editor.hints.*;
@@ -49,7 +49,7 @@ public class FunctionHelper {
 
     public static void addDuplicatedFunctionDefinitionError() {
         if (isFunctionDuplicated(fd)) {
-            ErrorHelper.addError(Severity.ERROR, "'" + fd.getName() + "' function already has a body", fd.getSignatureStartIndex(), fd.getSignatureStopIndex());
+            ErrorHelper.addError(Severity.ERROR, "'" + fd.getName() + "' function already has a body", fd.getSignatureStartIndex(), fd.getSignatureStopIndex(), new RemoveElementFix(fd.getStartIndex(), fd.getStopIndex(), "remove function"));
         }
     }
 
@@ -63,7 +63,7 @@ public class FunctionHelper {
     }
 
     private static void addFoldingBlock() {
-        FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, fd.getSignatureStopIndex(), fd.getStopIndex());
+        FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, fd.getSignatureStopIndex(), fd.getStopIndex());
         Scope.addFoldingBlock(fb);
     }
 
@@ -152,7 +152,7 @@ public class FunctionHelper {
         TypeUsage returnType = new TypeUsage(rtc.type().getText());
         setTypeUsageIndices(returnType, rtc.type());
         Helper.addPrecisionQualifier(returnType, rtc.precision_qualifier());
-        setReturnTypeArray(returnType, rtc);
+        returnType.setArrayDepth(rtc.array_subscript() != null ? rtc.array_subscript().LSB().size() : 0);
         Helper.setDeclaration(currentScope, returnType);
         return returnType;
     }
@@ -164,15 +164,6 @@ public class FunctionHelper {
         } else {
             tu.setNameStartIndex(tc.TYPE().getSymbol().getStartIndex());
             tu.setNameStopIndex(tc.TYPE().getSymbol().getStopIndex() + 1);
-        }
-    }
-
-    private static void setReturnTypeArray(TypeUsage returnType, AntlrGlslParser.Return_typeContext rtc) {
-        if (rtc.array_subscript() != null) {
-            returnType.setArray(true);
-            returnType.setArraySize(TypeUsage.ARRAY_SIZE_DONT_CARE);
-            //TODO: tömb méretét általában meg kell tudni határozni fordítási időben
-            //hibát lehetne dobni, ha nem const expression
         }
     }
 
@@ -248,6 +239,7 @@ public class FunctionHelper {
         tu.setNameStartIndex(fpc.type().getStart().getStartIndex());
         tu.setNameStopIndex(fpc.type().getStop().getStopIndex() + 1);
         Helper.setDeclaration(currentScope, tu);
+        tu.setArrayDepth(fpc.array_subscript() != null ? fpc.array_subscript().LSB().size() : 0);
         setArray(tu, fpc);
         if (tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
             currentScope.addTypeUsage(tu);
@@ -256,9 +248,9 @@ public class FunctionHelper {
     }
 
     private static void setArray(TypeUsage tu, AntlrGlslParser.Function_parameterContext fpc) {
-        if (fpc.array_subscript() != null) {
-            tu.setArray(true);//TODO: tömb mérete
-        }
+        int depth1 = fpc.array_subscript() != null ? fpc.array_subscript().LSB().size() : 0;
+        int depth2 = fpc.identifier_optarray() != null && fpc.identifier_optarray().array_subscript() != null ? fpc.identifier_optarray().array_subscript().LSB().size() : 0;
+        tu.setArrayDepth(depth1 + depth2);
     }
 
     private static void setParameterIndices(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {

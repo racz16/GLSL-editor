@@ -9,6 +9,7 @@ import hu.racz.zalan.editor.core.scope.variable.VariableDeclaration;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
+import hu.racz.zalan.editor.folding.*;
 import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -25,20 +26,10 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
 
     @Override
     public TypeUsage visitStart(AntlrGlslParser.StartContext ctx) {
-        clear();
+        Scope.reset();
         tokenOperations();
         currentScope = new Scope();
         return super.visitStart(ctx);
-    }
-
-    private void clear() {
-        Scope.clearBracelessScopes();
-        Scope.clearErrorss();
-        Scope.clearFunctions();
-        Scope.clearFunctionDefinitions();
-        Scope.clearFunctionPrototypes();
-        Scope.clearFoldingBlocks();
-        Scope.clearMacroDefinitions();
     }
 
     //
@@ -51,7 +42,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             } else if (token.getType() == AntlrGlslLexer.ILLEGAL_CHARACTERS) {
                 ErrorHelper.addError(Severity.ERROR, "illegal character(s) " + token.getText(), token.getStartIndex(), token.getStopIndex() + 1);
             } else if (token.getType() == AntlrGlslLexer.MULTI_LINE_COMMENT) {
-                FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.COMMENT, token.getStartIndex(), token.getStopIndex() + 1);
+                FoldingBlock fb = new FoldingBlock(FoldingType.COMMENT, token.getStartIndex(), token.getStopIndex() + 1);
                 Scope.addFoldingBlock(fb);
             } else if (token.getType() == AntlrGlslLexer.MACRO) {
                 String text = token.getText();
@@ -276,7 +267,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 }
             }
         }
-        FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+        FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
         Scope.addFoldingBlock(fb);
 
         super.visitStruct_declaration(ctx);
@@ -347,7 +338,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                         TypeUsage tu = new TypeUsage(sdc.type().getText());
                         tu.setNameStartIndex(sdc.type().getStart().getStartIndex());
                         tu.setNameStopIndex(sdc.type().getStop().getStopIndex() + 1);
-                        tu.setArray(sdc.array_subscript() != null || sdc2.array_subscript() != null);
                         int depth1 = sdc.array_subscript() != null ? sdc.array_subscript().LSB().size() : 0;
                         int depth2 = sdc2.array_subscript() != null ? sdc2.array_subscript().LSB().size() : 0;
                         tu.setArrayDepth(depth1 + depth2);
@@ -369,7 +359,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 }
             }
             //TODO named interface block
-            FoldingBlock fb = new FoldingBlock(FoldingBlock.FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+            FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
             Scope.addFoldingBlock(fb);
         }
 

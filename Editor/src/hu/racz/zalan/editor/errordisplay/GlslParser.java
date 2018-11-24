@@ -4,6 +4,8 @@ import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.*;
 import java.util.*;
 import javax.swing.event.*;
+import javax.swing.text.*;
+import org.netbeans.api.editor.*;
 import org.netbeans.modules.csl.spi.*;
 import org.netbeans.modules.parsing.api.*;
 import org.netbeans.modules.parsing.spi.*;
@@ -16,9 +18,10 @@ public class GlslParser extends Parser {
 
     @Override
     public void parse(Snapshot snpsht, Task task, SourceModificationEvent sme) throws ParseException {
-        if (caretListener == null) {
+        JTextComponent lastFocused = EditorRegistry.lastFocusedComponent();
+        if (caretListener == null && lastFocused != null) {
             caretListener = new EditorCaretListener();
-            org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().addCaretListener(caretListener);
+            lastFocused.addCaretListener(caretListener);
         }
         this.snapshot = snpsht;
         GlslProcessor.setText(snpsht.getText().toString());
