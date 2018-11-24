@@ -18,8 +18,8 @@ public class Scope {
 
     //functions
     private static final List<Function> FUNCTIONS = new ArrayList<>();
-    private static final List<FunctionPrototype> FUNCTION_PROTOTYPES = new ArrayList<>();
-    private static final List<FunctionDefinition> FUNCTION_DEFINITIONS = new ArrayList<>();
+    private static final List<FunctionDeclaration> FUNCTION_PROTOTYPES = new ArrayList<>();
+    private static final List<FunctionDeclaration> FUNCTION_DEFINITIONS = new ArrayList<>();
     private final List<FunctionCall> functionCalls = new ArrayList<>();
 
     //variables
@@ -120,19 +120,19 @@ public class Scope {
     //
     //functions-----------------------------------------------------------------
     //
-    public static void addFunctionPrototype(FunctionPrototype func) {
+    public static void addFunctionPrototype(FunctionDeclaration func) {
         FUNCTION_PROTOTYPES.add(func);
     }
 
-    public static List<? extends FunctionPrototype> getFunctionPrototypes() {
+    public static List<? extends FunctionDeclaration> getFunctionPrototypes() {
         return Collections.unmodifiableList(FUNCTION_PROTOTYPES);
     }
 
-    public static void addFunctionDefinition(FunctionDefinition func) {
+    public static void addFunctionDefinition(FunctionDeclaration func) {
         FUNCTION_DEFINITIONS.add(func);
     }
 
-    public static List<? extends FunctionDefinition> getFunctionDefinitions() {
+    public static List<? extends FunctionDeclaration> getFunctionDefinitions() {
         return Collections.unmodifiableList(FUNCTION_DEFINITIONS);
     }
 

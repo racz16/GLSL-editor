@@ -83,7 +83,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private Function findFunctionPrototypeSFunctionAtCaret() {
-        for (FunctionPrototype fp : Scope.getFunctionPrototypes()) {
+        for (FunctionDeclaration fp : Scope.getFunctionPrototypes()) {
             if (isElementAtCaret(fp)) {
                 return fp.getFunction();
             }
@@ -92,7 +92,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private Function findFunctionDefinitionSFunctionAtCaret() {
-        for (FunctionDefinition fd : Scope.getFunctionDefinitions()) {
+        for (FunctionDeclaration fd : Scope.getFunctionDefinitions()) {
             if (isElementAtCaret(fd)) {
                 return fd.getFunction();
             }
@@ -120,7 +120,7 @@ public class GlslMarkOccurrencesHighlighter implements CaretListener, Runnable {
     }
 
     private void addFunctionPrototypeOccurrences(Function f) {
-        for (FunctionPrototype fp : f.getPrototypes()) {
+        for (FunctionDeclaration fp : f.getPrototypes()) {
             addElementToBag(fp);
         }
     }

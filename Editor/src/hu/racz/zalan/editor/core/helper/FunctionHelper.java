@@ -16,12 +16,12 @@ public class FunctionHelper {
 
     private static Scope currentScope;
 
-    private static FunctionPrototype fp;
-    private static FunctionDefinition fd;
-    private static FunctionBase fb;
+    private static FunctionDeclaration fp;
+    private static FunctionDeclaration fd;
+    private static FunctionDeclaration fb;
     private static Function f;
 
-    public static FunctionPrototype createFunctionPrototype(AntlrGlslParser.Function_prototypeContext fpc, Scope scope) {
+    public static FunctionDeclaration createFunctionPrototype(AntlrGlslParser.Function_prototypeContext fpc, Scope scope) {
         initializeForPrototype(scope);
         setIndices(fpc);
         setFunctionForPrototype(fpc.function_header());
@@ -32,11 +32,11 @@ public class FunctionHelper {
 
     private static void initializeForPrototype(Scope scope) {
         currentScope = scope;
-        fp = new FunctionPrototype();
+        fp = new FunctionDeclaration();
         fb = fp;
     }
 
-    public static FunctionDefinition createFunctionDefinition(AntlrGlslParser.Function_definitionContext fdc, Scope scope) {
+    public static FunctionDeclaration createFunctionDefinition(AntlrGlslParser.Function_definitionContext fdc, Scope scope) {
         initializeForDefinition(scope);
         setIndices(fdc);
         setFunctionForDefinition(fdc.function_header());
@@ -53,8 +53,8 @@ public class FunctionHelper {
         }
     }
 
-    private static boolean isFunctionDuplicated(FunctionDefinition fd) {
-        for (FunctionDefinition fd2 : Scope.getFunctionDefinitions()) {
+    private static boolean isFunctionDuplicated(FunctionDeclaration fd) {
+        for (FunctionDeclaration fd2 : Scope.getFunctionDefinitions()) {
             if (fd != fd2 && fd.getFunction().equalsSignature(fd2.getFunction()) && fd.getNameStopIndex() > fd2.getNameStartIndex()) {
                 return true;
             }
@@ -69,7 +69,7 @@ public class FunctionHelper {
 
     private static void initializeForDefinition(Scope scope) {
         currentScope = scope;
-        fd = new FunctionDefinition();
+        fd = new FunctionDeclaration();
         fb = fd;
     }
 
@@ -98,10 +98,8 @@ public class FunctionHelper {
     }
 
     private static void setFunctionDefinition() {
-        Scope s = Helper.getRootScope(currentScope);
-        for (FunctionDefinition fd : Scope.getFunctionDefinitions()) {
-            connectFunctionPrototypeWithDefinition(fp, fd);
-            if (fp.getDefinition() != null) {
+        for (FunctionDeclaration fd : Scope.getFunctionDefinitions()) {
+            if (fp.getFunction() != null && fp.getFunction().getDefinition() != null) {
                 f = fd.getFunction();
                 f.addPrototype(fp);
                 fp.setFunction(f);
@@ -112,10 +110,8 @@ public class FunctionHelper {
     }
 
     private static void setFunctionPrototype() {
-        Scope s = Helper.getRootScope(currentScope);
-        for (FunctionPrototype fp : Scope.getFunctionPrototypes()) {
-            connectFunctionPrototypeWithDefinition(fp, fd);
-            if (fd.getPrototype() != null) {
+        for (FunctionDeclaration fp : Scope.getFunctionPrototypes()) {
+            if (fd.getFunction() != null && !fd.getFunction().getPrototypes().isEmpty()) {
                 f = fp.getFunction();
                 f.setDefinition(fd);
                 fd.setFunction(f);
@@ -123,13 +119,6 @@ public class FunctionHelper {
             }
         }
         Scope.addFunction(f);
-    }
-
-    private static void connectFunctionPrototypeWithDefinition(FunctionPrototype fp, FunctionDefinition fd) {
-        if (fp.getFunction().equals(fd.getFunction())) {
-            fp.setDefinition(fd);
-            fd.setPrototype(fp);
-        }
     }
 
     //

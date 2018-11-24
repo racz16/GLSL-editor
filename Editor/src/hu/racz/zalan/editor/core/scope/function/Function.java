@@ -20,9 +20,9 @@ public class Function implements CompletionElement {
     private boolean builtIn;
     private boolean constructor;
 
-    private final List<FunctionPrototype> prototypes = new ArrayList<>();
+    private final List<FunctionDeclaration> prototypes = new ArrayList<>();
     private final List<FunctionCall> calls = new ArrayList<>();
-    private FunctionDefinition definition;
+    private FunctionDeclaration definition;
 
     //
     //builtin-------------------------------------------------------------------
@@ -79,19 +79,19 @@ public class Function implements CompletionElement {
     //
     //definition, protoypes, calls----------------------------------------------
     //
-    public FunctionDefinition getDefinition() {
+    public FunctionDeclaration getDefinition() {
         return definition;
     }
 
-    public void setDefinition(FunctionDefinition definition) {
+    public void setDefinition(FunctionDeclaration definition) {
         this.definition = definition;
     }
 
-    public void addPrototype(FunctionPrototype prototype) {
+    public void addPrototype(FunctionDeclaration prototype) {
         this.prototypes.add(prototype);
     }
 
-    public List<FunctionPrototype> getPrototypes() {
+    public List<FunctionDeclaration> getPrototypes() {
         return Collections.unmodifiableList(prototypes);
     }
 

@@ -196,7 +196,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     @Override
     public TypeUsage visitFunction_definition(AntlrGlslParser.Function_definitionContext ctx) {
         currentScope = Helper.createScope(currentScope, ctx);
-        FunctionDefinition fd = FunctionHelper.createFunctionDefinition(ctx, currentScope);
+        FunctionDeclaration fd = FunctionHelper.createFunctionDefinition(ctx, currentScope);
         currentFunctionReturnType = fd.getFunction().getReturnType();
         TypeUsage ret = super.visitFunction_definition(ctx);
         currentScope = currentScope.getParent();

@@ -104,7 +104,7 @@ public class GlslCompletionProvider implements CompletionProvider {
     }
 
     private boolean functionHasPrototypeBefore(Function func, int position) {
-        for (FunctionPrototype fp : func.getPrototypes()) {
+        for (FunctionDeclaration fp : func.getPrototypes()) {
             if (fp.getStopIndex() < position) {
                 return true;
             }

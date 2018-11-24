@@ -8,21 +8,21 @@ import static hu.racz.zalan.editor.core.Constants.*;
 import java.util.*;
 
 @MimeRegistration(mimeType = GLSL_MIME_TYPE, service = HyperlinkProvider.class)
-public class GlslFunctionPrototypeHyperlinkProvider extends GlslHyperlinkProviderBase<FunctionPrototype> {
+public class GlslFunctionPrototypeHyperlinkProvider extends GlslHyperlinkProviderBase<FunctionDeclaration> {
 
     @Override
-    protected List<? extends FunctionPrototype> getUsages(Scope scope) {
+    protected List<? extends FunctionDeclaration> getUsages(Scope scope) {
         return Scope.getFunctionPrototypes();
     }
 
     @Override
-    protected boolean hasModel(FunctionPrototype usage) {
-        return usage.getDefinition() != null;
+    protected boolean hasModel(FunctionDeclaration usage) {
+        return usage.getFunction() != null && usage.getFunction().getDefinition() != null;
     }
 
     @Override
     protected int getTargetPosition() {
-        return usage.getDefinition().getNameStartIndex();
+        return usage.getFunction().getDefinition().getNameStartIndex();
     }
 
 }

@@ -2,7 +2,7 @@ package hu.racz.zalan.editor.core.scope.function;
 
 import hu.racz.zalan.editor.core.scope.*;
 
-public abstract class FunctionBase extends Element {
+public class FunctionDeclaration extends Element {
 
     private Function function;
     private int startIndex;
@@ -58,7 +58,7 @@ public abstract class FunctionBase extends Element {
 
     @Override
     public boolean equals(Object obj) {
-        FunctionBase fb = (FunctionBase) obj;
+        FunctionDeclaration fb = (FunctionDeclaration) obj;
         return function.equals(fb.getFunction());
     }
 
