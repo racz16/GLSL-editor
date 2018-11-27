@@ -252,6 +252,30 @@
     <constructor>
         <type>ivec4</type>
         <parameters>
+            <parameter>ivec2</parameter>
+            <parameter>int</parameter>
+            <parameter>int</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>ivec4</type>
+        <parameters>
+            <parameter>int</parameter>
+            <parameter>ivec2</parameter>
+            <parameter>int</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>ivec4</type>
+        <parameters>
+            <parameter>int</parameter>
+            <parameter>int</parameter>
+            <parameter>ivec2</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>ivec4</type>
+        <parameters>
             <parameter>int</parameter>
             <parameter>ivec3</parameter>
         </parameters>
@@ -365,6 +389,30 @@
     <constructor>
         <type>uvec4</type>
         <parameters>
+            <parameter>uvec2</parameter>
+            <parameter>uint</parameter>
+            <parameter>uint</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>uvec4</type>
+        <parameters>
+            <parameter>uint</parameter>
+            <parameter>uvec2</parameter>
+            <parameter>uint</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>uvec4</type>
+        <parameters>
+            <parameter>uint</parameter>
+            <parameter>uint</parameter>
+            <parameter>uvec2</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>uvec4</type>
+        <parameters>
             <parameter>uint</parameter>
             <parameter>uvec3</parameter>
         </parameters>
@@ -478,6 +526,30 @@
     <constructor>
         <type>vec4</type>
         <parameters>
+            <parameter>vec2</parameter>
+            <parameter>float</parameter>
+            <parameter>float</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>vec4</type>
+        <parameters>
+            <parameter>float</parameter>
+            <parameter>vec2</parameter>
+            <parameter>float</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>vec4</type>
+        <parameters>
+            <parameter>float</parameter>
+            <parameter>float</parameter>
+            <parameter>vec2</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>vec4</type>
+        <parameters>
             <parameter>float</parameter>
             <parameter>vec3</parameter>
         </parameters>
@@ -591,6 +663,30 @@
     <constructor>
         <type>dvec4</type>
         <parameters>
+            <parameter>dvec2</parameter>
+            <parameter>double</parameter>
+            <parameter>double</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>dvec4</type>
+        <parameters>
+            <parameter>double</parameter>
+            <parameter>dvec2</parameter>
+            <parameter>double</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>dvec4</type>
+        <parameters>
+            <parameter>double</parameter>
+            <parameter>double</parameter>
+            <parameter>dvec2</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>dvec4</type>
+        <parameters>
             <parameter>double</parameter>
             <parameter>dvec3</parameter>
         </parameters>
@@ -698,6 +794,30 @@
         <type>bvec4</type>
         <parameters>
             <parameter>bvec2</parameter>
+            <parameter>bvec2</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>bvec4</type>
+        <parameters>
+            <parameter>bvec2</parameter>
+            <parameter>bool</parameter>
+            <parameter>bool</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>bvec4</type>
+        <parameters>
+            <parameter>bool</parameter>
+            <parameter>bvec2</parameter>
+            <parameter>bool</parameter>
+        </parameters>
+    </constructor>
+    <constructor>
+        <type>bvec4</type>
+        <parameters>
+            <parameter>bool</parameter>
+            <parameter>bool</parameter>
             <parameter>bvec2</parameter>
         </parameters>
     </constructor>

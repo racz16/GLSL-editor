@@ -26,10 +26,14 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
 
     @Override
     public TypeUsage visitStart(AntlrGlslParser.StartContext ctx) {
+        long time = System.currentTimeMillis();
         Scope.reset();
         tokenOperations();
         currentScope = new Scope();
-        return super.visitStart(ctx);
+        super.visitStart(ctx);
+        long elapsedTime = System.currentTimeMillis() - time;
+        System.out.println("visitor: " + elapsedTime);
+        return null;
     }
 
     //
@@ -373,10 +377,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             if (l >= Math.pow(2, 32)) {
                 ErrorHelper.addError(Severity.ERROR, l + " : integer overflow", ctx.INT_LITERAL().getSymbol().getStartIndex(), ctx.INT_LITERAL().getSymbol().getStopIndex() + 1);
             }
-        } else {
-
         }
-
         return super.visitNumber_literal(ctx);
     }
 

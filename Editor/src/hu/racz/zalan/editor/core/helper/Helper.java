@@ -5,11 +5,8 @@ import hu.racz.zalan.editor.core.scope.qualifier.Qualifier;
 import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.type.*;
-import hu.racz.zalan.editor.core.scope.variable.*;
-import hu.racz.zalan.editor.errordisplay.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-import org.netbeans.spi.editor.hints.*;
 
 public class Helper {
 
@@ -22,12 +19,7 @@ public class Helper {
             }
             scope = scope.getParent();
         }
-        for (TypeDeclaration td : Builtin.getTypes().values()) {
-            if (td.getName().equals(type)) {
-                return td;
-            }
-        }
-        return null;
+        return Builtin.getType(type);
     }
 
     public static Scope getRootScope(Scope scope) {

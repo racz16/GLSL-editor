@@ -494,4 +494,42 @@
             <name>atomic_uint</name>
         </type>
     </unsigned-integer-opaque>
+    <custom>
+        <type>
+            <name>gl_PerVertex</name>
+            <member>
+                <member-type>vec4</member-type>
+                <member-name>gl_Position</member-name>
+            </member>
+            <member>
+                <member-type>float</member-type>
+                <member-name>gl_PointSize</member-name>
+            </member>
+            <member>
+                <member-type>float</member-type>
+                <member-name>gl_ClipDistance</member-name>
+                <array>1</array>
+            </member>
+            <member>
+                <member-type>float</member-type>
+                <member-name>gl_CullDistance</member-name>
+                <array>1</array>
+            </member>
+        </type>
+        <type>
+            <name>gl_DepthRangeParameters</name>
+            <member>
+                <member-type>float</member-type>
+                <member-name>near</member-name>
+            </member>
+            <member>
+                <member-type>float</member-type>
+                <member-name>far</member-name>
+            </member>
+            <member>
+                <member-type>float</member-type>
+                <member-name>diff</member-name>
+            </member>
+        </type>
+    </custom>
 </types>
