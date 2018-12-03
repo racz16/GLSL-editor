@@ -635,7 +635,9 @@ public class ExpressionHelper {
 
             return func.getReturnType();
         } else {
-            ErrorHelper.addError(Severity.ERROR, "there is not such a function", ctx.start.getStartIndex(), ctx.stop.getStopIndex() + 1);
+            if (!Scope.getMacroDefinitions().contains(name)) {
+                ErrorHelper.addError(Severity.ERROR, "there is no such a function", ctx.start.getStartIndex(), ctx.stop.getStopIndex() + 1);
+            }
             return null;
         }
     }

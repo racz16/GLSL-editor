@@ -26,14 +26,10 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
 
     @Override
     public TypeUsage visitStart(AntlrGlslParser.StartContext ctx) {
-        long time = System.currentTimeMillis();
         Scope.reset();
         tokenOperations();
         currentScope = new Scope();
-        super.visitStart(ctx);
-        long elapsedTime = System.currentTimeMillis() - time;
-        System.out.println("visitor: " + elapsedTime);
-        return null;
+        return super.visitStart(ctx);
     }
 
     //
@@ -49,50 +45,297 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                 FoldingBlock fb = new FoldingBlock(FoldingType.COMMENT, token.getStartIndex(), token.getStopIndex() + 1);
                 Scope.addFoldingBlock(fb);
             } else if (token.getType() == AntlrGlslLexer.MACRO) {
-                String text = token.getText();
-                int index = computeFirstIndexOfSpaceOrTab(text);
-                if (index != -1) {
-                    String operation = text.substring(0, index);
-                    if (operation.equals("#define") && text.length() - operation.length() > 1) {
-                        index = computeFirstIndexOfNotSpaceOrTab(text, index + 1);
-                        if (index != -1) {
-                            String data = text.substring(index);
-                            index = computeFirstIndexOfSpaceOrTab(data);
-                            if (index != -1) {
-                                String name = data.substring(0, index);
-                                Scope.addMacroDefinition(name);
-                            }
+                addMacroDefinition(token);
+            }
+        }
+        ErrorHelper.addNoVersionMacroWarning();
+    }
+
+    private static void addMacroDefinition(Token token) {
+        String text = token.getText();
+        if (text.startsWith("#define")) {
+            text = text.substring(7);
+            int start = -1;
+            int stop = -1;
+            for (int i = 0; i < text.length(); i++) {
+                if (start == -1 && text.charAt(i) != Constants.SPACE && text.charAt(i) != Constants.TAB) {
+                    start = i;
+                } else if (start != -1 && stop == -1 && (text.charAt(i) == Constants.SPACE || text.charAt(i) == Constants.TAB) || text.charAt(i) == Constants.LRB) {
+                    stop = i;
+                    break;
+                }
+            }
+            if (start != -1 && stop != -1) {
+                Scope.addMacroDefinition(text.substring(start, stop));
+            }
+        }
+    }
+
+    @Override
+    public TypeUsage visitStatement(AntlrGlslParser.StatementContext ctx) {
+        if ((ctx.parent instanceof AntlrGlslParser.Do_while_iterationContext || ctx.parent instanceof AntlrGlslParser.While_iterationContext || ctx.parent instanceof AntlrGlslParser.For_iterationContext || ctx.parent instanceof AntlrGlslParser.Selection_statementContext) && ctx.compound_statement() == null) {
+            return bracelessScope(ctx);
+        }
+        return super.visitStatement(ctx);
+    }
+
+    private TypeUsage bracelessScope(AntlrGlslParser.StatementContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        Scope.addBracelessScope(currentScope);
+        TypeUsage ret = super.visitStatement(ctx);
+        currentScope = currentScope.getParent();
+        return ret;
+    }
+
+    @Override
+    public TypeUsage visitCompound_statement(AntlrGlslParser.Compound_statementContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        super.visitCompound_statement(ctx);
+        currentScope = currentScope.getParent();
+        return null;
+    }
+
+    //
+    //functions-----------------------------------------------------------------
+    //
+    @Override
+    public TypeUsage visitFunction_definition(AntlrGlslParser.Function_definitionContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        try {
+            FunctionDeclaration fd = FunctionHelper.createFunctionDefinition(ctx, currentScope);
+            currentFunctionReturnType = fd.getFunction().getReturnType();
+            Scope.addFunctionDefinition(fd);
+        } catch (NullPointerException ex) {
+        }
+        visitCompound_statement(ctx.compound_statement());
+        currentScope = currentScope.getParent();
+        return null;
+    }
+
+    @Override
+    public TypeUsage visitFunction_prototype(AntlrGlslParser.Function_prototypeContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        try {
+            FunctionDeclaration fp = FunctionHelper.createFunctionPrototype(ctx, currentScope);
+            Scope.addFunctionPrototype(fp);
+        } catch (NullPointerException ex) {
+        }
+        currentScope = currentScope.getParent();
+        return null;
+    }
+
+    //
+    //if, for, while, do-while, case, jump
+    //
+    @Override
+    public TypeUsage visitSelection_statement(AntlrGlslParser.Selection_statementContext ctx) {
+        try {
+            selectionStatement(ctx);
+        } catch (NullPointerException ex) {
+        }
+        return null;
+    }
+
+    private void selectionStatement(AntlrGlslParser.Selection_statementContext ctx) {
+        TypeUsage tu = visitExpression(ctx.expression());
+        ErrorHelper.addBoolExpressionExpectedError(tu, ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
+        for (AntlrGlslParser.StatementContext sc : ctx.statement()) {
+            visitStatement(sc);
+        }
+    }
+
+    @Override
+    public TypeUsage visitFor_iteration(AntlrGlslParser.For_iterationContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        try {
+            forIteration(ctx);
+        } catch (NullPointerException ex) {
+        }
+        currentScope = currentScope.getParent();
+        return null;
+    }
+
+    private void forIteration(AntlrGlslParser.For_iterationContext ctx) {
+        if (ctx.variable_declaration() != null) {
+            visitVariable_declaration(ctx.variable_declaration());
+        }
+        forExpressions(ctx);
+        visitStatement(ctx.statement());
+    }
+
+    private void forExpressions(AntlrGlslParser.For_iterationContext ctx) {
+        if (ctx.expression_list() != null) {
+            visitExpression_list(ctx.expression_list(0));
+        }
+        if (ctx.expression() != null) {
+            TypeUsage tu = visitExpression(ctx.expression());
+            ErrorHelper.addBoolExpressionExpectedError(tu, ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
+        }
+    }
+
+    @Override
+    public TypeUsage visitDo_while_iteration(AntlrGlslParser.Do_while_iterationContext ctx) {
+        try {
+            TypeUsage tu = visitExpression(ctx.expression());
+            ErrorHelper.addBoolExpressionExpectedError(tu, ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
+            visitStatement(ctx.statement());
+        } catch (NullPointerException ex) {
+        }
+        return null;
+    }
+
+    @Override
+    public TypeUsage visitWhile_iteration(AntlrGlslParser.While_iterationContext ctx) {
+        try {
+            TypeUsage tu = visitExpression(ctx.expression());
+            ErrorHelper.addBoolExpressionExpectedError(tu, ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
+            visitStatement(ctx.statement());
+        } catch (NullPointerException ex) {
+        }
+        return null;
+    }
+
+    @Override
+    public TypeUsage visitCase_statement_list(AntlrGlslParser.Case_statement_listContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        Scope.addBracelessScope(currentScope);
+        super.visitCase_statement_list(ctx);
+        currentScope = currentScope.getParent();
+        return null;
+    }
+
+    @Override
+    public TypeUsage visitJump_statement(AntlrGlslParser.Jump_statementContext ctx) {
+        if (ctx.KW_RETURN() != null) {
+            ErrorHelper.addReturnError(currentFunctionReturnType, ctx);
+        }
+        return super.visitJump_statement(ctx);
+    }
+
+    //
+    //misc----------------------------------------------------------------------
+    //
+    @Override
+    public TypeUsage visitExpression(AntlrGlslParser.ExpressionContext ctx) {
+        try {
+            return ExpressionHelper.expression(ctx, this, currentScope);
+        } catch (NullPointerException ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public TypeUsage visitLiteral(AntlrGlslParser.LiteralContext ctx) {
+        if (ctx.BOOL_LITERAL() == null) {
+            visitNumber_literal(ctx.number_literal());
+        }
+        String name = getLiteralTypeName(ctx);
+        TypeUsage tu = new TypeUsage(name);
+        Helper.setDeclaration(null, tu);
+        return tu;
+    }
+
+    private String getLiteralTypeName(AntlrGlslParser.LiteralContext ctx) {
+        String name;
+        if (ctx.BOOL_LITERAL() != null) {
+            name = "bool";
+        } else {
+            name = asd(ctx);
+        }
+        return name;
+    }
+
+    private String asd(AntlrGlslParser.LiteralContext ctx) {
+        if (ctx.number_literal().INT_LITERAL() != null) {
+            return getFixPointLiteralTypeName(ctx);
+        } else {
+            return getFloatingPointLiteralTypeName(ctx);
+        }
+    }
+
+    private String getFixPointLiteralTypeName(AntlrGlslParser.LiteralContext ctx) {
+        String number = ctx.number_literal().INT_LITERAL().getText();
+        boolean unsigned = number.endsWith("u") || number.endsWith("U");
+        return unsigned ? "uint" : "int";
+    }
+
+    private String getFloatingPointLiteralTypeName(AntlrGlslParser.LiteralContext ctx) {
+        String number = ctx.number_literal().FLOAT_LITERAL().getText();
+        boolean longFloat = number.endsWith("lf") || number.endsWith("LF");
+        return longFloat ? "double" : "float";
+    }
+
+    @Override
+    public TypeUsage visitNumber_literal(AntlrGlslParser.Number_literalContext ctx) {
+        if (ctx.INT_LITERAL() != null) {
+            long number = parseStringNumber(ctx.INT_LITERAL().getText());
+            ErrorHelper.addIntegerOverflowError(number, ctx);
+        }
+        return super.visitNumber_literal(ctx);
+    }
+
+    private long parseStringNumber(String number) {
+        number = number.charAt(number.length() - 1) == 'u' || number.charAt(number.length() - 1) == 'U' ? number.substring(0, number.length() - 1) : number;
+        return parseSignedStringNumber(number);
+    }
+
+    private long parseSignedStringNumber(String number) {
+        if (number.startsWith("0x") || number.startsWith("0X")) {
+            return Long.parseLong(number.substring(2), 16);
+        } else if (number.startsWith("0")) {
+            return Long.parseLong(number.substring(0), 8);
+        } else {
+            return Long.parseLong(number);
+        }
+    }
+
+    //
+    //
+    //
+    @Override
+    public TypeUsage visitStruct_declaration(AntlrGlslParser.Struct_declarationContext ctx) {
+        currentScope = Helper.createScope(currentScope, ctx);
+        if (ctx.IDENTIFIER() != null) {
+            TypeDeclaration t = new TypeDeclaration(ctx.IDENTIFIER().getText());
+            t.setNameStartIndex(ctx.IDENTIFIER().getSymbol().getStartIndex());
+            t.setNameStopIndex(ctx.IDENTIFIER().getSymbol().getStopIndex() + 1);
+            t.setStructStopIndex(ctx.RCB().getSymbol().getStopIndex());
+            ErrorHelper.addIdentifierWarnings(t);
+            currentScope.getParent().addTypeDeclaration(t);
+
+            List<AntlrGlslParser.Member_declarationContext> sdl = ctx.member_declaration();
+            for (AntlrGlslParser.Member_declarationContext sdc : sdl) {
+                if (sdc.type() != null && (sdc.type().TYPE() != null || sdc.type().IDENTIFIER() != null) && sdc.member_declarator() != null) {
+                    for (AntlrGlslParser.Identifier_optarrayContext sdc2 : sdc.member_declarator().identifier_optarray()) {
+                        String typeName = sdc.type().TYPE() != null ? sdc.type().TYPE().getText() : sdc.type().IDENTIFIER().getText();
+                        TypeUsage tu = new TypeUsage(typeName);
+                        tu.setNameStartIndex(sdc.type().start.getStartIndex());
+                        tu.setNameStopIndex(sdc.type().stop.getStopIndex() + 1);
+                        int depth1 = sdc.array_subscript() != null ? sdc.array_subscript().LSB().size() : 0;
+                        int depth2 = sdc2.array_subscript() != null ? sdc2.array_subscript().LSB().size() : 0;
+                        tu.setArrayDepth(depth1 + depth2);
+                        Helper.setDeclaration(currentScope, tu);
+                        if (tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
+                            currentScope.addTypeUsage(tu);
+                        }
+                        if (sdc2.IDENTIFIER() != null) {
+                            String name = sdc2.IDENTIFIER().getText();
+                            VariableDeclaration vd = new VariableDeclaration(tu, name, false);
+                            vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
+                            vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
+                            currentScope.addVariableDeclaration(vd);
+                            t.addMember(vd);
                         }
                     }
                 }
             }
         }
-        if (GlslProcessor.getTokens() != null && !GlslProcessor.getTokens().isEmpty()) {
-            Token ft = GlslProcessor.getTokens().get(0);
-            if (ft.getType() != AntlrGlslLexer.MACRO || !ft.getText().startsWith("#version")) {
-                ErrorHelper.addError(Severity.WARNING, "The shader should starts with the version macro", ft.getStartIndex(), ft.getStopIndex() + 1);
-            }
-        }
-    }
+        FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+        Scope.addFoldingBlock(fb);
 
-    private int computeFirstIndexOfNotSpaceOrTab(String text, int startIndex) {
-        for (int i = startIndex; i < text.length(); i++) {
-            if (text.charAt(i) != Constants.SPACE && text.charAt(i) != Constants.TAB) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private int computeFirstIndexOfSpaceOrTab(String text) {
-        int index1 = text.indexOf(Constants.SPACE);
-        int index2 = text.indexOf(Constants.TAB);
-        if (index1 == -1) {
-            return index2;
-        } else if (index2 == -1) {
-            return index1;
-        }
-        return Math.min(index1, index2);
+        super.visitStruct_declaration(ctx);
+        currentScope = currentScope.getParent();
+        return null;
     }
 
     @Override
@@ -143,7 +386,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             VariableDeclaration var = new VariableDeclaration(tu/*new TypeUsage(type)*/, varName);
             var.setNameStartIndex(sdc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
             var.setNameStopIndex(sdc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
-            ErrorHelper.addIdentifierWarnings(varName, var.getNameStartIndex(), var.getNameStopIndex());
+            ErrorHelper.addIdentifierWarnings(var);
             if (currentScope.getParent() == null) {
                 var.setGlobal(true);
             }
@@ -162,173 +405,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
             }
         }
         return null;
-    }
-
-    @Override
-    public TypeUsage visitCase_statement_list(AntlrGlslParser.Case_statement_listContext ctx) {
-        Scope s = Helper.createScope(currentScope, ctx);
-        currentScope = s;
-        Scope.addBracelessScope(s);
-        TypeUsage ret = super.visitCase_statement_list(ctx);
-        currentScope = s.getParent();
-        return ret;
-    }
-
-    @Override
-    public TypeUsage visitStatement(AntlrGlslParser.StatementContext ctx) {
-        if ((ctx.parent instanceof AntlrGlslParser.Do_while_iterationContext || ctx.parent instanceof AntlrGlslParser.While_iterationContext || ctx.parent instanceof AntlrGlslParser.For_iterationContext || ctx.parent instanceof AntlrGlslParser.Selection_statementContext) && ctx.compound_statement() == null) {
-            Scope s = Helper.createScope(currentScope, ctx);
-            currentScope = s;
-            Scope.addBracelessScope(s);
-            TypeUsage ret = super.visitStatement(ctx);
-            currentScope = s.getParent();
-            return ret;
-        }
-
-        return super.visitStatement(ctx);
-    }
-
-    @Override
-    public TypeUsage visitCompound_statement(AntlrGlslParser.Compound_statementContext ctx) {
-        Scope s = Helper.createScope(currentScope, ctx);
-        currentScope = s;
-        TypeUsage ret = super.visitCompound_statement(ctx);
-        currentScope = s.getParent();
-        return ret;
-    }
-
-    @Override
-    public TypeUsage visitFunction_definition(AntlrGlslParser.Function_definitionContext ctx) {
-        currentScope = Helper.createScope(currentScope, ctx);
-        FunctionDeclaration fd = FunctionHelper.createFunctionDefinition(ctx, currentScope);
-        currentFunctionReturnType = fd.getFunction().getReturnType();
-        TypeUsage ret = super.visitFunction_definition(ctx);
-        currentScope = currentScope.getParent();
-        return ret;
-    }
-
-    //
-    //functions-----------------------------------------------------------------
-    //
-    @Override
-    public TypeUsage visitFunction_prototype(AntlrGlslParser.Function_prototypeContext ctx) {
-        Scope functionScope = Helper.createScope(currentScope, ctx);
-        FunctionHelper.createFunctionPrototype(ctx, functionScope);
-        return null;
-    }
-
-    @Override
-    public TypeUsage visitFor_iteration(AntlrGlslParser.For_iterationContext ctx) {
-        Scope s = Helper.createScope(currentScope, ctx);
-        currentScope = s;
-        TypeUsage ret = super.visitFor_iteration(ctx);
-        currentScope = s.getParent();
-        return ret;
-    }
-
-    private boolean isStructValid(AntlrGlslParser.Struct_declarationContext ctx) {
-        return ctx.KW_STRUCT() != null && ctx.LCB() != null && ctx.RCB() != null && ctx.member_declaration() != null;
-    }
-
-    @Override
-    public TypeUsage visitStruct_declaration(AntlrGlslParser.Struct_declarationContext ctx) {
-        if (!isStructValid(ctx)) {
-            return null;
-        }
-        currentScope = Helper.createScope(currentScope, ctx);
-        if (ctx.IDENTIFIER() != null) {
-            TypeDeclaration t = new TypeDeclaration(ctx.IDENTIFIER().getText());
-            t.setNameStartIndex(ctx.IDENTIFIER().getSymbol().getStartIndex());
-            t.setNameStopIndex(ctx.IDENTIFIER().getSymbol().getStopIndex() + 1);
-            t.setStructStopIndex(ctx.RCB().getSymbol().getStopIndex());
-            ErrorHelper.addIdentifierWarnings(t.getName(), t.getNameStartIndex(), t.getNameStopIndex());
-            currentScope.getParent().addTypeDeclaration(t);
-
-            List<AntlrGlslParser.Member_declarationContext> sdl = ctx.member_declaration();
-            for (AntlrGlslParser.Member_declarationContext sdc : sdl) {
-                if (sdc.type() != null && (sdc.type().TYPE() != null || sdc.type().IDENTIFIER() != null) && sdc.member_declarator() != null) {
-                    for (AntlrGlslParser.Identifier_optarrayContext sdc2 : sdc.member_declarator().identifier_optarray()) {
-                        String typeName = sdc.type().TYPE() != null ? sdc.type().TYPE().getText() : sdc.type().IDENTIFIER().getText();
-                        TypeUsage tu = new TypeUsage(typeName);
-                        tu.setNameStartIndex(sdc.type().start.getStartIndex());
-                        tu.setNameStopIndex(sdc.type().stop.getStopIndex() + 1);
-                        int depth1 = sdc.array_subscript() != null ? sdc.array_subscript().LSB().size() : 0;
-                        int depth2 = sdc2.array_subscript() != null ? sdc2.array_subscript().LSB().size() : 0;
-                        tu.setArrayDepth(depth1 + depth2);
-                        Helper.setDeclaration(currentScope, tu);
-                        if (tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
-                            currentScope.addTypeUsage(tu);
-                        }
-                        if (sdc2.IDENTIFIER() != null) {
-                            String name = sdc2.IDENTIFIER().getText();
-                            VariableDeclaration vd = new VariableDeclaration(tu, name, false);
-                            vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
-                            vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
-                            currentScope.addVariableDeclaration(vd);
-                            t.addMember(vd);
-                        }
-                    }
-                }
-            }
-        }
-        FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
-        Scope.addFoldingBlock(fb);
-
-        super.visitStruct_declaration(ctx);
-        currentScope = currentScope.getParent();
-        return null;
-    }
-
-    @Override
-    public TypeUsage visitExpression(AntlrGlslParser.ExpressionContext ctx) {
-        return ExpressionHelper.expression(ctx, this, currentScope);
-    }
-
-    @Override
-    public TypeUsage visitLiteral(AntlrGlslParser.LiteralContext ctx) {
-        String name;
-        if (ctx.BOOL_LITERAL() != null) {
-            name = "bool";
-        } else {
-            visitNumber_literal(ctx.number_literal());
-            if (ctx.number_literal().INT_LITERAL() != null) {
-                String number = ctx.number_literal().INT_LITERAL().getText();
-                boolean unsigned = number.endsWith("u") || number.endsWith("U");
-                name = unsigned ? "uint" : "int";
-            } else {
-                String number = ctx.number_literal().FLOAT_LITERAL().getText();
-                boolean longFloat = number.endsWith("lf") || number.endsWith("LF");
-                name = longFloat ? "double" : "float";
-            }
-        }
-        TypeUsage tu = new TypeUsage(name);
-        TypeDeclaration td = Helper.getTypeDeclaration(currentScope, name);
-        tu.setDeclaration(td);
-        return tu;
-    }
-
-    @Override
-    public TypeUsage visitSelection_statement(AntlrGlslParser.Selection_statementContext ctx) {
-        TypeUsage tu = visitExpression(ctx.expression());
-        if (tu != null && !tu.getName().equals("bool")) {
-            ErrorHelper.addError(Severity.ERROR, "boolean expression expected", ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
-        }
-        for (AntlrGlslParser.StatementContext sc : ctx.statement()) {
-            visitStatement(sc);
-        }
-        return null;
-    }
-
-    @Override
-    public TypeUsage visitJump_statement(AntlrGlslParser.Jump_statementContext ctx) {
-        if (ctx.KW_RETURN() != null) {
-            if (ctx.expression() != null && currentFunctionReturnType.isVoid()) {
-                ErrorHelper.addError(Severity.ERROR, "return : void function cannot return a value", ctx.expression().getStart().getStartIndex(), ctx.expression().getStop().getStopIndex() + 1);
-            } else if (ctx.expression() == null && !currentFunctionReturnType.isVoid()) {
-                ErrorHelper.addError(Severity.ERROR, "return : non-void function must return a value ", ctx.KW_RETURN().getSymbol().getStartIndex(), ctx.KW_RETURN().getSymbol().getStopIndex() + 1);
-            }
-        }
-        return super.visitJump_statement(ctx);
     }
 
     @Override
@@ -356,7 +432,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                         vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
                         vd.setDeclarationStartIndex(ctx.getStart().getStartIndex());
                         vd.setDeclarationStopIndex(ctx.getStop().getStopIndex());
-                        ErrorHelper.addIdentifierWarnings(name, vd.getNameStartIndex(), vd.getNameStopIndex());
+                        ErrorHelper.addIdentifierWarnings(vd);
                         vd.setGlobal(currentScope.getParent() == null);
                         currentScope.addVariableDeclaration(vd);
                     }
@@ -368,28 +444,6 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         }
 
         return super.visitDeclaration_statement(ctx);
-    }
-
-    @Override
-    public TypeUsage visitNumber_literal(AntlrGlslParser.Number_literalContext ctx) {
-        if (ctx.INT_LITERAL() != null) {
-            long l = parseStringNumber(ctx.INT_LITERAL().getText());
-            if (l >= Math.pow(2, 32)) {
-                ErrorHelper.addError(Severity.ERROR, l + " : integer overflow", ctx.INT_LITERAL().getSymbol().getStartIndex(), ctx.INT_LITERAL().getSymbol().getStopIndex() + 1);
-            }
-        }
-        return super.visitNumber_literal(ctx);
-    }
-
-    private long parseStringNumber(String number) {
-        number = number.charAt(number.length() - 1) == 'u' || number.charAt(number.length() - 1) == 'U' ? number.substring(0, number.length() - 1) : number;
-        if (number.startsWith("0x") || number.startsWith("0X")) {
-            return Long.parseLong(number.substring(2), 16);
-        } else if (number.startsWith("0")) {
-            return Long.parseLong(number.substring(0), 8);
-        } else {
-            return Long.parseLong(number);
-        }
     }
 
 }

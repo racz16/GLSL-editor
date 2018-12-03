@@ -5,6 +5,7 @@ import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import javax.xml.parsers.*;
 import org.openide.util.*;
@@ -14,14 +15,14 @@ import org.xml.sax.*;
 
 public class Builtin {
 
-    private static final String XML_FUNCTIONS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\functions.xml";
-    private static final String XML_KEYWORDS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\keywords.xml";
-    private static final String XML_QUALIFIERS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\qualifiers.xml";
-    private static final String XML_QUALIFIER_RULES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\qualifier_rules.xml";
-    private static final String XML_TYPES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\types.xml";
-    private static final String XML_VARIABLES = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\variables.xml";
-    private static final String XML_IMPLICIT_CONVERSIONS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\conversions.xml";
-    private static final String XML_CONSTRUCTORS = "src\\hu\\racz\\zalan\\editor\\core\\scope\\res\\xml\\constructors.xml";
+    private static final String XML_FUNCTIONS = "functions.xml";
+    private static final String XML_KEYWORDS = "keywords.xml";
+    private static final String XML_QUALIFIERS = "qualifiers.xml";
+    private static final String XML_QUALIFIER_RULES = "qualifier_rules.xml";
+    private static final String XML_TYPES = "types.xml";
+    private static final String XML_VARIABLES = "variables.xml";
+    private static final String XML_IMPLICIT_CONVERSIONS = "conversions.xml";
+    private static final String XML_CONSTRUCTORS = "constructors.xml";
 
     private static final List<Function> FUNCTIONS = new ArrayList<>();
     private static final Map<String, VariableDeclaration> VARIABLES = new HashMap<>();
@@ -34,20 +35,25 @@ public class Builtin {
 
     static {
         try {
-            long time = System.currentTimeMillis();
-            loadKeywords();
-            loadQualifiers();
-            loadTypes();
-            loadVariables();
-            loadFunctions();
-            loadImplicitConversions();
-            loadQualifierRules();
-            loadConstructors();
-            long elapsedTime = System.currentTimeMillis() - time;
-            System.out.println("xml: " + elapsedTime);
+            loadElements();
+            loadRules();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    private static void loadElements() {
+        loadKeywords();
+        loadQualifiers();
+        loadTypes();
+        loadVariables();
+        loadFunctions();
+        loadConstructors();
+    }
+
+    private static void loadRules() {
+        loadImplicitConversions();
+        loadQualifierRules();
     }
 
     private static void loadDocument(String filePath) {
@@ -59,10 +65,9 @@ public class Builtin {
     }
 
     private static void loadDocumentUnsafe(String filePath) throws ParserConfigurationException, SAXException, IOException {
-        File inputFile = new File(filePath);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        doc = dBuilder.parse(inputFile);
+        doc = dBuilder.parse(Builtin.class.getResourceAsStream(("res/xml/" + filePath)));
         doc.getDocumentElement().normalize();
     }
 

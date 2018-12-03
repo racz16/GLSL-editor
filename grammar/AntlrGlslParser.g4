@@ -54,7 +54,7 @@ statement
     | simple_statement
     ;
 
-compound_statement : LCB (statement+)? RCB;
+compound_statement : LCB statement* RCB;
 
 simple_statement 
     : declaration_statement 

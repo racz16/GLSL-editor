@@ -10,6 +10,30 @@ import org.antlr.v4.runtime.tree.*;
 
 public class Helper {
 
+    public static void addTypeUsageToScopeIfCustom(TypeUsage tu, Scope currentScope) {
+        if (tu != null && tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
+            currentScope.addTypeUsage(tu);
+        }
+    }
+
+    public static TypeUsage createTypeUsageWithoutQualifiers(Scope scope, AntlrGlslParser.TypeContext tc, AntlrGlslParser.Array_subscriptContext asc) {
+        TerminalNode tn = tc.IDENTIFIER() != null ? tc.IDENTIFIER() : tc.TYPE();
+        return createTypeUsageWithoutQualifiers(scope, tn, asc);
+    }
+
+    public static TypeUsage createTypeUsageWithoutQualifiers(Scope scope, TerminalNode tn, AntlrGlslParser.Array_subscriptContext asc) {
+        int arrayDepth = getArrayDepth(asc);
+        TypeUsage tu = new TypeUsage(tn.getText(), arrayDepth);
+        tu.setNameStartIndex(tn.getSymbol().getStartIndex());
+        tu.setNameStopIndex(tn.getSymbol().getStopIndex() + 1);
+        setDeclaration(scope, tu);
+        return tu;
+    }
+
+    public static int getArrayDepth(AntlrGlslParser.Array_subscriptContext asc) {
+        return asc != null ? asc.LSB().size() : 0;
+    }
+
     public static TypeDeclaration getTypeDeclaration(Scope scope, String type) {
         while (scope != null) {
             for (TypeDeclaration td : scope.getTypeDeclarations()) {
@@ -66,7 +90,7 @@ public class Helper {
         return newScope;
     }
 
-    public static void addPrecisionQualifier(TypeUsage tu, AntlrGlslParser.Precision_qualifierContext pcx) {
+    public static void addPrecisionQualifier2(TypeUsage tu, AntlrGlslParser.Precision_qualifierContext pcx) {
         if (pcx != null) {
             addPrecisionQualifierUnsafe(tu, pcx);
         }
@@ -90,7 +114,23 @@ public class Helper {
         tu.addQualifier(qu);
     }
 
-    public static QualifierUsage createQualifierUsage(String name, int startIndex, int stopIndex) {
+    public static QualifierUsage createQualifierUsage(AntlrGlslParser.Precision_qualifierContext pcx) {
+        if (pcx == null) {
+            return null;
+        } else {
+            return createQualifierUsage(pcx.getText(), pcx.getStart().getStartIndex(), pcx.getStop().getStopIndex() + 1);
+        }
+    }
+
+    public static QualifierUsage createQualifierUsage(AntlrGlslParser.Parameter_qualifierContext pqc) {
+        if (pqc == null) {
+            return null;
+        } else {
+            return createQualifierUsage(pqc.getText(), pqc.getStart().getStartIndex(), pqc.getStop().getStopIndex() + 1);
+        }
+    }
+
+    private static QualifierUsage createQualifierUsage(String name, int startIndex, int stopIndex) {
         Qualifier q = Builtin.getQualifier(name);
         QualifierUsage qu = new QualifierUsage(name);
         qu.setNameStartIndex(startIndex);
