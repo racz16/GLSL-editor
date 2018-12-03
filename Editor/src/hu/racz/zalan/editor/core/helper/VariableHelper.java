@@ -39,7 +39,8 @@ public class VariableHelper {
     }
 
     private static VariableDeclaration getSwizzleDeclaration(VariableUsage vu, TypeUsage previousTu) {
-        if (previousTu.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT || !previousTu.getDeclaration().isVector() || !isSwizzle(vu.getName(), previousTu.getDeclaration().getWidth())) {
+        boolean sw = isSwizzle(vu.getName(), previousTu.getDeclaration().getWidth());
+        if (previousTu.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT || !previousTu.getDeclaration().isVector() || !sw) {
             return null;
         } else {
             String name = "";
@@ -66,6 +67,9 @@ public class VariableHelper {
             TypeUsage tu = new TypeUsage(td.getName());
             tu.setDeclaration(td);
             VariableDeclaration vd = new VariableDeclaration(tu, vu.getName());
+            if (sw) {
+                vd.setBuiltIn(true);
+            }
             return vd;
         }
     }

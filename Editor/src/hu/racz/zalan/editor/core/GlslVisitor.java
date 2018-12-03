@@ -329,6 +329,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
                     }
                 }
             }
+            createConstructor(t);
         }
         FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
         Scope.addFoldingBlock(fb);
@@ -336,6 +337,19 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         super.visitStruct_declaration(ctx);
         currentScope = currentScope.getParent();
         return null;
+    }
+
+    private void createConstructor(TypeDeclaration td) {
+        Function f = new Function();
+        f.setConstructor(true);
+        f.setName(td.getName());
+        TypeUsage tu = new TypeUsage(td.getName());
+        tu.setDeclaration(td);
+        f.setReturnType(tu);
+        for (VariableDeclaration vd : td.getMembers()) {
+            f.addParameter(vd);
+        }
+        Scope.addFunction(f);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class GlslVariableHyperlinkProvider extends GlslHyperlinkProviderBase<Var
 
     @Override
     protected boolean hasModel(VariableUsage usage) {
-        return usage.getDeclaration() != null;
+        return usage.getDeclaration() != null && !usage.getDeclaration().isBuiltIn();
     }
 
     @Override
