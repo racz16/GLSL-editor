@@ -89,12 +89,12 @@ public class FunctionHelper {
     }
 
     private static void setNotVoidReturnType(AntlrGlslParser.Return_typeContext rtc) {
-        TypeUsage returnType = Helper.createTypeUsageWithoutQualifiers(currentScope, rtc.type(), rtc.array_subscript());
+        TypeUsage returnType = TypeHelper.createTypeUsageWithoutQualifiers(currentScope, rtc.type(), rtc.array_subscript());
         QualifierUsage qu = Helper.createQualifierUsage(rtc.precision_qualifier());
         if (qu != null) {
             returnType.addQualifier(qu);
         }
-        Helper.addTypeUsageToScopeIfCustom(returnType, currentScope);
+        TypeHelper.addTypeUsageToScopeIfCustom(returnType, currentScope);
         func.setReturnType(returnType);
     }
 
@@ -120,34 +120,23 @@ public class FunctionHelper {
 
     private static void setParameter(AntlrGlslParser.Function_parameterContext fpc) {
         TypeUsage tu = createParameterTypeUsage(fpc);
-        Helper.addTypeUsageToScopeIfCustom(tu, currentScope);
+        TypeHelper.addTypeUsageToScopeIfCustom(tu, currentScope);
         VariableDeclaration vd = createParameterVariableDeclaration(tu, fpc);
         currentScope.addVariableDeclaration(vd);
         func.addParameter(vd);
     }
 
     private static TypeUsage createParameterTypeUsage(AntlrGlslParser.Function_parameterContext fpc) {
-        TypeUsage tu = Helper.createTypeUsageWithoutQualifiers(currentScope, fpc.type(), fpc.array_subscript());
+        TypeUsage tu = TypeHelper.createTypeUsageWithoutQualifiers(currentScope, fpc.type(), fpc.array_subscript());
         tu.setArrayDepth(tu.getArrayDepth() + Helper.getArrayDepth(fpc.identifier_optarray() != null ? fpc.identifier_optarray().array_subscript() : null));
         return tu;
     }
 
     private static VariableDeclaration createParameterVariableDeclaration(TypeUsage tu, AntlrGlslParser.Function_parameterContext fpc) {
-        String name = fpc.identifier_optarray() != null ? fpc.identifier_optarray().IDENTIFIER().getText() : "";
-        VariableDeclaration vd = new VariableDeclaration(tu, name);
-        setParameterIndices(vd, fpc);
+        VariableDeclaration vd = VariableHelper.createVariableDeclarationWithoutQualifiers(tu, fpc);
         setParameterQualifiers(vd, fpc);
         ErrorHelper.addIdentifierWarnings(vd);
         return vd;
-    }
-
-    private static void setParameterIndices(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
-        if (fpc.identifier_optarray() != null) {
-            vd.setNameStartIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
-            vd.setNameStopIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
-        }
-        vd.setDeclarationStartIndex(fpc.getStart().getStartIndex());
-        vd.setDeclarationStopIndex(fpc.getStop().getStopIndex() + 1);
     }
 
     private static void setParameterQualifiers(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {

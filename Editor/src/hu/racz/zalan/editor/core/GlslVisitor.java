@@ -10,9 +10,7 @@ import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.function.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.folding.*;
-import java.util.*;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.netbeans.spi.editor.hints.*;
 
 public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
@@ -125,7 +123,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     }
 
     //
-    //if, for, while, do-while, case, jump
+    //if, for, while, do-while, case, jump--------------------------------------
     //
     @Override
     public TypeUsage visitSelection_statement(AntlrGlslParser.Selection_statementContext ctx) {
@@ -213,7 +211,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     }
 
     //
-    //misc----------------------------------------------------------------------
+    //expression----------------------------------------------------------------------
     //
     @Override
     public TypeUsage visitExpression(AntlrGlslParser.ExpressionContext ctx) {
@@ -224,6 +222,9 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         }
     }
 
+    //
+    //literal-------------------------------------------------------------------
+    //
     @Override
     public TypeUsage visitLiteral(AntlrGlslParser.LiteralContext ctx) {
         if (ctx.BOOL_LITERAL() == null) {
@@ -231,7 +232,7 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
         }
         String name = getLiteralTypeName(ctx);
         TypeUsage tu = new TypeUsage(name);
-        Helper.setDeclaration(null, tu);
+        TypeHelper.setDeclaration(null, tu);
         return tu;
     }
 
@@ -290,51 +291,20 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     }
 
     //
-    //
+    //struct--------------------------------------------------------------------
     //
     @Override
     public TypeUsage visitStruct_declaration(AntlrGlslParser.Struct_declarationContext ctx) {
         currentScope = Helper.createScope(currentScope, ctx);
-        if (ctx.IDENTIFIER() != null) {
-            TypeDeclaration t = new TypeDeclaration(ctx.IDENTIFIER().getText());
-            t.setNameStartIndex(ctx.IDENTIFIER().getSymbol().getStartIndex());
-            t.setNameStopIndex(ctx.IDENTIFIER().getSymbol().getStopIndex() + 1);
-            t.setStructStopIndex(ctx.RCB().getSymbol().getStopIndex());
-            ErrorHelper.addIdentifierWarnings(t);
-            currentScope.getParent().addTypeDeclaration(t);
-
-            List<AntlrGlslParser.Member_declarationContext> sdl = ctx.member_declaration();
-            for (AntlrGlslParser.Member_declarationContext sdc : sdl) {
-                if (sdc.type() != null && (sdc.type().TYPE() != null || sdc.type().IDENTIFIER() != null) && sdc.member_declarator() != null) {
-                    for (AntlrGlslParser.Identifier_optarrayContext sdc2 : sdc.member_declarator().identifier_optarray()) {
-                        String typeName = sdc.type().TYPE() != null ? sdc.type().TYPE().getText() : sdc.type().IDENTIFIER().getText();
-                        TypeUsage tu = new TypeUsage(typeName);
-                        tu.setNameStartIndex(sdc.type().start.getStartIndex());
-                        tu.setNameStopIndex(sdc.type().stop.getStopIndex() + 1);
-                        int depth1 = sdc.array_subscript() != null ? sdc.array_subscript().LSB().size() : 0;
-                        int depth2 = sdc2.array_subscript() != null ? sdc2.array_subscript().LSB().size() : 0;
-                        tu.setArrayDepth(depth1 + depth2);
-                        Helper.setDeclaration(currentScope, tu);
-                        if (tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
-                            currentScope.addTypeUsage(tu);
-                        }
-                        if (sdc2.IDENTIFIER() != null) {
-                            String name = sdc2.IDENTIFIER().getText();
-                            VariableDeclaration vd = new VariableDeclaration(tu, name, false);
-                            vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
-                            vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
-                            currentScope.addVariableDeclaration(vd);
-                            t.addMember(vd);
-                        }
-                    }
-                }
-            }
-            createConstructor(t);
+        try {
+            TypeDeclaration td = TypeHelper.createTypeDeclaration(currentScope, ctx);
+            currentScope.getParent().addTypeDeclaration(td);
+            createConstructor(td);
+            FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+            Scope.addFoldingBlock(fb);
+            super.visitStruct_declaration(ctx);
+        } catch (NullPointerException ex) {
         }
-        FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
-        Scope.addFoldingBlock(fb);
-
-        super.visitStruct_declaration(ctx);
         currentScope = currentScope.getParent();
         return null;
     }
@@ -342,121 +312,56 @@ public class GlslVisitor extends AntlrGlslParserBaseVisitor<TypeUsage> {
     private void createConstructor(TypeDeclaration td) {
         Function f = new Function();
         f.setConstructor(true);
-        f.setName(td.getName());
         TypeUsage tu = new TypeUsage(td.getName());
         tu.setDeclaration(td);
         f.setReturnType(tu);
-        for (VariableDeclaration vd : td.getMembers()) {
-            f.addParameter(vd);
-        }
+        setConstructorSignature(f, td);
         Scope.addFunction(f);
     }
 
-    @Override
-    public TypeUsage visitVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx) {
-        super.visitVariable_declaration(ctx);
-        AntlrGlslParser.Single_declarationContext sdc = ctx.single_declaration();
-        TypeUsage tu = null;
-        if (sdc.type() != null) {
-            String type = sdc.type().getText();
-
-            tu = new TypeUsage(type);
-            tu.setNameStartIndex(sdc.type().start.getStartIndex());
-            tu.setNameStopIndex(sdc.type().stop.getStopIndex() + 1);
-            //currentScope.addTypeUsage(tu);
-            Scope scope = currentScope;
-            search:
-            while (scope != null) {
-                for (TypeDeclaration td : scope.getTypeDeclarations()) {
-                    if (td.getName().equals(tu.getName())) {
-                        tu.setDeclaration(td);
-                        td.addUsage(tu);
-                        break search;
-                    }
-                }
-                scope = scope.getParent();
-            }
-            if (tu.getDeclaration() == null) {
-                for (TypeDeclaration td : Builtin.getTypes().values()) {
-                    if (td.getName().equals(tu.getName())) {
-                        tu.setDeclaration(td);
-                        td.addUsage(tu);
-                        break;
-                    }
-                }
-            }
-        } else {
-            if (sdc.identifier_optarray() != null) {
-                String type = sdc.struct_declaration().IDENTIFIER().getText();
-                TypeDeclaration td = Helper.getTypeDeclaration(currentScope, type);
-                //TODO: array, indices
-                tu = new TypeUsage(type);
-                tu.setDeclaration(td);
-                td.addUsage(tu);
-            }
+    private void setConstructorSignature(Function f, TypeDeclaration td) {
+        f.setName(td.getName());
+        for (VariableDeclaration vd : td.getMembers()) {
+            f.addParameter(vd);
         }
-        if (sdc.identifier_optarray() != null) {
-            String varName = sdc.identifier_optarray().IDENTIFIER().getText();
-            VariableDeclaration var = new VariableDeclaration(tu/*new TypeUsage(type)*/, varName);
-            var.setNameStartIndex(sdc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
-            var.setNameStopIndex(sdc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
-            ErrorHelper.addIdentifierWarnings(var);
-            if (currentScope.getParent() == null) {
-                var.setGlobal(true);
-            }
-            currentScope.addVariableDeclaration(var);
-            for (AntlrGlslParser.Identifier_optarrayContext ioa : ctx.identifier_optarray()) {
-                TerminalNode name = ioa.IDENTIFIER();
-                varName = name.getText();
-                VariableDeclaration v = new VariableDeclaration(tu/*new TypeUsage(type)*/, varName);
-                v.setNameStartIndex(name.getSymbol().getStartIndex());
-                v.setNameStopIndex(name.getSymbol().getStopIndex() + 1);
-                //TODO: array
-                if (currentScope.getParent() == null) {
-                    v.setGlobal(true);
-                }
-                currentScope.addVariableDeclaration(v);
-            }
-        }
-        return null;
     }
 
+    //
+    //variable declaration------------------------------------------------------
+    //
+    @Override
+    public TypeUsage visitVariable_declaration(AntlrGlslParser.Variable_declarationContext ctx) {
+        try {
+            for (AntlrGlslParser.Identifier_optarray_optassignmentContext iooc : ctx.identifier_optarray_optassignment()) {
+                TypeUsage tu = TypeHelper.createTypeUsageWithoutQualifiers(currentScope, ctx, ctx.array_subscript());
+                tu.setArrayDepth(tu.getArrayDepth() + Helper.getArrayDepth(iooc.identifier_optarray().array_subscript()));
+                TypeHelper.addTypeUsageToScopeIfCustom(tu, currentScope);
+                VariableDeclaration vd = VariableHelper.createVariableDeclarationWithoutQualifiers(tu, ctx, iooc);
+                currentScope.addVariableDeclaration(vd);
+                TypeUsage tu2 = ExpressionHelper.expression(iooc.expression(), this, currentScope);
+                ErrorHelper.addIncompatibleTypesError(tu, tu2, iooc.expression());
+            }
+        } catch (NullPointerException ex) {
+        }
+        return super.visitVariable_declaration(ctx);
+    }
+
+    //
+    //interface block-----------------------------------------------------------
+    //
     @Override
     public TypeUsage visitDeclaration_statement(AntlrGlslParser.Declaration_statementContext ctx) {
         //if it's an interface block
-        List<AntlrGlslParser.Member_declarationContext> sdlc = ctx.member_declaration();
-        if (ctx.LCB() != null) {
-            for (AntlrGlslParser.Member_declarationContext sdc : sdlc) {
-                if (sdc.member_declarator() != null) {
-                    for (AntlrGlslParser.Identifier_optarrayContext sdc2 : sdc.member_declarator().identifier_optarray()) {
-                        TypeUsage tu = new TypeUsage(sdc.type().getText());
-                        tu.setNameStartIndex(sdc.type().getStart().getStartIndex());
-                        tu.setNameStopIndex(sdc.type().getStop().getStopIndex() + 1);
-                        int depth1 = sdc.array_subscript() != null ? sdc.array_subscript().LSB().size() : 0;
-                        int depth2 = sdc2.array_subscript() != null ? sdc2.array_subscript().LSB().size() : 0;
-                        tu.setArrayDepth(depth1 + depth2);
-                        Helper.setDeclaration(currentScope, tu);
-                        if (tu.getDeclaration() != null && !tu.getDeclaration().isBuiltIn()) {
-                            currentScope.addTypeUsage(tu);
-                        }
-
-                        String name = sdc2.IDENTIFIER().getText();
-                        VariableDeclaration vd = new VariableDeclaration(tu, name, false);
-                        vd.setNameStartIndex(sdc2.IDENTIFIER().getSymbol().getStartIndex());
-                        vd.setNameStopIndex(sdc2.IDENTIFIER().getSymbol().getStopIndex() + 1);
-                        vd.setDeclarationStartIndex(ctx.getStart().getStartIndex());
-                        vd.setDeclarationStopIndex(ctx.getStop().getStopIndex());
-                        ErrorHelper.addIdentifierWarnings(vd);
-                        vd.setGlobal(currentScope.getParent() == null);
-                        currentScope.addVariableDeclaration(vd);
-                    }
+        try {
+            if (ctx.LCB() != null) {
+                for (VariableDeclaration vd : VariableHelper.createMembers(currentScope, ctx.member_declaration())) {
+                    currentScope.addVariableDeclaration(vd);
                 }
+                FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
+                Scope.addFoldingBlock(fb);
             }
-            //TODO named interface block
-            FoldingBlock fb = new FoldingBlock(FoldingType.BLOCK, ctx.LCB().getSymbol().getStartIndex(), ctx.RCB().getSymbol().getStopIndex() + 1);
-            Scope.addFoldingBlock(fb);
+        } catch (NullPointerException ex) {
         }
-
         return super.visitDeclaration_statement(ctx);
     }
 

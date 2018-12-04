@@ -103,17 +103,17 @@ declaration_statement
     | type_qualifier* (IDENTIFIER (COMMA IDENTIFIER)*)? SEMICOLON
     ;
 
-variable_declaration : single_declaration (COMMA identifier_optarray (OP_ASSIGN expression)?)*;
-
-single_declaration : type_qualifier* (type | struct_declaration) array_subscript? (identifier_optarray (OP_ASSIGN expression)?)?;
+variable_declaration : type_qualifier* (type | struct_declaration) array_subscript? (identifier_optarray_optassignment (COMMA identifier_optarray_optassignment)*)?;
 
 member_declaration : type_qualifier* type array_subscript? member_declarator SEMICOLON;
 
 member_declarator : identifier_optarray (COMMA identifier_optarray)*;
 
-struct_declaration : KW_STRUCT IDENTIFIER? LCB member_declaration+ RCB;
+struct_declaration : KW_STRUCT IDENTIFIER LCB member_declaration+ RCB;
 
-identifier_optarray :IDENTIFIER array_subscript?;
+identifier_optarray : IDENTIFIER array_subscript?;
+
+identifier_optarray_optassignment : identifier_optarray (OP_ASSIGN expression)?;
 
 /////
 //expressions-------------------------------------------------------------------

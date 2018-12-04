@@ -1,8 +1,10 @@
 package hu.racz.zalan.editor.core.helper;
 
+import hu.racz.zalan.editor.antlr.generated.*;
 import hu.racz.zalan.editor.core.scope.*;
 import hu.racz.zalan.editor.core.scope.type.*;
 import hu.racz.zalan.editor.core.scope.variable.*;
+import java.util.*;
 import org.antlr.v4.runtime.tree.*;
 
 public class VariableHelper {
@@ -138,5 +140,61 @@ public class VariableHelper {
             }
         }
         return null;
+    }
+
+    //
+    //variable declaration------------------------------------------------------
+    //
+    public static VariableDeclaration createVariableDeclarationWithoutQualifiers(Scope currentScope, AntlrGlslParser.Member_declarationContext mdc, AntlrGlslParser.Identifier_optarrayContext ioc) {
+        TypeUsage tu = TypeHelper.createTypeUsageWithoutQualifiers(currentScope, mdc.type(), mdc.array_subscript());
+        tu.setArrayDepth(tu.getArrayDepth() + Helper.getArrayDepth(ioc.array_subscript()));
+        TypeHelper.addTypeUsageToScopeIfCustom(tu, currentScope);
+        return VariableHelper.createVariableDeclarationWithoutQualifiers(tu, mdc, ioc);
+    }
+
+    public static VariableDeclaration createVariableDeclarationWithoutQualifiers(TypeUsage tu, AntlrGlslParser.Variable_declarationContext ctx, AntlrGlslParser.Identifier_optarray_optassignmentContext iooc) {
+        VariableDeclaration vd = new VariableDeclaration(tu, iooc.identifier_optarray().IDENTIFIER().getText());
+        vd.setNameStartIndex(iooc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
+        vd.setNameStopIndex(iooc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
+        vd.setDeclarationStartIndex(ctx.getStart().getStartIndex());
+        vd.setDeclarationStopIndex(ctx.getStop().getStopIndex() + 1);
+        return vd;
+    }
+
+    public static VariableDeclaration createVariableDeclarationWithoutQualifiers(TypeUsage tu, AntlrGlslParser.Member_declarationContext mdc, AntlrGlslParser.Identifier_optarrayContext ioc) {
+        //TODO: identifier warnings
+        String name = ioc.IDENTIFIER().getText();
+        VariableDeclaration vd = new VariableDeclaration(tu, name, false);
+        vd.setNameStartIndex(ioc.IDENTIFIER().getSymbol().getStartIndex());
+        vd.setNameStopIndex(ioc.IDENTIFIER().getSymbol().getStopIndex() + 1);
+        vd.setDeclarationStartIndex(mdc.getStart().getStartIndex());
+        vd.setDeclarationStopIndex(mdc.getStop().getStopIndex() + 1);
+        return vd;
+    }
+
+    public static VariableDeclaration createVariableDeclarationWithoutQualifiers(TypeUsage tu, AntlrGlslParser.Function_parameterContext fpc) {
+        String name = fpc.identifier_optarray() != null ? fpc.identifier_optarray().IDENTIFIER().getText() : "";
+        VariableDeclaration vd = new VariableDeclaration(tu, name);
+        setParameterIndices(vd, fpc);
+        return vd;
+    }
+
+    private static void setParameterIndices(VariableDeclaration vd, AntlrGlslParser.Function_parameterContext fpc) {
+        if (fpc.identifier_optarray() != null) {
+            vd.setNameStartIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStartIndex());
+            vd.setNameStopIndex(fpc.identifier_optarray().IDENTIFIER().getSymbol().getStopIndex() + 1);
+        }
+        vd.setDeclarationStartIndex(fpc.getStart().getStartIndex());
+        vd.setDeclarationStopIndex(fpc.getStop().getStopIndex() + 1);
+    }
+
+    public static List<VariableDeclaration> createMembers(Scope currentScope, List<AntlrGlslParser.Member_declarationContext> mdcs) {
+        List<VariableDeclaration> vds = new ArrayList<>();
+        for (AntlrGlslParser.Member_declarationContext mdc : mdcs) {
+            for (AntlrGlslParser.Identifier_optarrayContext ioc : mdc.member_declarator().identifier_optarray()) {
+                vds.add(VariableHelper.createVariableDeclarationWithoutQualifiers(currentScope, mdc, ioc));
+            }
+        }
+        return vds;
     }
 }

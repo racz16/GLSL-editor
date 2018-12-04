@@ -14,6 +14,12 @@ import org.netbeans.spi.editor.hints.*;
 
 public class ErrorHelper {
 
+    public static void addIncompatibleTypesError(TypeUsage tu, TypeUsage tu2, AntlrGlslParser.ExpressionContext ec) {
+        if (tu2 != null && tu2.getDeclaration() != null && (!tu2.getDeclaration().isConvertibleTo(tu.getDeclaration()) || tu2.getArrayDepth() != tu.getArrayDepth())) {
+            ErrorHelper.addError(Severity.ERROR, tu.getName() + ", " + tu2.getName() + " : incompatible types", ec.getStart().getStartIndex(), ec.getStop().getStopIndex() + 1);
+        }
+    }
+
     public static void addVoidQualifierError(AntlrGlslParser.Precision_qualifierContext pqc) {
         if (pqc != null) {
             String message = "void : Only floating point, integer or opaque type declaration can have the type preceded by a precision qualifier. Unacceptable type";

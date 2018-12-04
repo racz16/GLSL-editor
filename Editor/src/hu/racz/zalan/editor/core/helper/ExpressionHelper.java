@@ -134,7 +134,7 @@ public class ExpressionHelper {
             ErrorHelper.addError(Severity.ERROR, "opaque type", ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
         }
         if (usable(tu1, tu2)
-                && !Helper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration())) {
+                && !(TypeHelper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration()) && tu1.getArrayDepth() == tu2.getArrayDepth())) {
             ErrorHelper.addError(Severity.ERROR, "not convertible", ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex() + 1);
         }
         if (tu1 != null && tu1.isArray() || tu2 != null && tu2.isArray()) {
@@ -156,11 +156,11 @@ public class ExpressionHelper {
     private static TypeUsage equalityExpression(AntlrGlslParser.ExpressionContext ctx) {
         TypeUsage tu1 = visitor.visitExpression(ctx.expression(0));
         TypeUsage tu2 = visitor.visitExpression(ctx.expression(1));
-        if (usable(tu1) && (!tu1.getDeclaration().isScalar() || tu1.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT)) {
-            ErrorHelper.addError(Severity.ERROR, "not scalar", ctx.expression(0).getStart().getStartIndex(), ctx.expression(0).getStop().getStopIndex() + 1);
+        if (usable(tu1) && (tu1.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT)) {
+            ErrorHelper.addError(Severity.ERROR, "not transparent type", ctx.expression(0).getStart().getStartIndex(), ctx.expression(0).getStop().getStopIndex() + 1);
         }
-        if (usable(tu2) && (!tu2.getDeclaration().isScalar() || tu2.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT)) {
-            ErrorHelper.addError(Severity.ERROR, "not scalar", ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
+        if (usable(tu2) && (tu2.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT)) {
+            ErrorHelper.addError(Severity.ERROR, "not transparent type", ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
         }
         if (tu1 != null && tu1.isArray() || tu2 != null && tu2.isArray()) {
             ErrorHelper.addError(Severity.ERROR, "array", ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex() + 1);
@@ -250,8 +250,8 @@ public class ExpressionHelper {
         }
         if (usable(tu1, tu2) && (tu2.getDeclaration().getTypeCategory() != TypeCategory.TRANSPARENT
                 || tu2.getDeclaration().isMatrix()
-                || tu1.getDeclaration().isScalar() && !Helper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration())
-                || tu1.getDeclaration().isVector() && !Helper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration()) && !tu2.getName().equals("int") && !tu2.getName().equals("uint"))) {
+                || tu1.getDeclaration().isScalar() && !(TypeHelper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration()) && tu1.getArrayDepth() == tu2.getArrayDepth())
+                || tu1.getDeclaration().isVector() && !(TypeHelper.areConvertible(tu1.getDeclaration(), tu2.getDeclaration()) && tu1.getArrayDepth() == tu2.getArrayDepth()) && !tu2.getName().equals("int") && !tu2.getName().equals("uint"))) {
             ErrorHelper.addError(Severity.ERROR, "opaqu type, matrix, floating point or wrong size", ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
         }
         if (tu1 != null && tu1.isArray() || tu2 != null && tu2.isArray()) {
@@ -288,7 +288,7 @@ public class ExpressionHelper {
                 if (tu1.getDeclaration().getWidth() != tu2.getDeclaration().getWidth()) {
                     ErrorHelper.addError(Severity.ERROR, "different dimension", ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex() + 1);
                 }
-                TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+                TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
                 if (td != null) {
                     TypeUsage tu = new TypeUsage(td.getName());
                     tu.setDeclaration(td);
@@ -298,7 +298,7 @@ public class ExpressionHelper {
                     return null;
                 }
             } else {
-                TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+                TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
                 TypeUsage tu = new TypeUsage(td.getName());
                 tu.setDeclaration(td);
                 return tu;
@@ -335,7 +335,7 @@ public class ExpressionHelper {
                 if (tu1.getDeclaration().getWidth() != tu2.getDeclaration().getWidth()) {
                     ErrorHelper.addError(Severity.ERROR, "different dimension", ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex() + 1);
                 }
-                TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+                TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
                 if (td != null) {
                     TypeUsage tu = new TypeUsage(td.getName());
                     tu.setDeclaration(td);
@@ -345,7 +345,7 @@ public class ExpressionHelper {
                     return null;
                 }
             } else {
-                TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+                TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
                 TypeUsage tu = new TypeUsage(td.getName());
                 tu.setDeclaration(td);
                 return tu;
@@ -396,7 +396,7 @@ public class ExpressionHelper {
                 ErrorHelper.addError(Severity.ERROR, "not transparent type", ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
             }
             if (tu1.getDeclaration().isScalar() && tu2.getDeclaration().isScalar()) {
-                TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+                TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
                 TypeUsage tu = new TypeUsage(td.getName());
                 tu.setDeclaration(td);
                 return tu;
@@ -458,7 +458,7 @@ public class ExpressionHelper {
         TypeUsage tu1 = visitor.visitExpression(ctx.expression_list(0).expression(ctx.expression_list(0).expression().size() - 1));
         TypeUsage tu2 = visitor.visitExpression(ctx.expression_list(1).expression(ctx.expression_list(1).expression().size() - 1));
         if (usable(tu1, tu2)) {
-            TypeDeclaration td = Helper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
+            TypeDeclaration td = TypeHelper.getConversion(tu1.getDeclaration(), tu2.getDeclaration());
             if (td != null) {
                 TypeUsage tu = new TypeUsage(td.getName());
                 tu.setDeclaration(td);
@@ -559,7 +559,7 @@ public class ExpressionHelper {
                 for (int i = 0; valid && i < parameters.size(); i++) {
                     TypeUsage tu1 = parameters.get(i);
                     TypeUsage tu2 = f.getParameters().get(i).getType();
-                    if (tu1.getDeclaration().isConveribleTo(tu2.getDeclaration())) {
+                    if (tu1.getDeclaration().isConvertibleTo(tu2.getDeclaration())) {
                         if (tu1.getName().equals(tu2.getName())) {
                             conv.add(0);
                         } else if (tu1.getName().equals("float") && tu2.getName().equals("double")) {
@@ -594,7 +594,7 @@ public class ExpressionHelper {
                     for (int i = 0; valid && i < parameters.size(); i++) {
                         TypeUsage tu1 = parameters.get(i);
                         TypeUsage tu2 = f.getParameters().get(i).getType();
-                        if (tu1.getDeclaration().isConveribleTo(tu2.getDeclaration())) {
+                        if (tu1.getDeclaration().isConvertibleTo(tu2.getDeclaration())) {
                             if (tu1.getName().equals(tu2.getName())) {
                                 conv.add(0);
                             } else if (tu1.getName().equals("float") && tu2.getName().equals("double")) {
