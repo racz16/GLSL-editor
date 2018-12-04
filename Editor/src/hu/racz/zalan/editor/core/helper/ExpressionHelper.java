@@ -19,46 +19,49 @@ public class ExpressionHelper {
         ExpressionHelper.visitor = visitor;
         ExpressionHelper.scope = scope;
         //TODO: értékadás
-        if (ctx != null) {
-            if (isLiteral(ctx)) {
-                return literal(ctx);
-            } else if (isParentheticalExpression(ctx)) {
-                return parentheticalExpression(ctx);
-            } else if (isIdentifier(ctx)) {
-                return identifier(ctx);
-            } else if (isArithmeticUnaryExpression(ctx)) {
-                return arithmeticUnaryExpression(ctx);
-            } else if (isRelationalExpression(ctx)) {
-                return relationalExpression(ctx);
-            } else if (isEqualityExpression(ctx)) {
-                return equalityExpression(ctx);
-            } else if (isLogicalBinaryExpression(ctx)) {
-                return logicalBinaryExpression(ctx);
-            } else if (isLogicalUnaryExpression(ctx)) {
-                return logicalUnaryExpression(ctx);
-            } else if (isBitUnaryExpression(ctx)) {
-                return bitUnaryExpression(ctx);
-            } else if (isShiftExpression(ctx)) {
-                return shiftExpression(ctx);
-            } else if (isBitBinaryExpression(ctx)) {
-                return bitBinaryExpression(ctx);
-            } else if (isModuloExpression(ctx)) {
-                return moduloExpression(ctx);
-            } else if (isLengthExpression(ctx)) {
-                return lengthExpression(ctx);
-            } else if (isArithmeticBinaryExpression(ctx)) {
-                return arithmeticBinaryExpression(ctx);
-            } else if (isTernaryExpression(ctx)) {
-                return ternaryExpression(ctx);
-            } else if (isArraySubscript(ctx)) {
-                return arraySubscript(ctx);
-            } else if (isFunctionCall(ctx)) {
-                return functionCall(ctx);
-            } else {
-                for (ParseTree pt : ctx.children) {
-                    visitor.visit(pt);
+        try {
+            if (ctx != null) {
+                if (isLiteral(ctx)) {
+                    return literal(ctx);
+                } else if (isParentheticalExpression(ctx)) {
+                    return parentheticalExpression(ctx);
+                } else if (isIdentifier(ctx)) {
+                    return identifier(ctx);
+                } else if (isArithmeticUnaryExpression(ctx)) {
+                    return arithmeticUnaryExpression(ctx);
+                } else if (isRelationalExpression(ctx)) {
+                    return relationalExpression(ctx);
+                } else if (isEqualityExpression(ctx)) {
+                    return equalityExpression(ctx);
+                } else if (isLogicalBinaryExpression(ctx)) {
+                    return logicalBinaryExpression(ctx);
+                } else if (isLogicalUnaryExpression(ctx)) {
+                    return logicalUnaryExpression(ctx);
+                } else if (isBitUnaryExpression(ctx)) {
+                    return bitUnaryExpression(ctx);
+                } else if (isShiftExpression(ctx)) {
+                    return shiftExpression(ctx);
+                } else if (isBitBinaryExpression(ctx)) {
+                    return bitBinaryExpression(ctx);
+                } else if (isModuloExpression(ctx)) {
+                    return moduloExpression(ctx);
+                } else if (isLengthExpression(ctx)) {
+                    return lengthExpression(ctx);
+                } else if (isArithmeticBinaryExpression(ctx)) {
+                    return arithmeticBinaryExpression(ctx);
+                } else if (isTernaryExpression(ctx)) {
+                    return ternaryExpression(ctx);
+                } else if (isArraySubscript(ctx)) {
+                    return arraySubscript(ctx);
+                } else if (isFunctionCall(ctx)) {
+                    return functionCall(ctx);
+                } else {
+                    for (ParseTree pt : ctx.children) {
+                        visitor.visit(pt);
+                    }
                 }
             }
+        } catch (NullPointerException ex) {
         }
         return null;
     }
