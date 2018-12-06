@@ -162,7 +162,6 @@ public class VariableHelper {
     }
 
     public static VariableDeclaration createVariableDeclarationWithoutQualifiers(TypeUsage tu, AntlrGlslParser.Member_declarationContext mdc, AntlrGlslParser.Identifier_optarrayContext ioc) {
-        //TODO: identifier warnings
         String name = ioc.IDENTIFIER().getText();
         VariableDeclaration vd = new VariableDeclaration(tu, name, false);
         vd.setNameStartIndex(ioc.IDENTIFIER().getSymbol().getStartIndex());

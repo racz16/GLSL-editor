@@ -18,7 +18,6 @@ public class ExpressionHelper {
     public static TypeUsage expression(AntlrGlslParser.ExpressionContext ctx, GlslVisitor visitor, Scope scope) {
         ExpressionHelper.visitor = visitor;
         ExpressionHelper.scope = scope;
-        //TODO: értékadás
         try {
             if (ctx != null) {
                 if (isLiteral(ctx)) {
@@ -55,6 +54,8 @@ public class ExpressionHelper {
                     return arraySubscript(ctx);
                 } else if (isFunctionCall(ctx)) {
                     return functionCall(ctx);
+                } else if (isAssignment(ctx)) {
+                    return assignment(ctx);
                 } else {
                     for (ParseTree pt : ctx.children) {
                         visitor.visit(pt);
@@ -388,7 +389,6 @@ public class ExpressionHelper {
     }
 
     private static TypeUsage arithmeticBinaryExpression(AntlrGlslParser.ExpressionContext ctx) {
-        //FIXME: arrays
         TypeUsage tu1 = visitor.visitExpression(ctx.expression(0));
         TypeUsage tu2 = visitor.visitExpression(ctx.expression(1));
         if (usable(tu1, tu2)) {
@@ -503,7 +503,6 @@ public class ExpressionHelper {
                     tu.setDeclaration(td);
                     return array > 1 ? array(ctx, tu, array - 1) : tu;
                 } else {
-                    //FIXME: kódduplikáció VariableHelper
                     String name = "";
                     switch (tu1.getDeclaration().getTypeBase()) {
                         case BOOL:
@@ -643,6 +642,22 @@ public class ExpressionHelper {
             }
             return null;
         }
+    }
+
+    //
+    //assignment----------------------------------------------------------------
+    //
+    private static boolean isAssignment(AntlrGlslParser.ExpressionContext ctx) {
+        return ctx.OP_ASSIGN() != null;
+    }
+
+    private static TypeUsage assignment(AntlrGlslParser.ExpressionContext ctx) {
+        TypeUsage tu1 = visitor.visitExpression(ctx.expression(0));
+        TypeUsage tu2 = visitor.visitExpression(ctx.expression(1));
+        if (!tu2.getDeclaration().isConvertibleTo(tu1.getDeclaration())) {
+            ErrorHelper.addCannotConvertError(tu1.getDeclaration(), tu2.getDeclaration(), ctx.expression(1).getStart().getStartIndex(), ctx.expression(1).getStop().getStopIndex() + 1);
+        }
+        return null;
     }
 
     //

@@ -112,6 +112,10 @@ public class ErrorHelper {
         }
     }
 
+    public static void addCannotConvertError(TypeDeclaration td1, TypeDeclaration td2, int start, int stop) {
+        addError(Severity.ERROR, "'assign' :  cannot convert from '" + td2 + "' to '" + td1 + "'", start, stop);
+    }
+
     //
     //
     //
