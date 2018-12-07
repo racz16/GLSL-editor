@@ -1,4 +1,7 @@
 # GLSL Editor
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f9e516a1c443454682ff84ef9ac43cde)](https://app.codacy.com/app/racz1666/GLSL-editor?utm_source=github.com&utm_medium=referral&utm_content=racz16/GLSL-editor&utm_campaign=Badge_Grade_Dashboard)
+
 This is the source code of my Netbeans GLSL editor plugin. It is also available in the Netbeans Plugin Center at the following link: http://plugins.netbeans.org/plugin/74843/glsl-editor
 
 ## Features
