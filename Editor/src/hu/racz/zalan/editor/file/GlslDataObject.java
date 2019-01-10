@@ -8,7 +8,7 @@ import org.openide.util.NbBundle.Messages;
 import static hu.racz.zalan.editor.core.Constants.*;
 
 @Messages({
-    "LBL_Glsl_LOADER=Files of Glsl"
+    "LBL_Glsl_LOADER=GLSL Files"
 })
 @MIMEResolver.ExtensionRegistration(
         displayName = "#LBL_Glsl_LOADER",
